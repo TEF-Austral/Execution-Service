@@ -1,0 +1,25 @@
+services:
+  api:
+    container_name: "execution-service-api"
+    build:
+      context: .
+      dockerfile: Dockerfile.multi
+    ports:
+      - 8000:8080
+    env_file:
+      - .env
+    environment:
+      DB_HOST: postgres_db
+
+  db:
+    container_name: postgres_db
+    image: postgres:16
+    ports:
+      - 5432:5432
+    env_file:
+      - .env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
