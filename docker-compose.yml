@@ -5,17 +5,17 @@ services:
       context: .
       dockerfile: Dockerfile.multi
     ports:
-      - 8000:8080
+      - 8003:8080
     env_file:
       - .env
     environment:
       DB_HOST: postgres_db
 
   db:
-    container_name: postgres_db
+    container_name: execution_db
     image: postgres:16
     ports:
-      - 5432:5432
+      - 5435:5432
     env_file:
       - .env
     volumes:
