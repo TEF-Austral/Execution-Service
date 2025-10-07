@@ -1,0 +1,31 @@
+plugins {
+    id 'buildlogic.kotlin-common-conventions'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+    api project(':common')
+}
+
+tasks.named('bootJar') {
+    enabled = false
+}
+
+tasks.named('jar') {
+    enabled = true
+}
+
+test {
+    useJUnitPlatform()
+}
+kotlin {
+    jvmToolchain(21)
+}
+
+springBoot {
+    mainClass = 'token.TokenServiceApplication'
+}

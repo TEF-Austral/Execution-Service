@@ -1,0 +1,34 @@
+plugins {
+    id 'buildlogic.kotlin-common-conventions'
+}
+
+repositories {
+    mavenCentral()
+}
+
+tasks.named('bootJar') {
+    enabled = true
+}
+
+tasks.named('jar') {
+    enabled = false
+}
+
+dependencies {
+    implementation project(':token')
+    implementation project(':common')
+    implementation project(':reader')
+    implementation project(':ast')
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+}
+
+test {
+    useJUnitPlatform()
+}
+kotlin {
+    jvmToolchain(21)
+}
+
+springBoot {
+    mainClass = 'interpreter.ExecutionServiceApplicationKt'
+}

@@ -1,0 +1,33 @@
+plugins {
+    id 'buildlogic.kotlin-common-conventions'
+}
+
+repositories {
+    mavenCentral()
+}
+
+tasks.named('bootJar') {
+    enabled = false
+}
+
+tasks.named('jar') {
+    enabled = true
+}
+
+dependencies {
+    implementation project(':token')
+    implementation project(':common')
+    implementation project(':reader')
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+}
+
+test {
+    useJUnitPlatform()
+}
+kotlin {
+    jvmToolchain(21)
+}
+
+springBoot {
+    mainClass = 'lexer.LexerServiceApplication'
+}
