@@ -6,14 +6,6 @@ repositories {
     mavenCentral()
 }
 
-tasks.named('bootJar') {
-    enabled = true
-}
-
-tasks.named('jar') {
-    enabled = false
-}
-
 dependencies {
     implementation project(':token')
     implementation project(':common')
@@ -27,8 +19,4 @@ test {
 }
 kotlin {
     jvmToolchain(21)
-}
-
-springBoot {
-    mainClass = 'interpreter.ExecutionServiceApplicationKt'
 }

@@ -6,14 +6,6 @@ repositories {
     mavenCentral()
 }
 
-tasks.named('bootJar') {
-    enabled = false
-}
-
-tasks.named('jar') {
-    enabled = true
-}
-
 dependencies {
     implementation project(':token')
     implementation project(':common')
@@ -26,8 +18,4 @@ test {
 }
 kotlin {
     jvmToolchain(21)
-}
-
-springBoot {
-    mainClass = 'lexer.LexerServiceApplication'
 }

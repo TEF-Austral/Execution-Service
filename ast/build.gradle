@@ -7,14 +7,6 @@ repositories {
     mavenCentral()
 }
 
-tasks.named('bootJar') {
-    enabled = false
-}
-
-tasks.named('jar') {
-    enabled = true
-}
-
 dependencies {
     implementation project(':token')
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
@@ -25,8 +17,4 @@ test {
 }
 kotlin {
     jvmToolchain(21)
-}
-
-springBoot {
-    mainClass = 'ast.AstServiceApplication'
 }
