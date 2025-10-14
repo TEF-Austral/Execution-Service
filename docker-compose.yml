@@ -3,7 +3,8 @@ services:
     container_name: "execution-service-api"
     build:
       context: .
-      dockerfile: Dockerfile.multi
+      dockerfile: Dockerfile
+    image: ghcr.io/tef-austral/execution-api:latest
     ports:
       - 8003:8080
     env_file:
