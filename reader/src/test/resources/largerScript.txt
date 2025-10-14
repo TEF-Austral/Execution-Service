@@ -1,0 +1,14 @@
+let a = 20;
+let b = 30;
+let sum = a + b;
+let subtract = b - a;
+let multiply = a * b;
+let divide = b / a;
+println(sum);
+println(subtract);
+println(multiply);
+println(divide);
+return sum;
+return subtract;
+return multiply;
+return divide;
