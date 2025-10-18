@@ -1,7 +1,0 @@
-FROM gradle:8.5.0-jdk21-alpine
-
-COPY . /home/gradle/src
-WORKDIR /home/gradle/src
-RUN gradle build --no-daemon
-EXPOSE 8080
-ENTRYPOINT ["java","-jar", "/home/gradle/src/build/libs/Execution-Service-1.1.2.jar"]
