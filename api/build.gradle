@@ -9,6 +9,12 @@ repositories {
 dependencies {
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation project(':interpreter')
+    implementation project(':lexer')
+    implementation project(':parser')
+    implementation project(':ast')
+    implementation project(':common')
+    implementation project(':token')
 }
 
 tasks.named('bootJar') {
