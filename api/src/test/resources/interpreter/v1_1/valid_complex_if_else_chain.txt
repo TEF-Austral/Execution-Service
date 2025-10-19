@@ -1,0 +1,11 @@
+let score: number = 85;
+if (score >= 90) {
+    println("A grade");
+} else {
+    if (score >= 80) {
+        println("B grade");
+    } else {
+        println("C grade or below");
+    }
+}
+

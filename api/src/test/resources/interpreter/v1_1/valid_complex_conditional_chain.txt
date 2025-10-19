@@ -1,0 +1,19 @@
+let score: number = 85;
+if (score >= 95) {
+    println("Excellent");
+} else {
+    if (score >= 85) {
+        println("Very Good");
+    } else {
+        if (score >= 75) {
+            println("Good");
+        } else {
+            if (score >= 65) {
+                println("Fair");
+            } else {
+                println("Needs Improvement");
+            }
+        }
+    }
+}
+

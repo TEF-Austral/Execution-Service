@@ -1,0 +1,4 @@
+const x: number = 5;
+const y: number = x + 1;
+x = y;
+

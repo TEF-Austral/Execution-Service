@@ -1,0 +1,5 @@
+let x: number = 5;
+let y: number = 3;
+let result: number = x * y + 2;
+println(result);
+

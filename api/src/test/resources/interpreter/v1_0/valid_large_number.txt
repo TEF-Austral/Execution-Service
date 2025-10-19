@@ -1,0 +1,3 @@
+let big: number = 9999999999;
+println(big);
+

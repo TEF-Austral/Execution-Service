@@ -1,0 +1,4 @@
+if (readEnv("PATH")) {
+    println("path exists");
+}
+

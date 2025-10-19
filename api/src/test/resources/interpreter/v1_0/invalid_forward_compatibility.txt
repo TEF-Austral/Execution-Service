@@ -1,0 +1,7 @@
+let x: number = 5;
+const y: number = 10;
+if (x < y) {
+    println("x is smaller");
+}
+let input: string = readInput("Enter value: ");
+

@@ -1,0 +1,2 @@
+let env: string = readEnv();
+

@@ -10,9 +10,11 @@ import org.springframework.stereotype.Repository
 class MockExecutionRepository : ExecutionRepository {
     private val snippets = mutableMapOf<Long, Snippet>()
     private val tests = mutableMapOf<Long, Test>()
+    private var snippetIdCounter = 1L
+    private var testIdCounter = 1L
 
     override fun saveSnippet(snippet: Snippet): Snippet {
-        val id = snippet.id
+        val id = snippetIdCounter++
         val savedSnippet = snippet.copy(id = id)
         snippets[id] = savedSnippet
         return savedSnippet
@@ -33,7 +35,7 @@ class MockExecutionRepository : ExecutionRepository {
     }
 
     override fun saveTest(test: Test): Test {
-        val id = test.id
+        val id = testIdCounter++
         val savedTest = test.copy(id = id)
         tests[id] = savedTest
         return savedTest
@@ -43,4 +45,11 @@ class MockExecutionRepository : ExecutionRepository {
         tests.values.filter {
             it.snippet.id == snippetId
         }
+
+    fun clear() {
+        snippets.clear()
+        tests.clear()
+        snippetIdCounter = 1L
+        testIdCounter = 1L
+    }
 }

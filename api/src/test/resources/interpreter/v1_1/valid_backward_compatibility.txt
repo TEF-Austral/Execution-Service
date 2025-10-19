@@ -1,0 +1,6 @@
+let x: number = 5;
+let y: string = "Hello";
+println(x + " " + y);
+let result: number = x * 2;
+println(result);
+

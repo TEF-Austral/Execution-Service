@@ -1,0 +1,2 @@
+let input: number = readInput("Enter number");
+

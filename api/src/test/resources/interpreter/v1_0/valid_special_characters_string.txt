@@ -1,0 +1,3 @@
+let special: string = "Hello\nWorld\t!";
+println(special);
+

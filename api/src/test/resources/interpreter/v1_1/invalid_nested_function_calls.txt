@@ -1,0 +1,2 @@
+let input1: string = readInput(readInput("Enter prompt: "));
+

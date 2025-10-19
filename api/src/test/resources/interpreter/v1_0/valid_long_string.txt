@@ -1,0 +1,3 @@
+let longString: string = "This is a very long string that contains multiple words and should test the parser's ability to handle longer text content without any issues";
+println(longString);
+

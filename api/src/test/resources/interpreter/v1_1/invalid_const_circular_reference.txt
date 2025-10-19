@@ -1,0 +1,3 @@
+const a: number = b + 1;
+const b: number = a + 1;
+

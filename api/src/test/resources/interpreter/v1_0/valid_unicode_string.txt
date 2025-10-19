@@ -1,0 +1,3 @@
+let unicode: string = "Hello 世界 🌍 café naïve résumé";
+println(unicode);
+

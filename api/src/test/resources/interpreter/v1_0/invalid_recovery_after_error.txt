@@ -1,0 +1,5 @@
+let x: number = 5;
+invalid syntax here
+let y: number = 10;
+println(y);
+

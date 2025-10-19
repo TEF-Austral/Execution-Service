@@ -1,0 +1,5 @@
+let flag: boolean = true;
+if (flag) {
+    println("flag is true");
+}
+
