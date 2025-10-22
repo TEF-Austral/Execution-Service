@@ -18,11 +18,13 @@ data class Snippet(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
-    val id: Long,
+    val id: Long = 0,
     @Column(nullable = false)
     val name: String,
-    @Column(nullable = false, columnDefinition = "TEXT")
-    val content: String,
+    @Column(nullable = false)
+    val snippetInBucket: Long,
+    @Column(nullable = false, name = "owner_id")
+    val ownerId: String,
     @Column
     val deletedAt: LocalDateTime? = null,
     @Enumerated(EnumType.STRING)
