@@ -6,13 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface SnippetRepository : JpaRepository<Snippet, Long> {
-    fun findByDeletedAtIsNull(): List<Snippet>
-
-    fun findByIdAndDeletedAtIsNull(id: Long): Snippet?
-}
-
-@Repository
 interface TestRepository : JpaRepository<Test, Long> {
     fun findBySnippetId(snippetId: Long): List<Test>
 }
@@ -25,12 +18,7 @@ class PostgresExecutionRepository(
 
     override fun saveSnippet(snippet: Snippet): Snippet = snippetRepository.save(snippet)
 
-    override fun findAllSnippets(): List<Snippet> = snippetRepository.findByDeletedAtIsNull()
-
     override fun findSnippetById(id: Long): Snippet? = snippetRepository.findById(id).orElse(null)
-
-    override fun findSnippetByIdNotDeleted(id: Long): Snippet? =
-        snippetRepository.findByIdAndDeletedAtIsNull(id)
 
     override fun deleteSnippet(snippet: Snippet): Snippet = snippetRepository.save(snippet)
 
