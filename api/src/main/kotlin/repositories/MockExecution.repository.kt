@@ -20,14 +20,7 @@ class MockExecutionRepository : ExecutionRepository {
         return savedSnippet
     }
 
-    override fun findAllSnippets(): List<Snippet> = snippets.values.filter { it.deletedAt == null }
-
     override fun findSnippetById(id: Long): Snippet? = snippets[id]
-
-    override fun findSnippetByIdNotDeleted(id: Long): Snippet? =
-        snippets[id]?.takeIf {
-            it.deletedAt == null
-        }
 
     override fun deleteSnippet(snippet: Snippet): Snippet {
         snippet.id.let { snippets[it] = snippet }
