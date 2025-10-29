@@ -1,3 +1,4 @@
+# api/src/main/resources/application.yml
 spring:
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:formatter-db}
@@ -12,6 +13,11 @@ spring:
     hibernate:
       ddl-auto: update
 
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+
 management:
   endpoints:
     web:
@@ -20,3 +26,10 @@ management:
   endpoint:
     health:
       show-details: always
+
+redis:
+  stream:
+    snippet:
+      key: snippet-events
+  consumer:
+    group: printscript-service
