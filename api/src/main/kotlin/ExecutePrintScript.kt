@@ -1,23 +1,23 @@
-//package api
+package api
 //
-//import TokenStream
-//import api.dtos.ExecutionResult
-//import builder.DefaultNodeBuilder
-//import factory.DefaultInterpreterFactory.createInterpreter
-//import factory.DefaultLexerFactory
-//import factory.StringSplitterFactory
-//import factory.StringToTokenConverterFactory
-//import parser.factory.DefaultParserFactory
-//import parser.result.FinalResult
-//import parser.stream.ParserAstStream
-//import stream.token.LexerTokenStream
-//import transformer.StringToPrintScriptVersion
-//import type.Version
-//import java.io.InputStream
-//import java.io.InputStreamReader
-//import java.nio.charset.StandardCharsets
+// import TokenStream
+// import api.dtos.ExecutionResult
+// import builder.DefaultNodeBuilder
+// import factory.DefaultInterpreterFactory.createInterpreter
+// import factory.DefaultLexerFactory
+// import factory.StringSplitterFactory
+// import factory.StringToTokenConverterFactory
+// import parser.factory.DefaultParserFactory
+// import parser.result.FinalResult
+// import parser.stream.ParserAstStream
+// import stream.token.LexerTokenStream
+// import transformer.StringToPrintScriptVersion
+// import type.Version
+// import java.io.InputStream
+// import java.io.InputStreamReader
+// import java.nio.charset.StandardCharsets
 //
-//class ExecutePrintScript : ExecuteLanguage {
+// class ExecutePrintScript : ExecuteLanguage {
 //    override fun execute(
 //        code: String,
 //        version: String,
@@ -66,4 +66,6 @@
 //
 //    private fun transform(version: String): Version =
 //        StringToPrintScriptVersion().transform(version)
-//}
+// }
+
+class ExecutePrintScript

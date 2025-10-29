@@ -1,10 +1,12 @@
-//package api
+package api
 //
-//import api.dtos.ExecutionResult
+// import api.dtos.ExecutionResult
 //
-//interface ExecuteLanguage {
+// interface ExecuteLanguage {
 //    fun execute(
 //        code: String,
 //        version: String,
 //    ): ExecutionResult
-//}
+// }
+
+class ExecuteLanguage
