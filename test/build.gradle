@@ -1,0 +1,33 @@
+plugins {
+    id 'buildlogic.kotlin-common-conventions'
+    id 'application'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+    testImplementation 'junit:junit:4.13.2'
+}
+
+application {
+    mainClass = 'MainKt'
+}
+
+run {
+    standardInput = System.in
+    if (project.hasProperty('args')) {
+        args project.property('args').split(' ')
+    }
+}
+
+test {
+    useJUnitPlatform()
+    workingDir = project.projectDir
+}
+
+kotlin {
+    jvmToolchain(18)
+}
