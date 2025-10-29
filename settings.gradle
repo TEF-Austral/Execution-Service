@@ -14,4 +14,6 @@ plugins {
 
 rootProject.name = 'execution-service'
 
-include('common', 'interpreter', 'token', 'ast', 'lexer', 'reader', 'api', 'parser')
+include('test','execution','analyzer','formatter')
+
+
