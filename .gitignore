@@ -11,6 +11,9 @@ build
 /*.iml
 
 
+.gradle/
+build/
+
 # Containers and deployment
 /docker-compose.override.yml
 /docker-compose.local.yml
