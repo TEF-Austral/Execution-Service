@@ -7,18 +7,18 @@ repositories {
 }
 
 dependencies {
-    testImplementation 'org.jetbrains.kotlin:kotlin-test'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-reactor'
+    implementation 'io.projectreactor:reactor-core'
+    implementation 'jakarta.annotation:jakarta.annotation-api:2.1.1'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
 }
 
 tasks.named('bootJar') {
-    enabled = true
+    enabled = false
 }
 
 tasks.named('jar') {
-    enabled = false
+    enabled = true
 }
 
 test {
@@ -27,8 +27,4 @@ test {
 
 kotlin {
     jvmToolchain(21)
-}
-
-springBoot {
-    mainClass = 'api.ExecutionServiceApplicationKt'
 }
