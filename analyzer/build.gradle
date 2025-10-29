@@ -12,10 +12,6 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
 }
 
-application {
-    mainClass = 'MainKt'
-}
-
 run {
     standardInput = System.in
     if (project.hasProperty('args')) {

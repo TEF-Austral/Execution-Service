@@ -30,5 +30,5 @@ kotlin {
 }
 
 springBoot {
-    mainClass = 'api.ExecutionServiceApplicationKt'
+    mainClass = 'api.PrintScriptServiceApplicationKt'
 }
