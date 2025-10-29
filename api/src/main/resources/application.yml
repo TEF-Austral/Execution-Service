@@ -12,6 +12,17 @@ spring:
     generate-ddl: true
     hibernate:
       ddl-auto: update
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AUTH0_ISSUER_URI}
+auth0:
+  audience: ${AUTH0_AUDIENCE}
+
+services:
+  authorization:
+    url: ${AUTHORIZATION_SERVICE_URL}
 
   data:
     redis:
