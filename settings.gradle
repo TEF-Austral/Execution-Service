@@ -14,4 +14,4 @@ plugins {
 
 rootProject.name = 'printscript-service'
 
-include('test','execution','analyzer','formatter','consumer','api')
+include('test','execution','validation','formatter','consumer','api')
