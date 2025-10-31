@@ -4,5 +4,5 @@ import dtos.LintViolationDTO
 
 data class AnalyzeResponseDTO(
     val isValid: Boolean,
-    val violations: List<LintViolationDTO>
+    val violations: List<LintViolationDTO>,
 )

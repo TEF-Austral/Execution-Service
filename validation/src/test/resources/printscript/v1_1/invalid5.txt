@@ -1,0 +1,6 @@
+if (1) {
+  println("no";
+} else {
+  println("ok");
+}
+

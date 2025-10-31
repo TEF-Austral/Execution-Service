@@ -14,7 +14,10 @@ import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
 
 object ParserFactory {
-    fun parse(src: InputStream, version: String): ParserInterface {
+    fun parse(
+        src: InputStream,
+        version: String,
+    ): ParserInterface {
         val reader = BufferedReader(InputStreamReader(src, StandardCharsets.UTF_8))
         val lexerFactory = DefaultLexerFactory(StringSplitterFactory, StringToTokenConverterFactory)
         val adaptedVersion = StringToPrintScriptVersion().transform(version)

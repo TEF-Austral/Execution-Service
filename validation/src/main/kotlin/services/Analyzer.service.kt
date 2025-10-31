@@ -12,34 +12,40 @@ import java.io.InputStream
 
 @Service
 class AnalyzerService(
-    private val getAnalyzerConfig: GetAnalyzerConfig
+    private val getAnalyzerConfig: GetAnalyzerConfig,
 ) {
 
-    fun validate(src: InputStream, version: String, userId: String?): ValidationResultDTO {
+    fun validate(
+        src: InputStream,
+        version: String,
+        userId: String?,
+    ): ValidationResultDTO {
         return try {
             val parser = ParserFactory.parse(src, version)
             val result = parser.parse()
 
             if (!result.isSuccess()) {
-                val position = result.getParser().peak()?.getCoordinates()
-                    ?: coordinates.UnassignedPosition()
+                val position =
+                    result.getParser().peak()?.getCoordinates()
+                        ?: coordinates.UnassignedPosition()
 
                 return ValidationResultDTO.Invalid(
                     listOf(
                         LintViolationDTO(
                             message = result.message(),
                             line = position.getRow(),
-                            column = position.getColumn()
-                        )
-                    )
+                            column = position.getColumn(),
+                        ),
+                    ),
                 )
             }
 
             val analyzerConfig = getAnalyzerConfig.getUserConfig(userId)
-            val analyzer = createAnalyzer(
-                StringToPrintScriptVersion().transform(version),
-                analyzerConfig
-            )
+            val analyzer =
+                createAnalyzer(
+                    StringToPrintScriptVersion().transform(version),
+                    analyzerConfig,
+                )
 
             val diagnostics = analyzer.analyze(result)
 
@@ -54,19 +60,17 @@ class AnalyzerService(
                     LintViolationDTO(
                         message = "Unexpected error: ${e.message}",
                         line = -1,
-                        column = -1
-                    )
-                )
+                        column = -1,
+                    ),
+                ),
             )
         }
     }
 
-    private fun Diagnostic.toViolation(): LintViolationDTO {
-        return LintViolationDTO(
+    private fun Diagnostic.toViolation(): LintViolationDTO =
+        LintViolationDTO(
             message = this.message,
             line = this.position.getRow(),
-            column = this.position.getColumn()
+            column = this.position.getColumn(),
         )
-    }
 }
-

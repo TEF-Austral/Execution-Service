@@ -1,0 +1,1 @@
+x = readInput(let x = 5);

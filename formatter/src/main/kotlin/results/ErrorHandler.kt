@@ -1,4 +1,0 @@
-package results
-
-class ErrorHandler {
-}

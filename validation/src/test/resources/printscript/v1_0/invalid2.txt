@@ -1,0 +1,4 @@
+let x: string = "123";
+let y: string = "123";
+println(x+y);
+

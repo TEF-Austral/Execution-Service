@@ -7,9 +7,17 @@ pluginManagement {
     }
 }
 
-
 plugins {
     id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
+}
+
+def envFile = new File(rootDir, '.env')
+if (envFile.exists()) {
+    def env = new Properties()
+    envFile.withInputStream { env.load(it) }
+    env.each { key, value ->
+        System.setProperty(key.toString(), value.toString())
+    }
 }
 
 rootProject.name = 'printscript-service'

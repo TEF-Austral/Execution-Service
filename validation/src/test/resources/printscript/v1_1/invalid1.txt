@@ -1,0 +1,3 @@
+let flag: string = "no";
+println(flag + "yes");
+
