@@ -1,32 +1,25 @@
 package services
 
 import diagnostic.Diagnostic
-import dtos.LintViolationDTO
-import dtos.ValidationResultDTO
 import factory.AnalyzerFactory.createAnalyzer
-import helpers.GetAnalyzerConfig
-import helpers.ParserFactory
+import helpers.InputStreamToAnalyzerConfig
+import helpers.LexerFactory
 import transformer.StringToPrintScriptVersion
-import org.springframework.stereotype.Service
 import java.io.InputStream
 
-@Service
-class AnalyzerService(
-    private val getAnalyzerConfig: GetAnalyzerConfig
-) {
+class AnalyzerService {
 
-    fun validate(src: InputStream, version: String, userId: String?): ValidationResultDTO {
+    fun validate(src: InputStream, version: String, config: InputStream): ValidationResult {
         return try {
-            val parser = ParserFactory.parse(src, version)
+            val parser = LexerFactory.parse(src, version)
             val result = parser.parse()
-
             if (!result.isSuccess()) {
                 val position = result.getParser().peak()?.getCoordinates()
                     ?: coordinates.UnassignedPosition()
 
-                return ValidationResultDTO.Invalid(
+                return ValidationResult.Invalid(
                     listOf(
-                        LintViolationDTO(
+                        LintViolation(
                             message = result.message(),
                             line = position.getRow(),
                             column = position.getColumn()
@@ -35,23 +28,23 @@ class AnalyzerService(
                 )
             }
 
-            val analyzerConfig = getAnalyzerConfig.getUserConfig(userId)
-            val analyzer = createAnalyzer(
+            val analyzerConfig = InputStreamToAnalyzerConfig.adapt(config)
+            val linter = createAnalyzer(
                 StringToPrintScriptVersion().transform(version),
                 analyzerConfig
             )
 
-            val diagnostics = analyzer.analyze(result)
+            val diagnostics = linter.analyze(result)
 
             if (diagnostics.isEmpty()) {
-                ValidationResultDTO.Valid
+                ValidationResult.Valid
             } else {
-                ValidationResultDTO.Invalid(diagnostics.map { it.toViolation() })
+                ValidationResult.Invalid(diagnostics.map { it.toViolation() })
             }
         } catch (e: Exception) {
-            ValidationResultDTO.Invalid(
+            ValidationResult.Invalid(
                 listOf(
-                    LintViolationDTO(
+                    LintViolation(
                         message = "Unexpected error: ${e.message}",
                         line = -1,
                         column = -1
@@ -61,8 +54,8 @@ class AnalyzerService(
         }
     }
 
-    private fun Diagnostic.toViolation(): LintViolationDTO {
-        return LintViolationDTO(
+    private fun Diagnostic.toViolation(): LintViolation {
+        return LintViolation(
             message = this.message,
             line = this.position.getRow(),
             column = this.position.getColumn()
@@ -70,3 +63,13 @@ class AnalyzerService(
     }
 }
 
+sealed class ValidationResult {
+    object Valid : ValidationResult()
+    data class Invalid(val violations: List<LintViolation>) : ValidationResult()
+}
+
+data class LintViolation(
+    val message: String,
+    val line: Int,
+    val column: Int
+)
