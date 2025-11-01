@@ -1,4 +1,4 @@
-package api.component
+package component
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpEntity

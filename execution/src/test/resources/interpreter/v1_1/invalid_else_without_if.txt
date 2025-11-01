@@ -1,5 +1,0 @@
-let x: number = 5;
-else {
-    println("else block");
-}
-

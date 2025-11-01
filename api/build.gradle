@@ -9,6 +9,7 @@ repositories {
 dependencies {
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
     implementation project(':validation')
+    implementation project(':execution')
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-reactor'

@@ -1,2 +1,0 @@
-let env: string = readEnv("PATH", "extra");
-

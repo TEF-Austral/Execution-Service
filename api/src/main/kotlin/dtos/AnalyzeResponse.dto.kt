@@ -1,6 +1,4 @@
-package api.dtos
-
-import dtos.LintViolationDTO
+package dtos
 
 data class AnalyzeResponseDTO(
     val isValid: Boolean,

@@ -1,0 +1,7 @@
+let x: boolean = true;
+if (x) {
+  println("yes");
+} else {
+  println("no");
+}
+

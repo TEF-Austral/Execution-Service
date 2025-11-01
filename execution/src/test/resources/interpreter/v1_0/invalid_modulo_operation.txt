@@ -1,2 +1,0 @@
-let result: number = 10 % 3;
-

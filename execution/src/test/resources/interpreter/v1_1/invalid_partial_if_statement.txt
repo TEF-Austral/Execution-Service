@@ -1,5 +1,0 @@
-let condition: boolean = true;
-if (condition)
-    println("missing braces");
-let x: number = 5;
-

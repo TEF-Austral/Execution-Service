@@ -2,6 +2,12 @@ plugins {
     id 'groovy-gradle-plugin'
 }
 
+def envFile = new File(rootDir.parentFile, '.env')
+def envProps = new Properties()
+if (envFile.exists()) {
+    envFile.withInputStream { envProps.load(it) }
+}
+
 repositories {
     mavenLocal()
     gradlePluginPortal()
@@ -11,8 +17,8 @@ repositories {
         name = "GitHubPackages"
         url = uri("https://maven.pkg.github.com/tef-austral/printscript")
         credentials {
-            username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
-            password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+            username = envProps.getProperty('USERNAME') ?: System.getenv("USERNAME")
+            password = envProps.getProperty('TOKEN') ?: System.getenv("TOKEN")
         }
     }
 }

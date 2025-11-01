@@ -1,7 +1,7 @@
-package api.controllers
+package controllers
 
-import api.component.AssetServiceClient
-import api.dtos.AnalyzeResponseDTO
+import component.AssetServiceClient
+import dtos.AnalyzeResponseDTO
 import dtos.ValidationResultDTO
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping

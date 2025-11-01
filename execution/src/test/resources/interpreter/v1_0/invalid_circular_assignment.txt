@@ -1,3 +1,0 @@
-let x: number = y + 1;
-let y: number = x + 1;
-
