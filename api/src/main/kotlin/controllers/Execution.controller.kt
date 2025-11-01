@@ -37,7 +37,7 @@ class ExecutionController(
     }
 
     @PostMapping
-    fun executeInteractive(
+    fun execute(
         @RequestBody request: InteractiveExecutionRequestDTO,
     ): ResponseEntity<ExecutionResponseDTO> {
         val assetContent = assetServiceClient.getAsset(request.container, request.key)
