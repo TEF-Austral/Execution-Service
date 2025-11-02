@@ -1,6 +1,6 @@
 package services
 
-import dtos.FormatConfigDTO
+import dtos.FormatterRuleDTO
 import entities.FormatterConfigEntity
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -32,8 +32,12 @@ class FormatterConfigServiceTest {
 
         val result = service.getConfig(userId)
 
-        assertEquals(true, result.spaceBeforeColon)
-        assertEquals(2, result.indentSize)
+        assertNotNull(result)
+        val spaceBeforeColonRule = result.find { it.id == "spaceBeforeColon" }
+        val indentSizeRule = result.find { it.id == "indentSize" }
+
+        assertEquals(true, spaceBeforeColonRule?.value)
+        assertEquals(2, indentSizeRule?.value)
         verify(repository).findByUserId(userId)
     }
 
@@ -55,29 +59,56 @@ class FormatterConfigServiceTest {
     fun `updateConfig should update existing config`() {
         val userId = "user123"
         val existingEntity = FormatterConfigEntity(id = 1, userId = userId)
-        val newConfig = FormatConfigDTO(indentSize = 2, spaceBeforeColon = true)
+        val newConfig =
+            listOf(
+                FormatterRuleDTO(
+                    id = "indentSize",
+                    name = "Indent Size",
+                    isActive = true,
+                    value = 2,
+                ),
+                FormatterRuleDTO(
+                    id = "spaceBeforeColon",
+                    name = "Space Before Colon",
+                    isActive = true,
+                    value = true,
+                ),
+            )
 
         `when`(repository.findByUserId(userId)).thenReturn(Optional.of(existingEntity))
         `when`(repository.save(any())).thenAnswer { it.arguments[0] }
 
         val result = service.updateConfig(userId, newConfig)
 
-        assertEquals(2, result.indentSize)
-        assertEquals(true, result.spaceBeforeColon)
-        verify(repository).save(any())
+        val indentSizeRule = result.find { it.id == "indentSize" }
+        val spaceBeforeColonRule = result.find { it.id == "spaceBeforeColon" }
+
+        assertEquals(2, indentSizeRule?.value)
+        assertEquals(true, spaceBeforeColonRule?.value)
+        verify(repository)
+            .save(any())
     }
 
     @Test
     fun `updateConfig should create new config when not exists`() {
         val userId = "newuser"
-        val newConfig = FormatConfigDTO(indentSize = 8)
+        val newConfig =
+            listOf(
+                FormatterRuleDTO(
+                    id = "indentSize",
+                    name = "Indent Size",
+                    isActive = true,
+                    value = 8,
+                ),
+            )
 
         `when`(repository.findByUserId(userId)).thenReturn(Optional.empty())
         `when`(repository.save(any())).thenAnswer { it.arguments[0] }
 
         val result = service.updateConfig(userId, newConfig)
 
-        assertEquals(8, result.indentSize)
+        val indentSizeRule = result.find { it.id == "indentSize" }
+        assertEquals(8, indentSizeRule?.value)
         verify(repository).save(any())
     }
 }

@@ -1,7 +1,7 @@
 package services
 
 import checkers.IdentifierStyle
-import dtos.RuleDTO
+import dtos.AnalyzerRuleDTO
 import entities.AnalyzerEntity
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -102,10 +102,15 @@ class AnalyzerConfigServiceTest {
 
         val rules =
             listOf(
-                RuleDTO("identifierStyle", "Identifier Style", true, "SNAKE_CASE"),
-                RuleDTO("restrictPrintlnArgs", "Restrict Println Arguments", true, null),
-                RuleDTO("restrictReadInputArgs", "Restrict Read Input Arguments", false, null),
-                RuleDTO("noReadInput", "No Read Input", false, null),
+                AnalyzerRuleDTO("identifierStyle", "Identifier Style", true, "SNAKE_CASE"),
+                AnalyzerRuleDTO("restrictPrintlnArgs", "Restrict Println Arguments", true, null),
+                AnalyzerRuleDTO(
+                    "restrictReadInputArgs",
+                    "Restrict Read Input Arguments",
+                    false,
+                    null,
+                ),
+                AnalyzerRuleDTO("noReadInput", "No Read Input", false, null),
             )
 
         val expectedEntity =
@@ -142,10 +147,15 @@ class AnalyzerConfigServiceTest {
 
         val rules =
             listOf(
-                RuleDTO("identifierStyle", "Identifier Style", true, "CAMEL_CASE"),
-                RuleDTO("restrictPrintlnArgs", "Restrict Println Arguments", false, null),
-                RuleDTO("restrictReadInputArgs", "Restrict Read Input Arguments", true, null),
-                RuleDTO("noReadInput", "No Read Input", true, null),
+                AnalyzerRuleDTO("identifierStyle", "Identifier Style", true, "CAMEL_CASE"),
+                AnalyzerRuleDTO("restrictPrintlnArgs", "Restrict Println Arguments", false, null),
+                AnalyzerRuleDTO(
+                    "restrictReadInputArgs",
+                    "Restrict Read Input Arguments",
+                    true,
+                    null,
+                ),
+                AnalyzerRuleDTO("noReadInput", "No Read Input", true, null),
             )
 
         val updatedEntity =
@@ -191,10 +201,15 @@ class AnalyzerConfigServiceTest {
 
         val rules =
             listOf(
-                RuleDTO("identifierStyle", "Identifier Style", false, "CAMEL_CASE"),
-                RuleDTO("restrictPrintlnArgs", "Restrict Println Arguments", true, null),
-                RuleDTO("restrictReadInputArgs", "Restrict Read Input Arguments", false, null),
-                RuleDTO("noReadInput", "No Read Input", false, null),
+                AnalyzerRuleDTO("identifierStyle", "Identifier Style", false, "CAMEL_CASE"),
+                AnalyzerRuleDTO("restrictPrintlnArgs", "Restrict Println Arguments", true, null),
+                AnalyzerRuleDTO(
+                    "restrictReadInputArgs",
+                    "Restrict Read Input Arguments",
+                    false,
+                    null,
+                ),
+                AnalyzerRuleDTO("noReadInput", "No Read Input", false, null),
             )
 
         val updatedEntity =
@@ -221,10 +236,15 @@ class AnalyzerConfigServiceTest {
 
         val rules =
             listOf(
-                RuleDTO("identifierStyle", "Identifier Style", true, "INVALID_STYLE"),
-                RuleDTO("restrictPrintlnArgs", "Restrict Println Arguments", true, null),
-                RuleDTO("restrictReadInputArgs", "Restrict Read Input Arguments", false, null),
-                RuleDTO("noReadInput", "No Read Input", false, null),
+                AnalyzerRuleDTO("identifierStyle", "Identifier Style", true, "INVALID_STYLE"),
+                AnalyzerRuleDTO("restrictPrintlnArgs", "Restrict Println Arguments", true, null),
+                AnalyzerRuleDTO(
+                    "restrictReadInputArgs",
+                    "Restrict Read Input Arguments",
+                    false,
+                    null,
+                ),
+                AnalyzerRuleDTO("noReadInput", "No Read Input", false, null),
             )
 
         val savedEntity =
@@ -259,7 +279,7 @@ class AnalyzerConfigServiceTest {
 
         val rules =
             listOf(
-                RuleDTO("noReadInput", "No Read Input", true, null),
+                AnalyzerRuleDTO("noReadInput", "No Read Input", true, null),
             )
 
         val updatedEntity =
@@ -282,9 +302,9 @@ class AnalyzerConfigServiceTest {
     }
 
     @Test
-    fun `RuleDTO should be created correctly`() {
+    fun `AnalyzerRuleDTO should be created correctly`() {
         val rule =
-            RuleDTO(
+            AnalyzerRuleDTO(
                 id = "testId",
                 name = "Test Rule",
                 isActive = true,
@@ -298,9 +318,9 @@ class AnalyzerConfigServiceTest {
     }
 
     @Test
-    fun `RuleDTO should handle null value`() {
+    fun `AnalyzerRuleDTO should handle null value`() {
         val rule =
-            RuleDTO(
+            AnalyzerRuleDTO(
                 id = "testId",
                 name = "Test Rule",
                 isActive = false,

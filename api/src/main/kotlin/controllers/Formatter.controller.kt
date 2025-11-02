@@ -31,7 +31,6 @@ class FormatterController(
 
         val formattedContent = formatterService.format(inputStream, version, config)
 
-        // Update the asset with the formatted content
         assetServiceClient.createOrUpdateAsset(container, key, formattedContent)
 
         return ResponseEntity.ok(formattedContent)

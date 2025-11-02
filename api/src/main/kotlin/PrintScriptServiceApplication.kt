@@ -8,7 +8,10 @@ import org.springframework.boot.autoconfigure.domain.EntityScan
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 
 @SpringBootApplication(
-    scanBasePackages = ["api", "services", "repositories", "helpers", "config", "dtos", "entities"],
+    scanBasePackages = [
+        "api", "component", "services",
+        "repositories", "helpers", "config", "dtos", "entities",
+    ],
 )
 @EnableJpaRepositories(basePackages = ["repositories"])
 @EntityScan(basePackages = ["entities"])

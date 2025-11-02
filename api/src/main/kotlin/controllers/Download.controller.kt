@@ -22,22 +22,6 @@ class DownloadController(
     private val formatterService: FormatterService,
     private val formatterConfigService: FormatterConfigService,
 ) {
-
-    @GetMapping("/original")
-    fun downloadOriginal(
-        @RequestParam("container") container: String,
-        @RequestParam("key") key: String,
-    ): ResponseEntity<Resource> {
-        val content = assetServiceClient.getAsset(container, key)
-        val resource = ByteArrayResource(content.toByteArray(StandardCharsets.UTF_8))
-
-        return ResponseEntity
-            .ok()
-            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"snippet.ps\"")
-            .contentType(MediaType.TEXT_PLAIN)
-            .body(resource)
-    }
-
     @GetMapping("/formatted")
     fun downloadFormatted(
         @RequestParam("container") container: String,
@@ -46,7 +30,8 @@ class DownloadController(
         @RequestParam("userId") userId: String,
     ): ResponseEntity<Resource> {
         val content = assetServiceClient.getAsset(container, key)
-        val config = formatterConfigService.getConfig(userId)
+        val rules = formatterConfigService.getConfig(userId)
+        val config = formatterConfigService.rulesToConfigDTO(rules)
 
         val inputStream = ByteArrayInputStream(content.toByteArray(StandardCharsets.UTF_8))
         val formattedContent = formatterService.format(inputStream, version, config)
