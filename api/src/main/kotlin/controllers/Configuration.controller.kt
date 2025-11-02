@@ -38,14 +38,14 @@ class ConfigurationController(
         return ResponseEntity.ok(updatedRules)
     }
 
-    @GetMapping("/formatter")
+    @GetMapping("/format")
     fun getFormatterConfig(): ResponseEntity<List<FormatterRuleDTO>> {
         val userId = authenticatedUserProvider.getCurrentUserId()
         val rules = formatterConfigService.getConfig(userId)
         return ResponseEntity.ok(rules)
     }
 
-    @PutMapping("/formatter")
+    @PutMapping("/format")
     fun updateFormatterConfig(
         @RequestBody request: UpdateFormatterConfigRequestDTO,
     ): ResponseEntity<List<FormatterRuleDTO>> {
