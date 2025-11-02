@@ -1,7 +1,7 @@
 package services
 
 import dtos.FormatConfigDTO
-import dtos.RuleDTO
+import dtos.FormatterRuleDTO
 import entities.FormatterConfigEntity
 import org.springframework.stereotype.Service
 import repositories.FormatterConfigRepository
@@ -11,7 +11,7 @@ class FormatterConfigService(
     private val formatterConfigRepository: FormatterConfigRepository,
 ) {
 
-    fun getConfig(userId: String): List<RuleDTO> {
+    fun getConfig(userId: String): List<FormatterRuleDTO> {
         val config =
             formatterConfigRepository
                 .findByUserId(userId)
@@ -25,8 +25,8 @@ class FormatterConfigService(
 
     fun updateConfig(
         userId: String,
-        rules: List<RuleDTO>,
-    ): List<RuleDTO> {
+        rules: List<FormatterRuleDTO>,
+    ): List<FormatterRuleDTO> {
         val existing = formatterConfigRepository.findByUserId(userId)
 
         val configDTO = rulesToConfigDTO(rules)
@@ -61,59 +61,59 @@ class FormatterConfigService(
         return saved.toRules()
     }
 
-    private fun FormatterConfigEntity.toRules(): List<RuleDTO> =
+    private fun FormatterConfigEntity.toRules(): List<FormatterRuleDTO> =
         listOf(
-            RuleDTO(
+            FormatterRuleDTO(
                 id = "spaceBeforeColon",
                 name = "Space Before Colon",
                 isActive = spaceBeforeColon,
-                value = null,
+                value = spaceBeforeColon,
             ),
-            RuleDTO(
+            FormatterRuleDTO(
                 id = "spaceAfterColon",
                 name = "Space After Colon",
                 isActive = spaceAfterColon,
-                value = null,
+                value = spaceAfterColon,
             ),
-            RuleDTO(
+            FormatterRuleDTO(
                 id = "spaceAroundAssignment",
                 name = "Space Around Assignment",
                 isActive = spaceAroundAssignment,
-                value = null,
+                value = spaceAroundAssignment,
             ),
-            RuleDTO(
+            FormatterRuleDTO(
                 id = "blankLinesAfterPrintln",
                 name = "Blank Lines After Println",
                 isActive = true,
                 value = blankLinesAfterPrintln,
             ),
-            RuleDTO(
+            FormatterRuleDTO(
                 id = "indentSize",
                 name = "Indent Size",
                 isActive = true,
                 value = indentSize,
             ),
-            RuleDTO(
+            FormatterRuleDTO(
                 id = "ifBraceOnSameLine",
                 name = "If Brace On Same Line",
                 isActive = ifBraceOnSameLine,
-                value = null,
+                value = ifBraceOnSameLine,
             ),
-            RuleDTO(
+            FormatterRuleDTO(
                 id = "enforceSingleSpace",
                 name = "Enforce Single Space",
                 isActive = enforceSingleSpace,
-                value = null,
+                value = enforceSingleSpace,
             ),
-            RuleDTO(
+            FormatterRuleDTO(
                 id = "spaceAroundOperators",
                 name = "Space Around Operators",
                 isActive = spaceAroundOperators,
-                value = null,
+                value = spaceAroundOperators,
             ),
         )
 
-    private fun rulesToConfigDTO(rules: List<RuleDTO>): FormatConfigDTO =
+    fun rulesToConfigDTO(rules: List<FormatterRuleDTO>): FormatConfigDTO =
         FormatConfigDTO(
             spaceBeforeColon = rules.find { it.id == "spaceBeforeColon" }?.isActive ?: false,
             spaceAfterColon = rules.find { it.id == "spaceAfterColon" }?.isActive ?: true,

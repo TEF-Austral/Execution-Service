@@ -1,6 +1,6 @@
 package dtos
 
-data class RuleDTO(
+data class FormatterRuleDTO(
     val id: String,
     val name: String,
     val isActive: Boolean,

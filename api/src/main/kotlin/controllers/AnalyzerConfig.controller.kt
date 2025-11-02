@@ -1,7 +1,7 @@
 package controllers
 
-import dtos.RuleDTO
-import dtos.UpdateConfigRequestDTO
+import dtos.AnalyzerRuleDTO
+import dtos.UpdateAnalyzerConfigRequestDTO
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PutMapping
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController
 import services.AnalyzerConfigService
 
 @RestController
-@RequestMapping("/config")
+@RequestMapping("/analyze/rules")
 class AnalyzerConfigController(
     private val analyzerConfigService: AnalyzerConfigService,
 ) {
@@ -20,7 +20,7 @@ class AnalyzerConfigController(
     @GetMapping
     fun getConfig(
         @RequestParam("userId") userId: String,
-    ): ResponseEntity<List<RuleDTO>> {
+    ): ResponseEntity<List<AnalyzerRuleDTO>> {
         val rules = analyzerConfigService.getConfig(userId)
         return ResponseEntity.ok(rules)
     }
@@ -28,8 +28,8 @@ class AnalyzerConfigController(
     @PutMapping
     fun updateConfig(
         @RequestParam("userId") userId: String,
-        @RequestBody request: UpdateConfigRequestDTO,
-    ): ResponseEntity<List<RuleDTO>> {
+        @RequestBody request: UpdateAnalyzerConfigRequestDTO,
+    ): ResponseEntity<List<AnalyzerRuleDTO>> {
         val updatedRules = analyzerConfigService.updateConfig(userId, request.rules)
         return ResponseEntity.ok(updatedRules)
     }

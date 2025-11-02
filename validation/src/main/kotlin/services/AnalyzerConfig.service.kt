@@ -1,7 +1,7 @@
 package services
 
 import checkers.IdentifierStyle
-import dtos.RuleDTO
+import dtos.AnalyzerRuleDTO
 import entities.AnalyzerEntity
 import repositories.AnalyzerRepository
 import org.springframework.stereotype.Service
@@ -12,7 +12,7 @@ class AnalyzerConfigService(
     private val analyzerRepository: AnalyzerRepository,
 ) {
 
-    fun getConfig(userId: String): List<RuleDTO> {
+    fun getConfig(userId: String): List<AnalyzerRuleDTO> {
         val entity =
             analyzerRepository.findById(userId).orElse(null)
                 ?: AnalyzerEntity(userId = userId)
@@ -23,8 +23,8 @@ class AnalyzerConfigService(
     @Transactional
     fun updateConfig(
         userId: String,
-        rules: List<RuleDTO>,
-    ): List<RuleDTO> {
+        rules: List<AnalyzerRuleDTO>,
+    ): List<AnalyzerRuleDTO> {
         val currentEntity =
             analyzerRepository.findById(userId).orElse(null)
                 ?: AnalyzerEntity(userId = userId)
@@ -35,27 +35,27 @@ class AnalyzerConfigService(
         return entityToRules(savedEntity)
     }
 
-    private fun entityToRules(entity: AnalyzerEntity): List<RuleDTO> =
+    private fun entityToRules(entity: AnalyzerEntity): List<AnalyzerRuleDTO> =
         listOf(
-            RuleDTO(
+            AnalyzerRuleDTO(
                 id = "identifierStyle",
                 name = "Identifier Style",
                 isActive = entity.identifierStyle != IdentifierStyle.NO_STYLE,
                 value = entity.identifierStyle.name,
             ),
-            RuleDTO(
+            AnalyzerRuleDTO(
                 id = "restrictPrintlnArgs",
                 name = "Restrict Println Arguments",
                 isActive = entity.restrictPrintlnArgs,
                 value = null,
             ),
-            RuleDTO(
+            AnalyzerRuleDTO(
                 id = "restrictReadInputArgs",
                 name = "Restrict Read Input Arguments",
                 isActive = entity.restrictReadInputArgs,
                 value = null,
             ),
-            RuleDTO(
+            AnalyzerRuleDTO(
                 id = "noReadInput",
                 name = "No Read Input",
                 isActive = entity.noReadInput,
@@ -65,7 +65,7 @@ class AnalyzerConfigService(
 
     private fun applyRulesToEntity(
         entity: AnalyzerEntity,
-        rules: List<RuleDTO>,
+        rules: List<AnalyzerRuleDTO>,
     ): AnalyzerEntity {
         var identifierStyle = entity.identifierStyle
         var restrictPrintlnArgs = entity.restrictPrintlnArgs
