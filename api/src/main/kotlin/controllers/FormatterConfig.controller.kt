@@ -1,6 +1,7 @@
 package controllers
 
-import dtos.FormatConfigDTO
+import dtos.RuleDTO
+import dtos.UpdateConfigRequestDTO
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PutMapping
@@ -19,17 +20,17 @@ class FormatterConfigController(
     @GetMapping
     fun getConfig(
         @RequestParam("userId") userId: String,
-    ): ResponseEntity<FormatConfigDTO> {
-        val config = formatterConfigService.getConfig(userId)
-        return ResponseEntity.ok(config)
+    ): ResponseEntity<List<RuleDTO>> {
+        val rules = formatterConfigService.getConfig(userId)
+        return ResponseEntity.ok(rules)
     }
 
     @PutMapping
     fun updateConfig(
         @RequestParam("userId") userId: String,
-        @RequestBody config: FormatConfigDTO,
-    ): ResponseEntity<FormatConfigDTO> {
-        val updatedConfig = formatterConfigService.updateConfig(userId, config)
-        return ResponseEntity.ok(updatedConfig)
+        @RequestBody request: UpdateConfigRequestDTO,
+    ): ResponseEntity<List<RuleDTO>> {
+        val updatedRules = formatterConfigService.updateConfig(userId, request.rules)
+        return ResponseEntity.ok(updatedRules)
     }
 }

@@ -1,6 +1,7 @@
 package services
 
 import dtos.FormatConfigDTO
+import dtos.RuleDTO
 import entities.FormatterConfigEntity
 import org.springframework.stereotype.Service
 import repositories.FormatterConfigRepository
@@ -10,24 +11,25 @@ class FormatterConfigService(
     private val formatterConfigRepository: FormatterConfigRepository,
 ) {
 
-    fun getConfig(userId: String): FormatConfigDTO {
+    fun getConfig(userId: String): List<RuleDTO> {
         val config =
             formatterConfigRepository
                 .findByUserId(userId)
                 .orElseGet {
-                    // Create default config if not exists
                     val defaultConfig = FormatterConfigEntity(userId = userId)
                     formatterConfigRepository.save(defaultConfig)
                 }
 
-        return config.toDTO()
+        return config.toRules()
     }
 
     fun updateConfig(
         userId: String,
-        configDTO: FormatConfigDTO,
-    ): FormatConfigDTO {
+        rules: List<RuleDTO>,
+    ): List<RuleDTO> {
         val existing = formatterConfigRepository.findByUserId(userId)
+
+        val configDTO = rulesToConfigDTO(rules)
 
         val config =
             if (existing.isPresent) {
@@ -56,18 +58,82 @@ class FormatterConfigService(
             }
 
         val saved = formatterConfigRepository.save(config)
-        return saved.toDTO()
+        return saved.toRules()
     }
 
-    private fun FormatterConfigEntity.toDTO() =
+    private fun FormatterConfigEntity.toRules(): List<RuleDTO> =
+        listOf(
+            RuleDTO(
+                id = "spaceBeforeColon",
+                name = "Space Before Colon",
+                isActive = spaceBeforeColon,
+                value = null,
+            ),
+            RuleDTO(
+                id = "spaceAfterColon",
+                name = "Space After Colon",
+                isActive = spaceAfterColon,
+                value = null,
+            ),
+            RuleDTO(
+                id = "spaceAroundAssignment",
+                name = "Space Around Assignment",
+                isActive = spaceAroundAssignment,
+                value = null,
+            ),
+            RuleDTO(
+                id = "blankLinesAfterPrintln",
+                name = "Blank Lines After Println",
+                isActive = true,
+                value = blankLinesAfterPrintln,
+            ),
+            RuleDTO(
+                id = "indentSize",
+                name = "Indent Size",
+                isActive = true,
+                value = indentSize,
+            ),
+            RuleDTO(
+                id = "ifBraceOnSameLine",
+                name = "If Brace On Same Line",
+                isActive = ifBraceOnSameLine,
+                value = null,
+            ),
+            RuleDTO(
+                id = "enforceSingleSpace",
+                name = "Enforce Single Space",
+                isActive = enforceSingleSpace,
+                value = null,
+            ),
+            RuleDTO(
+                id = "spaceAroundOperators",
+                name = "Space Around Operators",
+                isActive = spaceAroundOperators,
+                value = null,
+            ),
+        )
+
+    private fun rulesToConfigDTO(rules: List<RuleDTO>): FormatConfigDTO =
         FormatConfigDTO(
-            spaceBeforeColon = spaceBeforeColon,
-            spaceAfterColon = spaceAfterColon,
-            spaceAroundAssignment = spaceAroundAssignment,
-            blankLinesAfterPrintln = blankLinesAfterPrintln,
-            indentSize = indentSize,
-            ifBraceOnSameLine = ifBraceOnSameLine,
-            enforceSingleSpace = enforceSingleSpace,
-            spaceAroundOperators = spaceAroundOperators,
+            spaceBeforeColon = rules.find { it.id == "spaceBeforeColon" }?.isActive ?: false,
+            spaceAfterColon = rules.find { it.id == "spaceAfterColon" }?.isActive ?: true,
+            spaceAroundAssignment =
+                rules.find { it.id == "spaceAroundAssignment" }?.isActive ?: true,
+            blankLinesAfterPrintln =
+                rules
+                    .find { it.id == "blankLinesAfterPrintln" }
+                    ?.value
+                    ?.toString()
+                    ?.toIntOrNull()
+                    ?: 1,
+            indentSize =
+                rules
+                    .find { it.id == "indentSize" }
+                    ?.value
+                    ?.toString()
+                    ?.toIntOrNull() ?: 4,
+            ifBraceOnSameLine = rules.find { it.id == "ifBraceOnSameLine" }?.isActive ?: true,
+            enforceSingleSpace = rules.find { it.id == "enforceSingleSpace" }?.isActive ?: true,
+            spaceAroundOperators = rules.find { it.id == "spaceAroundOperators" }?.isActive ?: true,
         )
 }
