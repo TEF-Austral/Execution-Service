@@ -5,9 +5,11 @@ WORKDIR /home/gradle/src
 ARG USERNAME
 ARG TOKEN
 
-RUN gradle :api:bootJar --no-daemon \
-    -PgithubUsername=${USERNAME} \
-    -PgithubToken=${TOKEN}
+# Set environment variables for Gradle to use
+ENV GITHUB_ACTOR=${USERNAME}
+ENV GITHUB_TOKEN=${TOKEN}
+
+RUN gradle :api:bootJar --no-daemon
 
 FROM eclipse-temurin:21-jre-alpine
 EXPOSE 8080
