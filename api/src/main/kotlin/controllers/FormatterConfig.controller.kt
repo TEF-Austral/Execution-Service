@@ -1,5 +1,6 @@
 package controllers
 
+import component.AuthenticatedUserProvider
 import dtos.FormatterRuleDTO
 import dtos.UpdateFormatterConfigRequestDTO
 import org.springframework.http.ResponseEntity
@@ -7,7 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import services.FormatterConfigService
 
@@ -15,21 +15,21 @@ import services.FormatterConfigService
 @RequestMapping("/format/rules")
 class FormatterConfigController(
     private val formatterConfigService: FormatterConfigService,
+    private val authenticatedUserProvider: AuthenticatedUserProvider,
 ) {
 
     @GetMapping
-    fun getConfig(
-        @RequestParam("userId") userId: String,
-    ): ResponseEntity<List<FormatterRuleDTO>> {
+    fun getConfig(): ResponseEntity<List<FormatterRuleDTO>> {
+        val userId = authenticatedUserProvider.getCurrentUserId()
         val rules = formatterConfigService.getConfig(userId)
         return ResponseEntity.ok(rules)
     }
 
     @PutMapping
     fun updateConfig(
-        @RequestParam("userId") userId: String,
         @RequestBody request: UpdateFormatterConfigRequestDTO,
     ): ResponseEntity<List<FormatterRuleDTO>> {
+        val userId = authenticatedUserProvider.getCurrentUserId()
         val updatedRules = formatterConfigService.updateConfig(userId, request.rules)
         return ResponseEntity.ok(updatedRules)
     }
