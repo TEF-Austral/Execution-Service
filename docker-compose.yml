@@ -1,10 +1,13 @@
 services:
   api:
-    container_name: "execution-service-api"
+    container_name: "printscript-service-api"
     build:
       context: .
       dockerfile: Dockerfile.dev
-    image: ghcr.io/tef-austral/execution-api:latest
+      args:
+        USERNAME: ${USERNAME}
+        TOKEN: ${TOKEN}
+    image: ghcr.io/tef-austral/printscript-api:latest
     ports:
       - 8003:8080
     env_file:
@@ -13,7 +16,7 @@ services:
       - db
 
   db:
-    container_name: execution_db
+    container_name: printscript_db
     image: postgres:16
     ports:
       - 5435:5432

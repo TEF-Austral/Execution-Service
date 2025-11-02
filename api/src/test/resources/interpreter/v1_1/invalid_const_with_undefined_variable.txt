@@ -1,2 +1,0 @@
-const result: number = undefinedVar + 10;
-

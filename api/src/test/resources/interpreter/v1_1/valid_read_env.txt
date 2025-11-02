@@ -1,3 +1,0 @@
-let path: string = readEnv("PATH");
-println(path);
-

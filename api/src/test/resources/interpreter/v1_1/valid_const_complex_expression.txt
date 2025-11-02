@@ -1,3 +1,0 @@
-const result: number = (10 + 5) * 2 - 3;
-println(result);
-

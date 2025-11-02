@@ -1,4 +1,0 @@
-if (const x: number = 5) {
-    println("invalid");
-}
-

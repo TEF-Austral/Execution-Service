@@ -1,5 +1,0 @@
-const pi: number = 3.14;
-let radius: number = 5;
-let area: number = pi * radius * radius;
-println(area);
-

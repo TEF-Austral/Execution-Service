@@ -1,4 +1,0 @@
-const incomplete
-let valid: number = 42;
-println(valid);
-

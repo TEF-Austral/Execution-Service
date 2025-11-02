@@ -1,2 +1,0 @@
-let thisIsAnExtremelyLongVariableNameThatShouldTestTheParserLimitsAndSeeHowItHandlesVeryLongIdentifiers: number = 42;
-

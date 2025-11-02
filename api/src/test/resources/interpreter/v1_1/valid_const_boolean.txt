@@ -1,3 +1,0 @@
-const flag: boolean = true;
-println(flag);
-

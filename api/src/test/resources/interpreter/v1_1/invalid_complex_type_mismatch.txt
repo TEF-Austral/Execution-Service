@@ -1,7 +1,0 @@
-const flag: boolean = true;
-let number: number = 42;
-let text: string = "hello";
-if (flag + number > text) {
-    println("type mismatch");
-}
-

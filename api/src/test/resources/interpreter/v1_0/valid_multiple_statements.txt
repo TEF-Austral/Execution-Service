@@ -1,5 +1,0 @@
-let name: string = "Alice";
-let age: number = 25;
-println("Name: " + name);
-println("Age: " + age);
-
