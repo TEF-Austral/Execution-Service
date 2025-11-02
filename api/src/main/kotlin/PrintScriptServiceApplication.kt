@@ -10,7 +10,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 @SpringBootApplication(
     scanBasePackages = [
         "api", "component", "services",
-        "repositories", "helpers", "config", "dtos", "entities",
+        "repositories", "helpers", "config",
+        "dtos", "entities", "security",
     ],
 )
 @EnableJpaRepositories(basePackages = ["repositories"])
