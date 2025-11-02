@@ -40,6 +40,9 @@ jobs:
       # ========== BUILD GRADLE ========== #
       - name: Build with Gradle
         run: ./gradlew build --no-daemon
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # ========== BUILD & PUSH DOCKER ========== #
       - name: Set image name
@@ -60,6 +63,9 @@ jobs:
           context: .
           file: ./Dockerfile.prod
           push: true
+          build-args: |
+            USERNAME=${{ github.actor }}
+            TOKEN=${{ secrets.GITHUB_TOKEN }}
           tags: |
             ${{ steps.image.outputs.name }}:latest
             ${{ steps.image.outputs.name }}:${{ needs.versioning.outputs.version }}
