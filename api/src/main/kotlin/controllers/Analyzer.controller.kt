@@ -1,7 +1,7 @@
 package controllers
 
 import component.AssetServiceClient
-import component.AuthenticatedUserProvider
+import security.AuthenticatedUserProvider
 import dtos.AnalyzeResponseDTO
 import dtos.ValidationResultDTO
 import org.springframework.http.ResponseEntity

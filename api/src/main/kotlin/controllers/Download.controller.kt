@@ -1,7 +1,7 @@
 package controllers
 
 import component.AssetServiceClient
-import component.AuthenticatedUserProvider
+import security.AuthenticatedUserProvider
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.core.io.Resource
 import org.springframework.http.HttpHeaders

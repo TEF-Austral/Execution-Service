@@ -1,7 +1,6 @@
 package controllers
 
 import component.AssetServiceClient
-import component.AuthenticatedUserProvider
 import dtos.FormatConfigDTO
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -9,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import security.AuthenticatedUserProvider
 import services.FormatterConfigService
 import services.FormatterService
 import java.io.ByteArrayInputStream
