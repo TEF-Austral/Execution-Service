@@ -1,0 +1,5 @@
+let x:number=1;
+let y:number=2;
+let z:number=x+y*  ( 3 -1 );
+println(z);
+

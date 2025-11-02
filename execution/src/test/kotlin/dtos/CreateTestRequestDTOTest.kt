@@ -31,8 +31,8 @@ class CreateTestRequestDTOTest {
                 expectedOutputs = emptyList(),
             )
 
-        Assertions.assertTrue(dto.inputs.isEmpty())
-        Assertions.assertTrue(dto.expectedOutputs.isEmpty())
+        Assertions.assertTrue(dto.inputs!!.isEmpty())
+        Assertions.assertTrue(dto.expectedOutputs!!.isEmpty())
     }
 
     @Test
@@ -45,8 +45,8 @@ class CreateTestRequestDTOTest {
                 expectedOutputs = listOf("single output"),
             )
 
-        Assertions.assertEquals(1, dto.inputs.size)
-        Assertions.assertEquals(1, dto.expectedOutputs.size)
+        Assertions.assertEquals(1, dto.inputs!!.size)
+        Assertions.assertEquals(1, dto.expectedOutputs!!.size)
         Assertions.assertEquals("single input", dto.inputs[0])
         Assertions.assertEquals("single output", dto.expectedOutputs[0])
     }
@@ -61,8 +61,8 @@ class CreateTestRequestDTOTest {
                 expectedOutputs = listOf("output1", "output2", "output3", "output4"),
             )
 
-        Assertions.assertEquals(3, dto.inputs.size)
-        Assertions.assertEquals(4, dto.expectedOutputs.size)
+        Assertions.assertEquals(3, dto.inputs!!.size)
+        Assertions.assertEquals(4, dto.expectedOutputs!!.size)
     }
 
     @Test
@@ -166,7 +166,7 @@ class CreateTestRequestDTOTest {
                 expectedOutputs = listOf("output"),
             )
 
-        Assertions.assertEquals(3, dto.inputs.size)
+        Assertions.assertEquals(3, dto.inputs!!.size)
         Assertions.assertEquals("", dto.inputs[0])
         Assertions.assertEquals("", dto.inputs[2])
     }
@@ -181,6 +181,6 @@ class CreateTestRequestDTOTest {
                 expectedOutputs = listOf("line1\nline2\nline3"),
             )
 
-        Assertions.assertTrue(dto.expectedOutputs[0].contains("\n"))
+        Assertions.assertTrue(dto.expectedOutputs!![0].contains("\n"))
     }
 }

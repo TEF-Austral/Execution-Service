@@ -25,7 +25,8 @@ class TestController(
     fun createTest(
         @RequestBody request: CreateTestRequestDTO,
     ): ResponseEntity<TestDTO> {
-        val test = TestEntity(
+        val test =
+            TestEntity(
                 snippetId = request.snippetId,
                 name = request.name,
                 inputs = request.inputs ?: emptyList(),
