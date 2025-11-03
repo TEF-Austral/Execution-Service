@@ -15,6 +15,44 @@ class AnalyzerService(
     private val getAnalyzerConfig: GetAnalyzerConfig,
 ) {
 
+    fun compile(
+        src: InputStream,
+        version: String,
+    ): ValidationResultDTO {
+        return try {
+            val parser = ParserFactory.parse(src, version)
+            val result = parser.parse()
+
+            if (!result.isSuccess()) {
+                val position =
+                    result.getParser().peak()?.getCoordinates()
+                        ?: coordinates.UnassignedPosition()
+
+                return ValidationResultDTO.Invalid(
+                    listOf(
+                        LintViolationDTO(
+                            message = result.message(),
+                            line = position.getRow(),
+                            column = position.getColumn(),
+                        ),
+                    ),
+                )
+            }
+
+            ValidationResultDTO.Valid
+        } catch (e: Exception) {
+            ValidationResultDTO.Invalid(
+                listOf(
+                    LintViolationDTO(
+                        message = "Unexpected error: ${e.message}",
+                        line = -1,
+                        column = -1,
+                    ),
+                ),
+            )
+        }
+    }
+
     fun validate(
         src: InputStream,
         version: String,
