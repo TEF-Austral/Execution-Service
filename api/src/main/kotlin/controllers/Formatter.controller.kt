@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.client.HttpClientErrorException
 import security.AuthenticatedUserProvider
 import services.FormatterConfigService
 import services.FormatterService
@@ -50,10 +51,13 @@ class FormatterController(
         val rules = formatterConfigService.getConfig(userId)
         val config = formatterConfigService.rulesToConfigDTO(rules)
 
-        val assetContent = assetServiceClient.getAsset(container, key)
-        val inputStream = ByteArrayInputStream(assetContent.toByteArray(StandardCharsets.UTF_8))
-        val formattedContent = formatterService.format(inputStream, version, config)
-
-        return ResponseEntity.ok(formattedContent)
+        try {
+            val assetContent = assetServiceClient.getAsset(container, key)
+            val inputStream = ByteArrayInputStream(assetContent.toByteArray(StandardCharsets.UTF_8))
+            val formattedContent = formatterService.format(inputStream, version, config)
+            return ResponseEntity.ok(formattedContent)
+        } catch (e: HttpClientErrorException.NotFound) {
+            return ResponseEntity.status(404).body("Snippet content not found")
+        }
     }
 }
