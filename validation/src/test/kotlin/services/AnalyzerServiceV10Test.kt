@@ -21,6 +21,15 @@ class AnalyzerServiceV10Test {
         }
     }
 
+    private fun compileFromResource(path: String): ValidationResultDTO {
+        val stream =
+            this::class.java.getResourceAsStream(path)
+                ?: throw IllegalArgumentException("Resource not found: $path")
+        stream.use {
+            return service.compile(it, "1.0")
+        }
+    }
+
     @Test
     fun valid_files_should_be_valid() {
         val files =
@@ -60,18 +69,38 @@ class AnalyzerServiceV10Test {
             )
         }
     }
-}
 
-private fun fakeGetAnalyzerConfig(): GetAnalyzerConfig {
-    val proxy =
-        java.lang.reflect.Proxy.newProxyInstance(
-            AnalyzerRepository::class.java.classLoader,
-            arrayOf(AnalyzerRepository::class.java),
-        ) { _, method, _ ->
-            when (method.name) {
-                "findById" -> Optional.empty<AnalyzerEntity>()
-                else -> throw UnsupportedOperationException("Not used in tests: ${method.name}")
-            }
-        } as AnalyzerRepository
-    return GetAnalyzerConfig(proxy)
+    @Test
+    fun valid_files_should_compile() {
+        val files =
+            listOf(
+                "/printscript/v1_0/valid1.txt",
+                "/printscript/v1_0/valid2.txt",
+                "/printscript/v1_0/valid3.txt",
+                "/printscript/v1_0/valid4.txt",
+                "/printscript/v1_0/valid5.txt",
+            )
+
+        files.forEach { path ->
+            val result = compileFromResource(path)
+            assertTrue(
+                result is ValidationResultDTO.Valid,
+                "Expected Valid compilation for $path but was $result",
+            )
+        }
+    }
+
+    private fun fakeGetAnalyzerConfig(): GetAnalyzerConfig {
+        val proxy =
+            java.lang.reflect.Proxy.newProxyInstance(
+                AnalyzerRepository::class.java.classLoader,
+                arrayOf(AnalyzerRepository::class.java),
+            ) { _, method, _ ->
+                when (method.name) {
+                    "findById" -> Optional.empty<AnalyzerEntity>()
+                    else -> throw UnsupportedOperationException("Not used in tests: ${method.name}")
+                }
+            } as AnalyzerRepository
+        return GetAnalyzerConfig(proxy)
+    }
 }
