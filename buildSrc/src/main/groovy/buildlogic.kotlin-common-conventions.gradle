@@ -16,8 +16,16 @@ repositories {
         name = "GitHubPackages"
         url = uri("https://maven.pkg.github.com/tef-austral/printscript")
         credentials {
-            username = project.findProperty("gpr.user") ?: System.getenv("GHCR_USER")
-            password = project.findProperty("gpr.key") ?: System.getenv("GHCR_PAT")
+            username = project.findProperty("gpr.user") ?: System.getenv("GHCR_USER") ?: envProps.getProperty('USERNAME') ?: System.getenv("GHCR_USER")
+            password = project.findProperty("gpr.key") ?: System.getenv("GHCR_PAT") ?: envProps.getProperty('TOKEN') ?: System.getenv("GHCR_PAT")
+        }
+    }
+    maven {
+        name = "GitHubPackages"
+        url = uri("https://maven.pkg.github.com/austral-ingsis/class-redis-streams")
+        credentials {
+            username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+            password = project.findProperty("gpr.key") ?: System.getenv("REDIS_TOKEN")
         }
     }
 }
