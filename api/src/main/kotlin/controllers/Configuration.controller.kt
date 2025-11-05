@@ -1,6 +1,5 @@
 package controllers
 
-import security.AuthenticatedUserProvider
 import dtos.AnalyzerRuleDTO
 import dtos.FormatterRuleDTO
 import dtos.UpdateAnalyzerConfigRequestDTO
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import services.AnalyzerConfigService
 import services.FormatterConfigService
@@ -19,37 +19,38 @@ import services.FormatterConfigService
 class ConfigurationController(
     private val analyzerConfigService: AnalyzerConfigService,
     private val formatterConfigService: FormatterConfigService,
-    private val authenticatedUserProvider: AuthenticatedUserProvider,
 ) {
 
     @GetMapping("/analyze")
-    fun getAnalyzerConfig(): ResponseEntity<List<AnalyzerRuleDTO>> {
-        val userId = authenticatedUserProvider.getCurrentUserId()
+    fun getAnalyzerConfig(
+        @RequestParam("userId") userId: String,
+    ): ResponseEntity<List<AnalyzerRuleDTO>> {
         val rules = analyzerConfigService.getConfig(userId)
         return ResponseEntity.ok(rules)
     }
 
-    @PutMapping("/analyze")
+    @PutMapping("/update/analyze")
     fun updateAnalyzerConfig(
+        @RequestParam("userId") userId: String,
         @RequestBody request: UpdateAnalyzerConfigRequestDTO,
     ): ResponseEntity<List<AnalyzerRuleDTO>> {
-        val userId = authenticatedUserProvider.getCurrentUserId()
         val updatedRules = analyzerConfigService.updateConfig(userId, request.rules)
         return ResponseEntity.ok(updatedRules)
     }
 
     @GetMapping("/format")
-    fun getFormatterConfig(): ResponseEntity<List<FormatterRuleDTO>> {
-        val userId = authenticatedUserProvider.getCurrentUserId()
+    fun getFormatterConfig(
+        @RequestParam("userId") userId: String,
+    ): ResponseEntity<List<FormatterRuleDTO>> {
         val rules = formatterConfigService.getConfig(userId)
         return ResponseEntity.ok(rules)
     }
 
-    @PutMapping("/format")
+    @PutMapping("/update/format")
     fun updateFormatterConfig(
+        @RequestParam("userId") userId: String,
         @RequestBody request: UpdateFormatterConfigRequestDTO,
     ): ResponseEntity<List<FormatterRuleDTO>> {
-        val userId = authenticatedUserProvider.getCurrentUserId()
         val updatedRules = formatterConfigService.updateConfig(userId, request.rules)
         return ResponseEntity.ok(updatedRules)
     }
