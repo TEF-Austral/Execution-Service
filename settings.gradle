@@ -14,3 +14,5 @@ plugins {
 rootProject.name = 'printscript-service'
 
 include('execution', 'validation', 'formatter', 'events', 'api')
+
+include 'assets'

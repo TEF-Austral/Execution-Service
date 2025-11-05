@@ -12,6 +12,7 @@ dependencies {
     implementation project(':execution')
     implementation project(':formatter')
     implementation project(':events')
+    implementation project(':assets')
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-reactor'
