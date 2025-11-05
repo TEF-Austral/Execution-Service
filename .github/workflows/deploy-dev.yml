@@ -54,6 +54,10 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GHCR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GHCR_TOKEN }}
+          REDIS_TOKEN: ${{ secrets.REDIS_TOKEN }}
+          AUTH0_ISSUER_URI: ${{ secrets.AUTH0_ISSUER_URI }}
+          AUTH0_AUDIENCE: ${{ secrets.AUTH0_AUDIENCE }}
 
       - name: Build and push Docker image (DEV)
         uses: docker/build-push-action@v5

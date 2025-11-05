@@ -1,18 +1,21 @@
-import com.github.tef.SnippetEventHandler
+package consumers
+
+
+import SnippetEventHandler
+import com.github.tef.events.SnippetEvent
 import jakarta.annotation.PostConstruct
-import java.net.InetAddress
-import java.time.Duration
-import org.springframework.context.annotation.Profile
-import org.springframework.stereotype.Component
 import org.springframework.beans.factory.annotation.Value
-import reactor.core.publisher.Flux
-import org.springframework.data.redis.core.ReactiveRedisTemplate
-import org.springframework.data.redis.stream.StreamReceiver
-import org.springframework.data.redis.connection.stream.ReadOffset
-import org.springframework.data.redis.connection.stream.StreamOffset
+import org.springframework.context.annotation.Profile
 import org.springframework.data.redis.connection.stream.Consumer
 import org.springframework.data.redis.connection.stream.ObjectRecord
-import com.github.tef.events.SnippetEvent
+import org.springframework.data.redis.connection.stream.ReadOffset
+import org.springframework.data.redis.connection.stream.StreamOffset
+import org.springframework.data.redis.core.ReactiveRedisTemplate
+import org.springframework.data.redis.stream.StreamReceiver
+import org.springframework.stereotype.Component
+import reactor.core.publisher.Flux
+import java.net.InetAddress
+import java.time.Duration
 
 @Component
 @Profile("!test")

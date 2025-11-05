@@ -1,5 +1,3 @@
-package com.github.tef
-
 import com.github.tef.events.SnippetEvent
 import com.github.tef.events.SnippetOperation
 import org.springframework.stereotype.Service

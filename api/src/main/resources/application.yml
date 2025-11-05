@@ -42,9 +42,21 @@ management:
     health:
       show-details: always
 
-redis:
-  stream:
-    snippet:
-      key: snippet-events
+stream:
+  formatting:
+    request:
+      key: formatting-requests
+    result:
+      key: formatting-results
+  linting:
+    request:
+      key: linting-requests
+    result:
+      key: linting-results
+  testing:
+    request:
+      key: testing-requests
+    result:
+      key: testing-results
   consumer:
-    group: printscript-service
+    group: printscript-service-group
