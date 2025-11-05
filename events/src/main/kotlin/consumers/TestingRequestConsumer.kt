@@ -20,12 +20,18 @@ class TestingRequestConsumer(
     private val handler: TestingRequestHandler,
 ) : RedisStreamConsumer<TestingRequestEvent>(streamKey, consumerGroup, redis) {
 
-    override fun options(): StreamReceiver.StreamReceiverOptions<String, ObjectRecord<String, TestingRequestEvent>> {
-        return StreamReceiver.StreamReceiverOptions.builder()
+    override fun options(): StreamReceiver.StreamReceiverOptions<
+        String,
+        ObjectRecord<
+            String,
+            TestingRequestEvent,
+        >,
+    > =
+        StreamReceiver.StreamReceiverOptions
+            .builder()
             .pollTimeout(Duration.ofMillis(10000))
             .targetType(TestingRequestEvent::class.java)
             .build()
-    }
 
     override fun onMessage(record: ObjectRecord<String, TestingRequestEvent>) {
         val event = record.value

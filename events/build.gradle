@@ -7,6 +7,10 @@ repositories {
 }
 
 dependencies {
+    implementation project(':api')
+    implementation project(':validation')
+    implementation project(':execution')
+    implementation project(':formatter')
     implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
     implementation 'io.projectreactor:reactor-core'
     implementation 'jakarta.annotation:jakarta.annotation-api:2.1.1'

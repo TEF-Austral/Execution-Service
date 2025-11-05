@@ -20,12 +20,15 @@ class FormattingRequestConsumer(
     private val handler: FormattingRequestHandler,
 ) : RedisStreamConsumer<FormattingRequestEvent>(streamKey, consumerGroup, redis) {
 
-    override fun options(): StreamReceiver.StreamReceiverOptions<String, ObjectRecord<String, FormattingRequestEvent>> {
-        return StreamReceiver.StreamReceiverOptions.builder()
+    override fun options(): StreamReceiver.StreamReceiverOptions<
+        String,
+        ObjectRecord<String, FormattingRequestEvent>,
+    > =
+        StreamReceiver.StreamReceiverOptions
+            .builder()
             .pollTimeout(Duration.ofMillis(10000))
             .targetType(FormattingRequestEvent::class.java)
             .build()
-    }
 
     override fun onMessage(record: ObjectRecord<String, FormattingRequestEvent>) {
         val event = record.value

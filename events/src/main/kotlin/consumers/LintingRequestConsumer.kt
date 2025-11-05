@@ -20,12 +20,18 @@ class LintingRequestConsumer(
     private val handler: LintingRequestHandler,
 ) : RedisStreamConsumer<LintingRequestEvent>(streamKey, consumerGroup, redis) {
 
-    override fun options(): StreamReceiver.StreamReceiverOptions<String, ObjectRecord<String, LintingRequestEvent>> {
-        return StreamReceiver.StreamReceiverOptions.builder()
+    override fun options(): StreamReceiver.StreamReceiverOptions<
+        String,
+        ObjectRecord<
+            String,
+            LintingRequestEvent,
+        >,
+    > =
+        StreamReceiver.StreamReceiverOptions
+            .builder()
             .pollTimeout(Duration.ofMillis(10000))
             .targetType(LintingRequestEvent::class.java)
             .build()
-    }
 
     override fun onMessage(record: ObjectRecord<String, LintingRequestEvent>) {
         val event = record.value

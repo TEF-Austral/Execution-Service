@@ -1,6 +1,5 @@
 package consumers
 
-
 import SnippetEventHandler
 import com.github.tef.events.SnippetEvent
 import jakarta.annotation.PostConstruct
