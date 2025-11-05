@@ -40,30 +40,35 @@ class AnalyzerConfigServiceTest {
 
     @Test
     fun `getConfig should return default rules when user does not exist`() {
+        val defaultEntity = AnalyzerEntity(userId = testUserId)
+
         `when`(analyzerRepository.findById(testUserId)).thenReturn(Optional.empty())
+        `when`(analyzerRepository.save(any())).thenReturn(defaultEntity)
 
         val result = analyzerConfigService.getConfig(testUserId)
+
+        verify(analyzerRepository, times(1)).save(any())
 
         assertEquals(4, result.size)
 
         val identifierStyleRule = result.find { it.id == "identifierStyle" }
         assertNotNull(identifierStyleRule)
-        assertEquals("Identifier Style", identifierStyleRule?.name)
-        assertEquals(false, identifierStyleRule?.isActive)
-        assertEquals("NO_STYLE", identifierStyleRule?.value)
+        assertEquals("Identifier Style", identifierStyleRule.name)
+        assertEquals(false, identifierStyleRule.isActive)
+        assertEquals("NO_STYLE", identifierStyleRule.value)
 
         val restrictPrintlnRule = result.find { it.id == "restrictPrintlnArgs" }
         assertNotNull(restrictPrintlnRule)
-        assertEquals(true, restrictPrintlnRule?.isActive)
-        assertNull(restrictPrintlnRule?.value)
+        assertEquals(true, restrictPrintlnRule.isActive)
+        assertNull(restrictPrintlnRule.value)
 
         val restrictReadInputRule = result.find { it.id == "restrictReadInputArgs" }
         assertNotNull(restrictReadInputRule)
-        assertEquals(false, restrictReadInputRule?.isActive)
+        assertEquals(false, restrictReadInputRule.isActive)
 
         val noReadInputRule = result.find { it.id == "noReadInput" }
         assertNotNull(noReadInputRule)
-        assertEquals(false, noReadInputRule?.isActive)
+        assertEquals(false, noReadInputRule.isActive)
     }
 
     @Test
