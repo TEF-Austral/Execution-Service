@@ -17,8 +17,8 @@ repositories {
         name = "GitHubPackages"
         url = uri("https://maven.pkg.github.com/tef-austral/printscript")
         credentials {
-            username = envProps.getProperty('USERNAME') ?: System.getenv("USERNAME")
-            password = envProps.getProperty('TOKEN') ?: System.getenv("TOKEN")
+            username = project.findProperty("gpr.user") ?: System.getenv("GHCR_USER")
+            password = project.findProperty("gpr.key") ?: System.getenv("GHCR_PAT")
         }
     }
 }
