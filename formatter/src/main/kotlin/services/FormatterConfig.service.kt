@@ -16,8 +16,7 @@ class FormatterConfigService(
             formatterConfigRepository
                 .findByUserId(userId)
                 .orElseGet {
-                    val defaultConfig = FormatterConfigEntity(userId = userId)
-                    formatterConfigRepository.save(defaultConfig)
+                    formatterConfigRepository.save(FormatterConfigEntity(userId = userId))
                 }
 
         return config.toRules()

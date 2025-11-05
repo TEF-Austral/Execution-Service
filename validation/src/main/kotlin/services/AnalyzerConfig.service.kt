@@ -14,8 +14,9 @@ class AnalyzerConfigService(
 
     fun getConfig(userId: String): List<AnalyzerRuleDTO> {
         val entity =
-            analyzerRepository.findById(userId).orElse(null)
-                ?: AnalyzerEntity(userId = userId)
+            analyzerRepository.findById(userId).orElseGet {
+                analyzerRepository.save(AnalyzerEntity(userId = userId))
+            }
 
         return entityToRules(entity)
     }
@@ -26,8 +27,9 @@ class AnalyzerConfigService(
         rules: List<AnalyzerRuleDTO>,
     ): List<AnalyzerRuleDTO> {
         val currentEntity =
-            analyzerRepository.findById(userId).orElse(null)
-                ?: AnalyzerEntity(userId = userId)
+            analyzerRepository.findById(userId).orElseGet {
+                AnalyzerEntity(userId = userId)
+            }
 
         val updatedEntity = applyRulesToEntity(currentEntity, rules)
         val savedEntity = analyzerRepository.save(updatedEntity)
