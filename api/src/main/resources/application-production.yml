@@ -21,4 +21,4 @@ redis:
     snippet:
       key: snippet-events
   consumer:
-    group: printscript-service
+    group: printscript-service-group
