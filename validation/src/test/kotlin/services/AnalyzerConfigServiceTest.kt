@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import repositories.AnalyzerRepository
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertNotNull
-import org.junit.jupiter.api.assertNull
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
@@ -53,22 +53,22 @@ class AnalyzerConfigServiceTest {
 
         val identifierStyleRule = result.find { it.id == "identifierStyle" }
         assertNotNull(identifierStyleRule)
-        assertEquals("Identifier Style", identifierStyleRule.name)
-        assertEquals(false, identifierStyleRule.isActive)
-        assertEquals("NO_STYLE", identifierStyleRule.value)
+        assertEquals("Identifier Style", identifierStyleRule?.name)
+        assertEquals(false, identifierStyleRule?.isActive)
+        assertEquals("NO_STYLE", identifierStyleRule?.value)
 
         val restrictPrintlnRule = result.find { it.id == "restrictPrintlnArgs" }
         assertNotNull(restrictPrintlnRule)
-        assertEquals(true, restrictPrintlnRule.isActive)
-        assertNull(restrictPrintlnRule.value)
+        assertEquals(true, restrictPrintlnRule?.isActive)
+        assertNull(restrictPrintlnRule?.value)
 
         val restrictReadInputRule = result.find { it.id == "restrictReadInputArgs" }
         assertNotNull(restrictReadInputRule)
-        assertEquals(false, restrictReadInputRule.isActive)
+        assertEquals(false, restrictReadInputRule?.isActive)
 
         val noReadInputRule = result.find { it.id == "noReadInput" }
         assertNotNull(noReadInputRule)
-        assertEquals(false, noReadInputRule.isActive)
+        assertEquals(false, noReadInputRule?.isActive)
     }
 
     @Test
