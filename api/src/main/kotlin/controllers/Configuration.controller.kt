@@ -29,7 +29,7 @@ class ConfigurationController(
         return ResponseEntity.ok(rules)
     }
 
-    @PutMapping("/analyze")
+    @PutMapping("/update/analyze")
     fun updateAnalyzerConfig(
         @RequestBody request: UpdateAnalyzerConfigRequestDTO,
     ): ResponseEntity<List<AnalyzerRuleDTO>> {
@@ -45,7 +45,7 @@ class ConfigurationController(
         return ResponseEntity.ok(rules)
     }
 
-    @PutMapping("/format")
+    @PutMapping("/update/format")
     fun updateFormatterConfig(
         @RequestBody request: UpdateFormatterConfigRequestDTO,
     ): ResponseEntity<List<FormatterRuleDTO>> {
