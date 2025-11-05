@@ -1,9 +1,9 @@
 package services
 
 import dtos.FormatConfigDTO
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertNotNull
 import java.io.ByteArrayInputStream
 import java.nio.charset.StandardCharsets
 
