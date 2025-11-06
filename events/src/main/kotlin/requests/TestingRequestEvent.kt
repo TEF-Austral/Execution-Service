@@ -4,5 +4,4 @@ data class TestingRequestEvent(
     val bucketContainer: String,
     val bucketKey: String,
     val version: String,
-    val testId: Long,
 )
