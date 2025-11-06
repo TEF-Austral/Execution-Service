@@ -45,7 +45,6 @@ spring:
     consumer:
       group: printscript-service-group
 
-# --- El resto de tu archivo (todo esto estaba bien) ---
 auth0:
   audience: ${AUTH0_AUDIENCE}
 

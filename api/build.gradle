@@ -16,7 +16,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
-    implementation 'com.github.tef-austral.snippet-service:events:1.101.0'
+    implementation 'com.github.tef-austral.snippet-service:events:1.102.0'
 }
 
 tasks.named('bootJar') {
