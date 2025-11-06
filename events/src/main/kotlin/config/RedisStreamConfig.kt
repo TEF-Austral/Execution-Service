@@ -28,24 +28,20 @@ class RedisStreamConfig(
 
         streams.forEach { streamKey ->
             try {
-                // Intenta crear el consumer group
                 redisTemplate
                     .opsForStream<String, Any>()
                     .createGroup(streamKey, consumerGroup)
 
                 println("✅ Consumer group '$consumerGroup' creado para stream '$streamKey'")
             } catch (e: Exception) {
-                // Si falla, probablemente ya existe o el stream no existe
                 if (e.message?.contains("BUSYGROUP") == true) {
                     println("ℹ️  Consumer group '$consumerGroup' ya existe para '$streamKey'")
                 } else {
-                    // Si el stream no existe, lo creamos enviando un mensaje dummy
                     try {
                         redisTemplate
                             .opsForStream<String, Any>()
                             .add(streamKey, mapOf("init" to "true"))
 
-                        // Ahora creamos el grupo
                         redisTemplate
                             .opsForStream<String, Any>()
                             .createGroup(streamKey, ReadOffset.from("0"), consumerGroup)

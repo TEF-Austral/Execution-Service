@@ -2,7 +2,6 @@ package result
 
 data class LintingResultEvent(
     val requestId: String,
-    val snippetId: Long,
     val isValid: Boolean,
     val violations: List<ViolationDTO>,
 )
