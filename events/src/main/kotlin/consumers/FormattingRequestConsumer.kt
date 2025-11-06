@@ -21,6 +21,7 @@ class FormattingRequestConsumer(
 ) : RedisStreamConsumer<FormattingRequestEvent>(streamKey, consumerGroup, redis) {
 
     override fun onMessage(record: ObjectRecord<String, FormattingRequestEvent>) {
+        println("📨 [PrintScript] Received formatting REQUEST: ${record.value.requestId}")
         handler.handle(record.value)
     }
 
