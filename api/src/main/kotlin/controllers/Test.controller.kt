@@ -34,7 +34,6 @@ class TestController(
         @RequestParam("key") key: String,
         @RequestParam("version") version: String,
         @RequestParam("testId") testId: Long,
-        @RequestParam("userId", required = false) userId: String?,
     ): ResponseEntity<TestExecutionResponseDTO> {
         val assetContent = assetServiceClient.getAsset(container, key)
         val inputStream = ByteArrayInputStream(assetContent.toByteArray(StandardCharsets.UTF_8))

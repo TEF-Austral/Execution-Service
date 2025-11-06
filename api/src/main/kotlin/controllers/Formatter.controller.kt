@@ -61,7 +61,7 @@ class FormatterController(
             val inputStream = ByteArrayInputStream(assetContent.toByteArray(StandardCharsets.UTF_8))
             val formattedContent = formatterService.format(inputStream, version, config)
             return ResponseEntity.ok(formattedContent)
-        } catch (e: HttpClientErrorException.NotFound) {
+        } catch (_: HttpClientErrorException.NotFound) {
             return ResponseEntity.status(404).body("Snippet content not found")
         }
     }
