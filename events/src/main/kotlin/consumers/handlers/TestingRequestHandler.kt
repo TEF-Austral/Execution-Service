@@ -25,26 +25,30 @@ class TestingRequestHandler(
                 )
 
             val inputStream = ByteArrayInputStream(content.toByteArray())
-            val testResult =
-                executionService.executeTest(
+            val allTestResults =
+                executionService.executeAllTests(
                     inputStream,
+                    request.snippetId,
                     request.version,
-                    request.testId,
                 )
 
-            val result =
-                TestingResultEvent(
-                    requestId = request.requestId,
-                    testId = request.testId,
-                    snippetId = request.snippetId,
-                    passed = testResult.passed,
-                    outputs = testResult.outputs,
-                    expectedOutputs = testResult.expectedOutputs,
-                    errors = testResult.errors,
-                )
+            allTestResults.executions.forEach { testResult ->
+                val result =
+                    TestingResultEvent(
+                        requestId = request.requestId,
+                        snippetId = request.snippetId,
+                        passed = testResult.passed,
+                        outputs = testResult.outputs,
+                        expectedOutputs = testResult.expectedOutputs,
+                        errors = testResult.errors,
+                        testId = testResult.testId,
+                    )
+                resultProducer.emit(result)
+            }
 
-            resultProducer.emit(result)
-            println("✅ [PrintScript] Testing completed: ${request.requestId}")
+            println(
+                "✅ [PrintScript] Testing completed: ${request.requestId} (${allTestResults.executions.size} tests)",
+            )
         } catch (e: Exception) {
             println("❌ [PrintScript] Testing failed: ${e.message}")
         }

@@ -6,5 +6,6 @@ data class LintingRequestEvent(
     val bucketContainer: String,
     val bucketKey: String,
     val version: String,
+    val languageId: String,
     val userId: String,
 )

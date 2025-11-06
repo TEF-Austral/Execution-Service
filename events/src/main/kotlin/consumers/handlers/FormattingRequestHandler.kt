@@ -16,6 +16,7 @@ class FormattingRequestHandler(
     private val assetServiceClient: AssetServiceClient,
     private val resultProducer: FormattingResultProducer,
 ) {
+
     fun handle(request: FormattingRequestEvent) {
         println("🔨 [PrintScript] Processing formatting request: ${request.requestId}")
 
@@ -35,7 +36,6 @@ class FormattingRequestHandler(
             val result =
                 FormattingResultEvent(
                     requestId = request.requestId,
-                    snippetId = request.snippetId,
                     success = true,
                     formattedContent = formatted,
                     error = null,
@@ -49,7 +49,6 @@ class FormattingRequestHandler(
             val result =
                 FormattingResultEvent(
                     requestId = request.requestId,
-                    snippetId = request.snippetId,
                     success = false,
                     error = e.message,
                     formattedContent = null,
