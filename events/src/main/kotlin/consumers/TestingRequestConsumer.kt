@@ -1,6 +1,5 @@
 package consumers
 
-import TestingRequestEvent
 import consumers.handlers.TestingRequestHandler
 import org.austral.ingsis.redis.RedisStreamConsumer
 import org.springframework.beans.factory.annotation.Value
@@ -9,6 +8,7 @@ import org.springframework.data.redis.connection.stream.ObjectRecord
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.redis.stream.StreamReceiver
 import org.springframework.stereotype.Component
+import requests.TestingRequestEvent
 import java.time.Duration
 
 @Component
