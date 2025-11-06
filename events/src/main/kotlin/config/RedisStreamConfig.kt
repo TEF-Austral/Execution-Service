@@ -2,11 +2,9 @@ package config
 
 import jakarta.annotation.PostConstruct
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.context.annotation.Configuration
 import org.springframework.data.redis.connection.stream.ReadOffset
 import org.springframework.data.redis.core.RedisTemplate
 
-@Configuration
 class RedisStreamConfig(
     private val redisTemplate: RedisTemplate<String, String>,
     @Value("\${spring.redis.stream.formatting.request.key}")
