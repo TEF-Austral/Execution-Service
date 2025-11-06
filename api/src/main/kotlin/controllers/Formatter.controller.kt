@@ -27,10 +27,13 @@ class FormatterController(
         @RequestParam("container") container: String,
         @RequestParam("key") key: String,
         @RequestParam("version") version: String,
+        @RequestParam("userId", required = false) userId: String?,
     ): ResponseEntity<String> {
         val assetContent = assetServiceClient.getAsset(container, key)
-        val userId = authenticatedUserProvider.getCurrentUserId()
-        val rules = formatterConfigService.getConfig(userId)
+
+        val effectiveUserId = userId ?: authenticatedUserProvider.getCurrentUserId()
+
+        val rules = formatterConfigService.getConfig(effectiveUserId)
         val config = formatterConfigService.rulesToConfigDTO(rules)
         val inputStream = ByteArrayInputStream(assetContent.toByteArray(StandardCharsets.UTF_8))
 
@@ -46,9 +49,11 @@ class FormatterController(
         @RequestParam("container") container: String,
         @RequestParam("key") key: String,
         @RequestParam("version") version: String,
+        @RequestParam("userId", required = false) userId: String?,
     ): ResponseEntity<String> {
-        val userId = authenticatedUserProvider.getCurrentUserId()
-        val rules = formatterConfigService.getConfig(userId)
+        val effectiveUserId = userId ?: authenticatedUserProvider.getCurrentUserId()
+
+        val rules = formatterConfigService.getConfig(effectiveUserId)
         val config = formatterConfigService.rulesToConfigDTO(rules)
 
         try {
