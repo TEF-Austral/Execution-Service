@@ -34,7 +34,7 @@ class LintingRequestHandler(
                     is ValidationResultDTO.Valid -> {
                         LintingResultEvent(
                             requestId = request.requestId,
-                            snippetId = request.snippetId,
+                            snippetId = 5,
                             isValid = true,
                             violations = emptyList(),
                         )
