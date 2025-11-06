@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import security.AuthenticatedUserProvider
 import services.AnalyzerConfigService
 import services.FormatterConfigService
 
@@ -19,12 +20,12 @@ import services.FormatterConfigService
 class ConfigurationController(
     private val analyzerConfigService: AnalyzerConfigService,
     private val formatterConfigService: FormatterConfigService,
+    private val authenticatedUserProvider: AuthenticatedUserProvider,
 ) {
 
     @GetMapping("/analyze")
-    fun getAnalyzerConfig(
-        @RequestParam("userId") userId: String,
-    ): ResponseEntity<List<AnalyzerRuleDTO>> {
+    fun getAnalyzerConfig(): ResponseEntity<List<AnalyzerRuleDTO>> {
+        val userId = authenticatedUserProvider.getCurrentUserId()
         val rules = analyzerConfigService.getConfig(userId)
         return ResponseEntity.ok(rules)
     }
@@ -39,9 +40,8 @@ class ConfigurationController(
     }
 
     @GetMapping("/format")
-    fun getFormatterConfig(
-        @RequestParam("userId") userId: String,
-    ): ResponseEntity<List<FormatterRuleDTO>> {
+    fun getFormatterConfig(): ResponseEntity<List<FormatterRuleDTO>> {
+        val userId = authenticatedUserProvider.getCurrentUserId()
         val rules = formatterConfigService.getConfig(userId)
         return ResponseEntity.ok(rules)
     }
