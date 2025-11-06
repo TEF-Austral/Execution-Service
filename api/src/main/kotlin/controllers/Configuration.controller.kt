@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import security.AuthenticatedUserProvider
 import services.AnalyzerConfigService
@@ -32,9 +31,9 @@ class ConfigurationController(
 
     @PutMapping("/update/analyze")
     fun updateAnalyzerConfig(
-        @RequestParam("userId") userId: String,
         @RequestBody request: UpdateAnalyzerConfigRequestDTO,
     ): ResponseEntity<List<AnalyzerRuleDTO>> {
+        val userId = authenticatedUserProvider.getCurrentUserId()
         val updatedRules = analyzerConfigService.updateConfig(userId, request.rules)
         return ResponseEntity.ok(updatedRules)
     }
@@ -48,9 +47,9 @@ class ConfigurationController(
 
     @PutMapping("/update/format")
     fun updateFormatterConfig(
-        @RequestParam("userId") userId: String,
         @RequestBody request: UpdateFormatterConfigRequestDTO,
     ): ResponseEntity<List<FormatterRuleDTO>> {
+        val userId = authenticatedUserProvider.getCurrentUserId()
         val updatedRules = formatterConfigService.updateConfig(userId, request.rules)
         return ResponseEntity.ok(updatedRules)
     }
