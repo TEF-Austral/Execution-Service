@@ -26,12 +26,14 @@ class AnalyzerController(
         @RequestParam("container") container: String,
         @RequestParam("key") key: String,
         @RequestParam("version") version: String,
+        @RequestParam("userId", required = false) userId: String?,
     ): ResponseEntity<AnalyzeResponseDTO> {
-        val userId = authenticatedUserProvider.getCurrentUserId()
+        val effectiveUserId = userId ?: authenticatedUserProvider.getCurrentUserId()
+
         val assetContent = assetServiceClient.getAsset(container, key)
         val inputStream = ByteArrayInputStream(assetContent.toByteArray(StandardCharsets.UTF_8))
 
-        val result = analyzerService.validate(inputStream, version, userId)
+        val result = analyzerService.validate(inputStream, version, effectiveUserId)
 
         return when (result) {
             is ValidationResultDTO.Valid ->
