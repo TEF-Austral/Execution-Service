@@ -1,0 +1,61 @@
+package consumers.handlers
+
+import component.AssetServiceClient
+import org.springframework.stereotype.Service
+import producers.FormattingResultProducer
+import requests.FormattingRequestEvent
+import result.FormattingResultEvent
+import services.FormatterConfigService
+import services.FormatterService
+import java.io.ByteArrayInputStream
+
+@Service
+class FormattingRequestHandler(
+    private val formatterService: FormatterService,
+    private val formatterConfigService: FormatterConfigService,
+    private val assetServiceClient: AssetServiceClient,
+    private val resultProducer: FormattingResultProducer,
+) {
+    fun handle(request: FormattingRequestEvent) {
+        println("🔨 [PrintScript] Processing formatting request: ${request.requestId}")
+
+        try {
+            val content =
+                assetServiceClient.getAsset(
+                    request.bucketContainer,
+                    request.bucketKey,
+                )
+
+            val rules = formatterConfigService.getConfig(request.userId)
+            val config = formatterConfigService.rulesToConfigDTO(rules)
+
+            val inputStream = ByteArrayInputStream(content.toByteArray())
+            val formatted = formatterService.format(inputStream, request.version, config)
+
+            val result =
+                FormattingResultEvent(
+                    requestId = request.requestId,
+                    snippetId = request.snippetId,
+                    success = true,
+                    formattedContent = formatted,
+                    error = null,
+                )
+
+            resultProducer.emit(result)
+            println("✅ [PrintScript] Formatting completed: ${request.requestId}")
+        } catch (e: Exception) {
+            println("❌ [PrintScript] Formatting failed: ${e.message}")
+
+            val result =
+                FormattingResultEvent(
+                    requestId = request.requestId,
+                    snippetId = request.snippetId,
+                    success = false,
+                    error = e.message,
+                    formattedContent = null,
+                )
+
+            resultProducer.emit(result)
+        }
+    }
+}

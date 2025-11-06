@@ -43,20 +43,23 @@ management:
       show-details: always
 
 stream:
-  formatting:
-    request:
-      key: formatting-requests
-    result:
-      key: formatting-results
-  linting:
-    request:
-      key: linting-requests
-    result:
-      key: linting-results
-  testing:
-    request:
-      key: testing-requests
-    result:
-      key: testing-results
-  consumer:
-    group: printscript-service-group
+  spring:
+    redis:
+      stream:
+        formatting:
+          request:
+            key: formatting-requests
+          result:
+            key: formatting-results
+        linting:
+          request:
+            key: linting-requests
+          result:
+            key: linting-results
+        testing:
+          request:
+            key: testing-requests
+          result:
+            key: testing-results
+      consumer:
+        group: printscript-service-group
