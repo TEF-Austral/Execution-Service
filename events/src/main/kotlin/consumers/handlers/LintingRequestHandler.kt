@@ -42,7 +42,7 @@ class LintingRequestHandler(
                     is ValidationResultDTO.Invalid -> {
                         LintingResultEvent(
                             requestId = request.requestId,
-                            snippetId = request.snippetId,
+                            snippetId = 5,
                             isValid = false,
                             violations =
                                 validation.violations.map {
