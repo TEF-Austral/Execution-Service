@@ -14,6 +14,31 @@ import java.io.InputStream
 class AnalyzerService(
     private val getAnalyzerConfig: GetAnalyzerConfig,
 ) {
+
+    fun compile(
+        src: InputStream,
+        version: String,
+    ): ValidationResultDTO {
+        val parser = ParserFactory.parse(src, version)
+        val result = parser.parse()
+
+        if (!result.isSuccess()) {
+            val position = result?.getCoordinates()
+
+            return ValidationResultDTO.Invalid(
+                listOf(
+                    LintViolationDTO(
+                        message = result.message(),
+                        line = position.getRow(),
+                        column = position.getColumn(),
+                    ),
+                ),
+            )
+        }
+
+        return ValidationResultDTO.Valid
+    }
+
     fun analyze(
         src: InputStream,
         version: String,
