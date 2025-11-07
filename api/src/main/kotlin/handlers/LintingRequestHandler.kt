@@ -7,8 +7,8 @@ import producers.LintingResultProducer
 import services.AnalyzerService
 import dtos.ValidationResultDTO
 import requests.LintingRequestEvent
-import result.LintingResultEvent
-import result.ViolationDTO
+import results.LintingResultEvent
+import results.ViolationDTO
 import java.io.ByteArrayInputStream
 
 @Service

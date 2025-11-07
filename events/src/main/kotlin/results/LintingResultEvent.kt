@@ -1,4 +1,4 @@
-package result
+package results
 
 data class LintingResultEvent(
     val requestId: String,

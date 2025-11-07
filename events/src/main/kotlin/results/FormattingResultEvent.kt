@@ -1,4 +1,4 @@
-package result
+package results
 
 data class FormattingResultEvent(
     val requestId: String,

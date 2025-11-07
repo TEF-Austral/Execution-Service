@@ -5,7 +5,7 @@ import consumers.handlers.IFormattingRequestHandler
 import org.springframework.stereotype.Service
 import producers.FormattingResultProducer
 import requests.FormattingRequestEvent
-import result.FormattingResultEvent
+import results.FormattingResultEvent
 import services.FormatterConfigService
 import services.FormatterService
 import java.io.ByteArrayInputStream
