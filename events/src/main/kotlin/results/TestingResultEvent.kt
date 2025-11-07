@@ -1,3 +1,5 @@
+package results
+
 data class TestingResultEvent(
     val requestId: String,
     val testId: Long,
