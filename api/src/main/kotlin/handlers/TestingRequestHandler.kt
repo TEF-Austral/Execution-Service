@@ -1,11 +1,11 @@
 package api.handlers
 
-import TestingResultEvent
 import component.AssetServiceClient
 import consumers.handlers.ITestingRequestHandler
 import org.springframework.stereotype.Service
 import producers.TestingResultProducer
 import requests.TestingRequestEvent
+import results.TestingResultEvent
 import services.ExecutionService
 import java.io.ByteArrayInputStream
 
