@@ -33,36 +33,7 @@ class AnalyzerController(
         val assetContent = assetServiceClient.getAsset(container, key)
         val inputStream = ByteArrayInputStream(assetContent.toByteArray(StandardCharsets.UTF_8))
 
-        val result = analyzerService.validate(inputStream, version, effectiveUserId)
-
-        return when (result) {
-            is ValidationResultDTO.Valid ->
-                ResponseEntity.ok(
-                    AnalyzeResponseDTO(
-                        isValid = true,
-                        violations = emptyList(),
-                    ),
-                )
-            is ValidationResultDTO.Invalid ->
-                ResponseEntity.ok(
-                    AnalyzeResponseDTO(
-                        isValid = false,
-                        violations = result.violations,
-                    ),
-                )
-        }
-    }
-
-    @GetMapping("/compile")
-    fun compileCode(
-        @RequestParam("container") container: String,
-        @RequestParam("key") key: String,
-        @RequestParam("version") version: String,
-    ): ResponseEntity<AnalyzeResponseDTO> {
-        val assetContent = assetServiceClient.getAsset(container, key)
-        val inputStream = ByteArrayInputStream(assetContent.toByteArray(StandardCharsets.UTF_8))
-
-        val result = analyzerService.compile(inputStream, version)
+        val result = analyzerService.analyze(inputStream, version, effectiveUserId)
 
         return when (result) {
             is ValidationResultDTO.Valid ->
