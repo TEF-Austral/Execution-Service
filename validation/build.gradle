@@ -8,8 +8,10 @@ repositories {
 }
 
 dependencies {
+    implementation project(":events")
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
     testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.mockito.kotlin:mockito-kotlin:5.2.1'
     implementation 'com.github.tef-austral:ast:1.2.1'
     implementation 'com.github.tef-austral:token:1.2.1'
     implementation 'com.github.tef-austral:common:1.2.1'
