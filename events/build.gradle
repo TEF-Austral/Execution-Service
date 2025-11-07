@@ -13,7 +13,7 @@ dependencies {
     exclude group: "io.lettuce", module: "lettuce-core" // Excluimos Lettuce
     }
     implementation("redis.clients:jedis") // Añadimos Jedis
-    implementation 'com.github.tef-austral.snippet-service:events:1.102.0'
+    implementation 'com.github.tef-austral.snippet-service:events:1.101.4'
     implementation 'jakarta.annotation:jakarta.annotation-api:2.1.1'
     implementation 'org.austral.ingsis:redis-streams-mvc:0.1.13'
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
