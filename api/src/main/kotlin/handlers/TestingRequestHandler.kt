@@ -1,7 +1,8 @@
-package consumers.handlers
+package api.handlers
 
 import TestingResultEvent
 import component.AssetServiceClient
+import consumers.handlers.ITestingRequestHandler
 import org.springframework.stereotype.Service
 import producers.TestingResultProducer
 import requests.TestingRequestEvent
@@ -13,8 +14,8 @@ class TestingRequestHandler(
     private val executionService: ExecutionService,
     private val assetServiceClient: AssetServiceClient,
     private val resultProducer: TestingResultProducer,
-) {
-    fun handle(request: TestingRequestEvent) {
+) : ITestingRequestHandler {
+    override fun handle(request: TestingRequestEvent) {
         println("🧪 [PrintScript] Processing testing request: ${request.requestId}")
 
         try {

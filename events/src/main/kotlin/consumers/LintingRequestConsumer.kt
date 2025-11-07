@@ -1,6 +1,6 @@
 package consumers
 
-import consumers.handlers.LintingRequestHandler
+import consumers.handlers.ILintingRequestHandler
 import org.austral.ingsis.redis.RedisStreamConsumer
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Profile
@@ -17,7 +17,7 @@ class LintingRequestConsumer(
     @Value("\${spring.redis.stream.linting.request.key}") streamKey: String,
     @Value("\${spring.redis.consumer.group}") consumerGroup: String,
     redis: RedisTemplate<String, String>,
-    private val handler: LintingRequestHandler,
+    private val handler: ILintingRequestHandler,
 ) : RedisStreamConsumer<LintingRequestEvent>(streamKey, consumerGroup, redis) {
 
     override fun onMessage(record: ObjectRecord<String, LintingRequestEvent>) {

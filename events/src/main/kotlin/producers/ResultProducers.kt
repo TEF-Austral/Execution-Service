@@ -22,3 +22,15 @@ class TestingResultProducer(
     @Value("\${spring.redis.stream.testing.result.key}") streamKey: String,
     redis: RedisTemplate<String, String>,
 ) : RedisStreamProducer(streamKey, redis)
+
+@Component
+class AnalyzerRulesUpdatedProducer(
+    @Value("\${spring.redis.stream.rules.analyzer.updated}") streamKey: String,
+    redis: RedisTemplate<String, String>,
+) : RedisStreamProducer(streamKey, redis)
+
+@Component
+class FormattingRulesUpdatedProducer(
+    @Value("\${spring.redis.stream.rules.formatter.updated}") streamKey: String,
+    redis: RedisTemplate<String, String>,
+) : RedisStreamProducer(streamKey, redis)

@@ -1,6 +1,7 @@
-package consumers.handlers
+package api.handlers
 
 import component.AssetServiceClient
+import consumers.handlers.IFormattingRequestHandler
 import org.springframework.stereotype.Service
 import producers.FormattingResultProducer
 import requests.FormattingRequestEvent
@@ -15,9 +16,9 @@ class FormattingRequestHandler(
     private val formatterConfigService: FormatterConfigService,
     private val assetServiceClient: AssetServiceClient,
     private val resultProducer: FormattingResultProducer,
-) {
+) : IFormattingRequestHandler {
 
-    fun handle(request: FormattingRequestEvent) {
+    override fun handle(request: FormattingRequestEvent) {
         println("🔨 [PrintScript] Processing formatting request: ${request.requestId}")
 
         try {

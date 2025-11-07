@@ -9,13 +9,16 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.any
+import org.mockito.Mockito.doNothing
+import producers.FormattingRulesUpdatedProducer
 import repositories.FormatterConfigRepository
 import java.util.Optional
 
 class FormatterConfigServiceTest {
 
     private val repository = mock(FormatterConfigRepository::class.java)
-    private val service = FormatterConfigService(repository)
+    private val rulesUpdatedProducer = mock(FormattingRulesUpdatedProducer::class.java)
+    private val service = FormatterConfigService(repository, rulesUpdatedProducer)
 
     @Test
     fun `getConfig should return existing config`() {
@@ -77,6 +80,7 @@ class FormatterConfigServiceTest {
 
         `when`(repository.findByUserId(userId)).thenReturn(Optional.of(existingEntity))
         `when`(repository.save(any())).thenAnswer { it.arguments[0] }
+        doNothing().`when`(rulesUpdatedProducer).emit(any())
 
         val result = service.updateConfig(userId, newConfig)
 
@@ -104,6 +108,7 @@ class FormatterConfigServiceTest {
 
         `when`(repository.findByUserId(userId)).thenReturn(Optional.empty())
         `when`(repository.save(any())).thenAnswer { it.arguments[0] }
+        doNothing().`when`(rulesUpdatedProducer).emit(any())
 
         val result = service.updateConfig(userId, newConfig)
 

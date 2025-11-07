@@ -14,7 +14,6 @@ class AssetServiceClient(
     @param:Value("\${asset.service.url}") private val assetServiceUrl: String,
 ) {
 
-    @Suppress("unused")
     fun getAsset(
         container: String,
         key: String,
