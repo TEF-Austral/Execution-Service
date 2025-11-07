@@ -27,7 +27,7 @@ class LintingRequestHandler(
                 )
 
             val inputStream = ByteArrayInputStream(content.toByteArray())
-            val validation = analyzerService.validate(inputStream, request.version, request.userId)
+            val validation = analyzerService.analyze(inputStream, request.version, request.userId)
 
             val result =
                 when (validation) {
