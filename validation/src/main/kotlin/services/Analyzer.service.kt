@@ -23,14 +23,14 @@ class AnalyzerService(
         val result = parser.parse()
 
         if (!result.isSuccess()) {
-            val position = result?.getCoordinates()
+            val position = result.getCoordinates()
 
             return ValidationResultDTO.Invalid(
                 listOf(
                     LintViolationDTO(
                         message = result.message(),
-                        line = position.getRow(),
-                        column = position.getColumn(),
+                        line = position?.getRow() ?: -1,
+                        column = position?.getColumn() ?: -1,
                     ),
                 ),
             )
