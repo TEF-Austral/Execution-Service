@@ -7,11 +7,12 @@ pluginManagement {
     }
 }
 
-
 plugins {
     id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
 }
 
-rootProject.name = 'execution-service'
+rootProject.name = 'printscript-service'
 
-include('common', 'interpreter', 'token', 'ast', 'lexer', 'reader', 'api')
+include('execution', 'validation', 'formatter', 'events', 'api')
+
+include 'assets'

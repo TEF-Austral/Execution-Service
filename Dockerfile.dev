@@ -1,7 +1,24 @@
-FROM gradle:8.5.0-jdk21-alpine
-
+# dockerfile - alternative: force platform in `Dockerfile.dev`
+FROM --platform=linux/amd64 gradle:8.5.0-jdk21-alpine AS build
 COPY . /home/gradle/src
 WORKDIR /home/gradle/src
-RUN gradle build --no-daemon
-EXPOSE 8080
-ENTRYPOINT ["java","-jar", "/home/gradle/src/build/libs/Execution-Service-1.1.2.jar"]
+
+ARG USERNAME
+ARG TOKEN
+
+# Set environment variables for Gradle to use
+ENV GITHUB_ACTOR=${USERNAME}
+ENV GITHUB_TOKEN=${TOKEN}
+
+RUN gradle :api:bootJar --no-daemon
+
+FROM eclipse-temurin:21-jre-alpine
+EXPOSE 8080 5005
+
+ENV SPRING_PROFILES_ACTIVE=default
+ENV JAVA_OPTS=""
+
+RUN mkdir /app
+COPY --from=build /home/gradle/src/api/build/libs/*.jar /app/spring-boot-application.jar
+
+ENTRYPOINT sh -c "java ${JAVA_OPTS} -jar -Dspring.profiles.active=${SPRING_PROFILES_ACTIVE} /app/spring-boot-application.jar"

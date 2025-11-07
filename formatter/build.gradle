@@ -1,0 +1,26 @@
+plugins {
+    id 'buildlogic.kotlin-common-conventions'
+}
+
+
+//Hola
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+    testImplementation 'junit:junit:4.13.2'
+    implementation 'com.github.tef-austral:token:1.2.0'
+    implementation 'com.github.tef-austral:common:1.2.0'
+    implementation 'com.github.tef-austral:reader:1.2.0'
+    implementation 'com.github.tef-austral:lexer:1.2.0'
+    implementation 'com.github.tef-austral:formatter:1.2.0'
+}
+
+test {
+    useJUnitPlatform()
+}
+kotlin {
+    jvmToolchain(21)
+}

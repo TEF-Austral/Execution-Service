@@ -1,0 +1,5 @@
+let a: number = 3;
+let b: number = 4;
+let c: number = a + b;
+println(c);
+

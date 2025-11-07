@@ -1,0 +1,36 @@
+plugins {
+    id 'buildlogic.kotlin-common-conventions'
+    id 'application'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+    testImplementation 'junit:junit:4.13.2'
+    implementation 'com.github.tef-austral:ast:1.2.0'
+    implementation 'com.github.tef-austral:token:1.2.0'
+    implementation 'com.github.tef-austral:common:1.2.0'
+    implementation 'com.github.tef-austral:reader:1.2.0'
+    implementation 'com.github.tef-austral:lexer:1.2.0'
+    implementation 'com.github.tef-austral:parser:1.2.0'
+    implementation 'com.github.tef-austral:analyzer:1.2.0'
+}
+
+run {
+    standardInput = System.in
+    if (project.hasProperty('args')) {
+        args project.property('args').split(' ')
+    }
+}
+
+test {
+    useJUnitPlatform()
+    workingDir = project.projectDir
+}
+
+kotlin {
+    jvmToolchain(21)
+}

@@ -2,11 +2,33 @@ plugins {
     id 'groovy-gradle-plugin'
 }
 
+def envFile = new File(rootDir.parentFile, '.env')
+def envProps = new Properties()
+if (envFile.exists()) {
+    envFile.withInputStream { envProps.load(it) }
+}
+
 repositories {
     mavenLocal()
     gradlePluginPortal()
     mavenCentral()
     google()
+    maven {
+        name = "GitHubPackages"
+        url = uri("https://maven.pkg.github.com/tef-austral/printscript")
+        credentials {
+            username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+            password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+        }
+    }
+    maven {
+        name = "GitHubPackages"
+        url = uri("https://maven.pkg.github.com/austral-ingsis/class-redis-streams")
+        credentials {
+            username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+            password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+        }
+    }
 }
 
 dependencies {
@@ -15,6 +37,6 @@ dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.25'
     implementation 'org.jetbrains.kotlin:kotlin-allopen:1.9.25'
     implementation 'org.jetbrains.kotlin:kotlin-noarg:1.9.25'
-    implementation 'org.springframework.boot:spring-boot-gradle-plugin:3.5.6'
+    implementation 'org.springframework.boot:spring-boot-gradle-plugin:3.3.0'
     implementation 'io.spring.gradle:dependency-management-plugin:1.1.7'
 }

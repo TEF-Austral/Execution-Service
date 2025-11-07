@@ -1,0 +1,6 @@
+let n:number=10;
+if (n>5) {
+println("big");
+}
+println(n);
+
