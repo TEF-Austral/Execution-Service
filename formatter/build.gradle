@@ -3,12 +3,12 @@ plugins {
 }
 
 
-//Hola
 repositories {
     mavenCentral()
 }
 
 dependencies {
+    implementation project(":events")
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
     testImplementation 'junit:junit:4.13.2'
     implementation 'com.github.tef-austral:token:1.1.50'

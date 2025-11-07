@@ -3,12 +3,15 @@ package services
 import dtos.FormatConfigDTO
 import dtos.FormatterRuleDTO
 import entities.FormatterConfigEntity
+import events.FormattingRulesUpdatedEvent
 import org.springframework.stereotype.Service
+import producers.FormattingRulesUpdatedProducer
 import repositories.FormatterConfigRepository
 
 @Service
 class FormatterConfigService(
     private val formatterConfigRepository: FormatterConfigRepository,
+    private val rulesUpdatedProducer: FormattingRulesUpdatedProducer,
 ) {
 
     fun getConfig(userId: String): List<FormatterRuleDTO> {
@@ -57,6 +60,8 @@ class FormatterConfigService(
             }
 
         val saved = formatterConfigRepository.save(config)
+        rulesUpdatedProducer.emit(FormattingRulesUpdatedEvent(userId = userId))
+        println("📤 [PrintScript] Emitido FormattingRulesUpdatedEvent para usuario: $userId")
         return saved.toRules()
     }
 

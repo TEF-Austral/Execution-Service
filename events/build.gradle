@@ -7,9 +7,6 @@ repositories {
 }
 
 dependencies {
-    implementation project(':validation')
-    implementation project(':execution')
-    implementation project(':formatter')
     implementation project(':assets')
     implementation 'io.projectreactor:reactor-core'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'

@@ -1,6 +1,6 @@
 package consumers
 
-import consumers.handlers.FormattingRequestHandler
+import consumers.handlers.IFormattingRequestHandler
 import org.austral.ingsis.redis.RedisStreamConsumer
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Profile
@@ -17,7 +17,7 @@ class FormattingRequestConsumer(
     @Value("\${spring.redis.stream.formatting.request.key}") streamKey: String,
     @Value("\${spring.redis.consumer.group}") consumerGroup: String,
     redis: RedisTemplate<String, String>,
-    private val handler: FormattingRequestHandler,
+    private val handler: IFormattingRequestHandler,
 ) : RedisStreamConsumer<FormattingRequestEvent>(streamKey, consumerGroup, redis) {
 
     override fun onMessage(record: ObjectRecord<String, FormattingRequestEvent>) {

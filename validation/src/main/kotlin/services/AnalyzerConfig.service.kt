@@ -3,13 +3,16 @@ package services
 import checkers.IdentifierStyle
 import dtos.AnalyzerRuleDTO
 import entities.AnalyzerEntity
+import events.AnalyzerRulesUpdatedEvent
 import repositories.AnalyzerRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import producers.AnalyzerRulesUpdatedProducer
 
 @Service
 class AnalyzerConfigService(
     private val analyzerRepository: AnalyzerRepository,
+    private val rulesUpdatedProducer: AnalyzerRulesUpdatedProducer,
 ) {
 
     fun getConfig(userId: String): List<AnalyzerRuleDTO> {
@@ -33,6 +36,10 @@ class AnalyzerConfigService(
 
         val updatedEntity = applyRulesToEntity(currentEntity, rules)
         val savedEntity = analyzerRepository.save(updatedEntity)
+
+        rulesUpdatedProducer.emit(AnalyzerRulesUpdatedEvent(userId = userId))
+        println("📤 [PrintScript] Emitido AnalyzerRulesUpdatedEvent para usuario: $userId")
+        // --- FIN DE LA ADICIÓN ---
 
         return entityToRules(savedEntity)
     }

@@ -1,6 +1,7 @@
-package consumers.handlers
+package api.handlers
 
 import component.AssetServiceClient
+import consumers.handlers.ILintingRequestHandler
 import org.springframework.stereotype.Service
 import producers.LintingResultProducer
 import services.AnalyzerService
@@ -15,8 +16,8 @@ class LintingRequestHandler(
     private val analyzerService: AnalyzerService,
     private val assetServiceClient: AssetServiceClient,
     private val resultProducer: LintingResultProducer,
-) {
-    fun handle(request: LintingRequestEvent) {
+) : ILintingRequestHandler {
+    override fun handle(request: LintingRequestEvent) {
         println("🔍 [PrintScript] Processing linting request: ${request.requestId}")
 
         try {
