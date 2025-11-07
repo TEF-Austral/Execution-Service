@@ -9,7 +9,10 @@ repositories {
 dependencies {
     implementation project(':assets')
     implementation 'io.projectreactor:reactor-core'
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation("org.springframework.boot:spring-boot-starter-data-redis") {
+    exclude group: "io.lettuce", module: "lettuce-core" // Excluimos Lettuce
+    }
+    implementation("redis.clients:jedis") // Añadimos Jedis
     implementation 'com.github.tef-austral.snippet-service:events:1.102.0'
     implementation 'jakarta.annotation:jakarta.annotation-api:2.1.1'
     implementation 'org.austral.ingsis:redis-streams-mvc:0.1.13'
