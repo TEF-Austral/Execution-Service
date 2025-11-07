@@ -37,7 +37,7 @@ class LintingRequestHandler(
                             requestId = request.requestId,
                             isValid = true,
                             violations = emptyList(),
-                            snippetId = request.snippetid,
+                            snippetId = request.snippetId,
                         )
                     }
                     is ValidationResultDTO.Invalid -> {
@@ -48,7 +48,7 @@ class LintingRequestHandler(
                                 validation.violations.map {
                                     ViolationDTO(it.message, it.line, it.column)
                                 },
-                            snippetId = request.snippetid,
+                            snippetId = request.snippetId,
                         )
                     }
                 }

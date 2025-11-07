@@ -40,6 +40,7 @@ class FormattingRequestHandler(
                     success = true,
                     formattedContent = formatted,
                     error = null,
+                    snippetId = request.snippetId,
                 )
 
             resultProducer.emit(result)
@@ -53,6 +54,7 @@ class FormattingRequestHandler(
                     success = false,
                     error = e.message,
                     formattedContent = null,
+                    snippetId = request.snippetId,
                 )
 
             resultProducer.emit(result)
