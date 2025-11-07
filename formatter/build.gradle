@@ -3,19 +3,19 @@ plugins {
 }
 
 
+//Hola
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation project(":events")
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
     testImplementation 'junit:junit:4.13.2'
-    implementation 'com.github.tef-austral:token:1.2.0'
-    implementation 'com.github.tef-austral:common:1.2.0'
-    implementation 'com.github.tef-austral:reader:1.2.0'
-    implementation 'com.github.tef-austral:lexer:1.2.0'
-    implementation 'com.github.tef-austral:formatter:1.2.0'
+    implementation 'com.github.tef-austral:token:1.2.1'
+    implementation 'com.github.tef-austral:common:1.2.1'
+    implementation 'com.github.tef-austral:reader:1.2.1'
+    implementation 'com.github.tef-austral:lexer:1.2.1'
+    implementation 'com.github.tef-austral:formatter:1.2.1'
 }
 
 test {
