@@ -11,11 +11,44 @@ spring:
     generate-ddl: true
     hibernate:
       ddl-auto: update
+
   security:
     oauth2:
       resourceserver:
         jwt:
           issuer-uri: ${AUTH0_ISSUER_URI}
+
+  # Esta es tu configuración de conexión existente (correcta)
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+
+  # Esta es la configuración de STREAMS (ahora en el lugar correcto)
+  redis:
+    stream:
+      formatting:
+        request:
+          key: formatting-requests
+        result:
+          key: formatting-results
+      linting:
+        request:
+          key: linting-requests
+        result:
+          key: linting-results
+      testing:
+        request:
+          key: testing-requests
+        result:
+          key: testing-results
+      rules:
+        analyzer:
+          updated: analyzer-rules-updated
+        formatter:
+          updated: formatter-rules-updated
+    consumer:
+      group: printscript-service-group
 
 auth0:
   audience: ${AUTH0_AUDIENCE}
@@ -28,11 +61,6 @@ services:
   authorization:
     url: ${AUTHORIZATION_SERVICE_URL}
 
-  data:
-    redis:
-      host: ${REDIS_HOST}
-      port: ${REDIS_PORT}
-
 management:
   endpoints:
     web:
@@ -41,22 +69,3 @@ management:
   endpoint:
     health:
       show-details: always
-
-stream:
-  formatting:
-    request:
-      key: formatting-requests
-    result:
-      key: formatting-results
-  linting:
-    request:
-      key: linting-requests
-    result:
-      key: linting-results
-  testing:
-    request:
-      key: testing-requests
-    result:
-      key: testing-results
-  consumer:
-    group: printscript-service-group

@@ -17,16 +17,7 @@ class AnalyzerServiceV10Test {
             this::class.java.getResourceAsStream(path)
                 ?: throw IllegalArgumentException("Resource not found: $path")
         stream.use {
-            return service.validate(it, "1.0", null)
-        }
-    }
-
-    private fun compileFromResource(path: String): ValidationResultDTO {
-        val stream =
-            this::class.java.getResourceAsStream(path)
-                ?: throw IllegalArgumentException("Resource not found: $path")
-        stream.use {
-            return service.compile(it, "1.0")
+            return service.analyze(it, "1.0", null)
         }
     }
 
@@ -66,26 +57,6 @@ class AnalyzerServiceV10Test {
             assertTrue(
                 result is ValidationResultDTO.Invalid,
                 "Expected Invalid for $path but was $result",
-            )
-        }
-    }
-
-    @Test
-    fun valid_files_should_compile() {
-        val files =
-            listOf(
-                "/printscript/v1_0/valid1.txt",
-                "/printscript/v1_0/valid2.txt",
-                "/printscript/v1_0/valid3.txt",
-                "/printscript/v1_0/valid4.txt",
-                "/printscript/v1_0/valid5.txt",
-            )
-
-        files.forEach { path ->
-            val result = compileFromResource(path)
-            assertTrue(
-                result is ValidationResultDTO.Valid,
-                "Expected Valid compilation for $path but was $result",
             )
         }
     }

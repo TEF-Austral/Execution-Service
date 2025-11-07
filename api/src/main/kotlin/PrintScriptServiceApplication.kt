@@ -2,8 +2,6 @@ package api
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import org.springframework.context.annotation.Bean
-import org.springframework.web.client.RestTemplate
 import org.springframework.boot.autoconfigure.domain.EntityScan
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 
@@ -11,15 +9,15 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories
     scanBasePackages = [
         "api", "assets", "services",
         "repositories", "helpers", "controllers",
-        "dtos", "entities", "security", "events",
+        "dtos", "entities", "security",
+        "events", "component", "config",
+        "consumers", "producers", "requests",
+        "result", "consumers.handlers",
     ],
 )
 @EnableJpaRepositories(basePackages = ["repositories"])
 @EntityScan(basePackages = ["entities"])
-class PrintScriptServiceApplication {
-    @Bean
-    fun restTemplate(): RestTemplate = RestTemplate()
-}
+class PrintScriptServiceApplication
 
 fun main(args: Array<String>) {
     runApplication<PrintScriptServiceApplication>(*args)

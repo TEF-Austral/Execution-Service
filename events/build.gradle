@@ -7,12 +7,10 @@ repositories {
 }
 
 dependencies {
-    implementation project(':validation')
-    implementation project(':execution')
-    implementation project(':formatter')
     implementation project(':assets')
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
     implementation 'io.projectreactor:reactor-core'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'com.github.tef-austral.snippet-service:events:1.102.0'
     implementation 'jakarta.annotation:jakarta.annotation-api:2.1.1'
     implementation 'org.austral.ingsis:redis-streams-mvc:0.1.13'
     testImplementation 'org.jetbrains.kotlin:kotlin-test'

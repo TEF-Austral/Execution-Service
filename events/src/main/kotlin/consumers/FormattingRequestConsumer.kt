@@ -1,6 +1,6 @@
 package consumers
 
-import handlers.FormattingRequestHandler
+import consumers.handlers.IFormattingRequestHandler
 import org.austral.ingsis.redis.RedisStreamConsumer
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Profile
@@ -14,25 +14,27 @@ import java.time.Duration
 @Component
 @Profile("!test")
 class FormattingRequestConsumer(
-    @Value("\${redis.stream.formatting.request.key}") streamKey: String,
-    @Value("\${redis.consumer.group}") consumerGroup: String,
+    @Value("\${spring.redis.stream.formatting.request.key}") streamKey: String,
+    @Value("\${spring.redis.consumer.group}") consumerGroup: String,
     redis: RedisTemplate<String, String>,
-    private val handler: FormattingRequestHandler,
+    private val handler: IFormattingRequestHandler,
 ) : RedisStreamConsumer<FormattingRequestEvent>(streamKey, consumerGroup, redis) {
+
+    override fun onMessage(record: ObjectRecord<String, FormattingRequestEvent>) {
+        println("📨 [PrintScript] Received formatting REQUEST: ${record.value.requestId}")
+        handler.handle(record.value)
+    }
 
     override fun options(): StreamReceiver.StreamReceiverOptions<
         String,
-        ObjectRecord<String, FormattingRequestEvent>,
+        ObjectRecord<
+            String,
+            FormattingRequestEvent,
+        >,
     > =
         StreamReceiver.StreamReceiverOptions
             .builder()
             .pollTimeout(Duration.ofMillis(10000))
             .targetType(FormattingRequestEvent::class.java)
             .build()
-
-    override fun onMessage(record: ObjectRecord<String, FormattingRequestEvent>) {
-        val event = record.value
-        println("📨 [PrintScript Service] Received formatting REQUEST: ${event.requestId}")
-        handler.handleFormattingRequest(event)
-    }
 }

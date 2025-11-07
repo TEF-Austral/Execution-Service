@@ -5,7 +5,7 @@ import config.AnalyzerConfig
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNotNull
 import kotlin.test.assertEquals
 
 class UserConfigProviderTest {
@@ -16,7 +16,7 @@ class UserConfigProviderTest {
 
         val config = provider.getUserConfig("unknown")
 
-        assertNotNull(actual = config)
+        assertNotNull(config)
         assertEquals(IdentifierStyle.NO_STYLE, config.identifierStyle)
     }
 

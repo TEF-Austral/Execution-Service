@@ -3,6 +3,7 @@ package services
 import utils.ErrorHandler
 import utils.InputReceiver
 import utils.PrintEmitter
+import dtos.AllTestSnippetExecution
 import dtos.ExecutionResponseDTO
 import dtos.TestExecutionResponseDTO
 import org.springframework.stereotype.Service
@@ -14,6 +15,25 @@ import java.io.InputStream
 class ExecutionService(
     private val testRepository: TestRepository,
 ) {
+
+    fun executeAllTests(
+        inputStream: InputStream,
+        snippetId: Long,
+        version: String,
+    ): AllTestSnippetExecution {
+        val codeContent = inputStream.readBytes()
+
+        val testResults = mutableListOf<TestExecutionResponseDTO>()
+
+        for (test in testRepository.findBySnippetId(snippetId)) {
+            val testResult = executeTest(codeContent.inputStream(), version, test.id)
+            testResults.add(testResult)
+        }
+
+        return AllTestSnippetExecution(
+            executions = testResults,
+        )
+    }
 
     fun executeTest(
         inputStream: InputStream,
