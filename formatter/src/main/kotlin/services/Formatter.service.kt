@@ -1,5 +1,6 @@
 package services
 
+import dtos.FormatConfigDTO
 import factory.DefaultLexerFactory
 import factory.StringSplitterFactory
 import factory.StringToTokenConverterFactory
@@ -15,17 +16,13 @@ import java.nio.charset.StandardCharsets
 import org.springframework.stereotype.Service
 
 @Service
-class FormatterService(
-    private val formatterConfigService: FormatterConfigService,
-) {
+class FormatterService {
 
     fun format(
         src: InputStream,
         version: String,
-        userId: String,
+        configDTO: FormatConfigDTO,
     ): String {
-        val rules = formatterConfigService.getConfig(userId)
-        val configDTO = formatterConfigService.rulesToConfigDTO(rules)
         val reader = BufferedReader(InputStreamReader(src, StandardCharsets.UTF_8))
         val lexerFactory = DefaultLexerFactory(StringSplitterFactory, StringToTokenConverterFactory)
         val adaptedVersion = StringToPrintScriptVersion().transform(version)
