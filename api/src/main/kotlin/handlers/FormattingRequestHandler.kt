@@ -1,4 +1,4 @@
-package api.handlers
+package handlers
 
 import component.AssetServiceClient
 import consumers.handlers.IFormattingRequestHandler
