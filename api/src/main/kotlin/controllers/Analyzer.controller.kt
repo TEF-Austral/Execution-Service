@@ -23,27 +23,17 @@ class AnalyzerController(
     private val authenticatedUserProvider: AuthenticatedUserProvider,
 ) {
 
-    private fun normalizeVersion(version: String): String =
-        when (version) {
-            "1.1.0" -> "1.1"
-            "1.0.0" -> "1.0"
-            else -> version
-        }
-
     @GetMapping
     fun analyzeCode(
         @RequestParam("container") container: String,
         @RequestParam("key") key: String,
         @RequestParam("version") version: String,
-        @RequestParam("userId", required = false) userId: String?,
     ): ResponseEntity<AnalyzeResponseDTO> {
-        val effectiveUserId = userId ?: authenticatedUserProvider.getCurrentUserId()
-        val normalizedVersion = normalizeVersion(version)
-
+        val userId = authenticatedUserProvider.getCurrentUserId()
         val assetContent = assetServiceClient.getAsset(container, key)
         val inputStream = ByteArrayInputStream(assetContent.toByteArray(StandardCharsets.UTF_8))
 
-        val result = analyzerService.analyze(inputStream, normalizedVersion, effectiveUserId)
+        val result = analyzerService.analyze(inputStream, version, userId)
 
         return when (result) {
             is ValidationResultDTO.Valid ->
@@ -68,9 +58,8 @@ class AnalyzerController(
         @RequestBody content: String,
         @RequestParam("version") version: String,
     ): ResponseEntity<AnalyzeResponseDTO> {
-        val normalizedVersion = normalizeVersion(version)
         val inputStream = ByteArrayInputStream(content.toByteArray(StandardCharsets.UTF_8))
-        val result = analyzerService.compile(inputStream, normalizedVersion)
+        val result = analyzerService.compile(inputStream, version)
 
         return when (result) {
             is ValidationResultDTO.Valid ->
@@ -96,11 +85,10 @@ class AnalyzerController(
         @RequestParam("key") key: String,
         @RequestParam("version") version: String,
     ): ResponseEntity<AnalyzeResponseDTO> {
-        val normalizedVersion = normalizeVersion(version)
         val assetContent = assetServiceClient.getAsset(container, key)
         val inputStream = ByteArrayInputStream(assetContent.toByteArray(StandardCharsets.UTF_8))
 
-        val result = analyzerService.compile(inputStream, normalizedVersion)
+        val result = analyzerService.compile(inputStream, version)
 
         return when (result) {
             is ValidationResultDTO.Valid ->
