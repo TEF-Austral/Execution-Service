@@ -79,12 +79,13 @@ class ExecutionService(
             errors.add(e.message ?: "Unknown error")
         }
 
-        val passed = errors.isEmpty() && outputs == test.expectedOutputs
+        val actualOutputs = outputs.filter { it !in test.inputs }
+        val passed = errors.isEmpty() && actualOutputs == test.expectedOutputs
 
         return TestExecutionResponseDTO(
             testId = testId,
             passed = passed,
-            outputs = outputs,
+            outputs = actualOutputs,
             expectedOutputs = test.expectedOutputs,
             errors = errors,
         )
