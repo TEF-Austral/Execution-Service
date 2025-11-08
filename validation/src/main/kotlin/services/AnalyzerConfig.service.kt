@@ -48,7 +48,7 @@ class AnalyzerConfigService(
             AnalyzerRuleDTO(
                 id = "identifierStyle",
                 name = "Identifier Style",
-                isActive = entity.identifierStyle != IdentifierStyle.NO_STYLE,
+                isActive = true,
                 value = entity.identifierStyle.name,
             ),
             AnalyzerRuleDTO(
@@ -84,7 +84,7 @@ class AnalyzerConfigService(
             when (rule.id) {
                 "identifierStyle" -> {
                     identifierStyle =
-                        if (rule.isActive && rule.value != null) {
+                        if (rule.value != null) {
                             try {
                                 IdentifierStyle.valueOf(rule.value)
                             } catch (e: IllegalArgumentException) {

@@ -43,7 +43,7 @@ class AnalyzerService(
     fun analyze(
         src: InputStream,
         version: String,
-        userId: String?,
+        userId: String,
     ): ValidationResultDTO {
         val parser = ParserFactory.parse(src, version)
         val result = parser.parse()

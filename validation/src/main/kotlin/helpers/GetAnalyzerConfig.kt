@@ -9,11 +9,7 @@ import org.springframework.stereotype.Component
 class GetAnalyzerConfig(
     private val analyzerRepository: AnalyzerRepository,
 ) {
-    fun getUserConfig(userId: String?): AnalyzerConfig {
-        if (userId == null) {
-            return getDefaultConfig()
-        }
-
+    fun getUserConfig(userId: String): AnalyzerConfig {
         val entity =
             analyzerRepository.findById(userId).orElse(null)
                 ?: return getDefaultConfig()
