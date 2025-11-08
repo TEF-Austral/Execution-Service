@@ -1,6 +1,9 @@
 package consumers
 
 import consumers.handlers.ITestingRequestHandler
+import kotlinx.coroutines.Dispatchers // added to run handler in IO dispatcher
+import kotlinx.coroutines.GlobalScope // added to launch a coroutine
+import kotlinx.coroutines.launch // added to launch a coroutine
 import org.austral.ingsis.redis.RedisStreamConsumer
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Profile
@@ -21,7 +24,9 @@ class TestingRequestConsumer(
 ) : RedisStreamConsumer<TestingRequestEvent>(streamKey, consumerGroup, redis) {
 
     override fun onMessage(record: ObjectRecord<String, TestingRequestEvent>) {
-        handler.handle(record.value)
+        GlobalScope.launch(Dispatchers.IO) {
+            handler.handle(record.value)
+        }
     }
 
     override fun options(): StreamReceiver.StreamReceiverOptions<
