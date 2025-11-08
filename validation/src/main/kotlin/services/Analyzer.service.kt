@@ -47,6 +47,19 @@ class AnalyzerService(
         val parser = ParserFactory.parse(src, version)
         val result = parser.parse()
 
+        if (!result.isSuccess()) {
+            val position = result.getCoordinates()
+            return ValidationResultDTO.Invalid(
+                listOf(
+                    LintViolationDTO(
+                        message = result.message(),
+                        line = position?.getRow() ?: -1,
+                        column = position?.getColumn() ?: -1,
+                    ),
+                ),
+            )
+        }
+
         val analyzerConfig = getAnalyzerConfig.getUserConfig(userId)
         val analyzer =
             createAnalyzer(

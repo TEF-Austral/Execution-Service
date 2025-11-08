@@ -59,7 +59,6 @@ class AnalyzerController(
     fun validateContent(
         @RequestBody content: String,
         @RequestParam("version") version: String,
-        @RequestParam("language") language: String,
     ): ResponseEntity<AnalyzeResponseDTO> {
         val inputStream = ByteArrayInputStream(content.toByteArray(StandardCharsets.UTF_8))
         val result = analyzerService.compile(inputStream, version)
