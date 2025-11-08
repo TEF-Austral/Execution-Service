@@ -34,6 +34,12 @@ class FormattingRequestHandler(
             val inputStream = ByteArrayInputStream(content.toByteArray())
             val formatted = formatterService.format(inputStream, request.version, config)
 
+            assetServiceClient.createOrUpdateAsset(
+                request.bucketContainer,
+                request.bucketKey,
+                formatted,
+            )
+
             val result =
                 FormattingResultEvent(
                     requestId = request.requestId,
@@ -44,7 +50,7 @@ class FormattingRequestHandler(
                 )
 
             resultProducer.emit(result)
-            println("✅ [PrintScript] Formatting completed: ${request.requestId}")
+            println("✅ [PrintScript] Formatting completed and saved: ${request.requestId}")
         } catch (e: Exception) {
             println("❌ [PrintScript] Formatting failed: ${e.message}")
 
