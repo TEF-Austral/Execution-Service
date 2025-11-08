@@ -79,8 +79,17 @@ class ExecutionService(
             errors.add(e.message ?: "Unknown error")
         }
 
-        val actualOutputs = outputs.filter { it !in test.inputs }
-        val passed = errors.isEmpty() && actualOutputs == test.expectedOutputs
+        val actualOutputs =
+            outputs.filterNot { output ->
+                test.inputs.any { input -> output.trim() == input.trim() }
+            }
+
+        val passed =
+            errors.isEmpty() &&
+                actualOutputs.size == test.expectedOutputs.size &&
+                actualOutputs.zip(test.expectedOutputs).all { (actual, expected) ->
+                    actual.trim() == expected.trim()
+                }
 
         return TestExecutionResponseDTO(
             testId = testId,

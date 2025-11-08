@@ -21,13 +21,12 @@ object ParserFactory {
         val reader = BufferedReader(InputStreamReader(src, StandardCharsets.UTF_8))
         val lexerFactory = DefaultLexerFactory(StringSplitterFactory, StringToTokenConverterFactory)
         val adaptedVersion =
-            if (version == "1.1.0") {
-                StringToPrintScriptVersion().transform("1.1")
-            } else if (version == "1.0.0") {
-                StringToPrintScriptVersion().transform("1.0")
-            } else {
-                StringToPrintScriptVersion().transform(version)
+            when (version) {
+                "1.1.0" -> StringToPrintScriptVersion().transform("1.1")
+                "1.0.0" -> StringToPrintScriptVersion().transform("1.0")
+                else -> StringToPrintScriptVersion().transform(version)
             }
+
         val lexer = lexerFactory.createLexerWithVersion(adaptedVersion, reader)
         val tokens = LexerTokenStream(lexer)
         return DefaultParserFactory.createWithVersion(adaptedVersion, DefaultNodeBuilder(), tokens)

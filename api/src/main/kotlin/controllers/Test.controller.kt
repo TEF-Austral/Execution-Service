@@ -37,7 +37,6 @@ class TestController(
     ): ResponseEntity<TestExecutionResponseDTO> {
         val assetContent = assetServiceClient.getAsset(container, key)
         val inputStream = ByteArrayInputStream(assetContent.toByteArray(StandardCharsets.UTF_8))
-
         val result = executionService.executeTest(inputStream, version, testId)
 
         return ResponseEntity.ok(result)
