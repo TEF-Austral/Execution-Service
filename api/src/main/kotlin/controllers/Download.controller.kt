@@ -1,7 +1,6 @@
 package controllers
 
 import component.AssetServiceClient
-import security.AuthenticatedUserProvider
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.core.io.Resource
 import org.springframework.http.HttpHeaders
@@ -22,15 +21,14 @@ class DownloadController(
     private val assetServiceClient: AssetServiceClient,
     private val formatterService: FormatterService,
     private val formatterConfigService: FormatterConfigService,
-    private val authenticatedUserProvider: AuthenticatedUserProvider,
 ) {
     @GetMapping("/formatted")
     fun downloadFormatted(
         @RequestParam("container") container: String,
         @RequestParam("key") key: String,
         @RequestParam("version") version: String,
+        @RequestParam("userId") userId: String,
     ): ResponseEntity<Resource> {
-        val userId = authenticatedUserProvider.getCurrentUserId()
         val content = assetServiceClient.getAsset(container, key)
         val rules = formatterConfigService.getConfig(userId)
         val config = formatterConfigService.rulesToConfigDTO(rules)

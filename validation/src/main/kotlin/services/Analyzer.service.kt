@@ -1,5 +1,6 @@
 package services
 
+import config.AnalyzerConfig
 import diagnostic.Diagnostic
 import dtos.LintViolationDTO
 import dtos.ValidationResultDTO
@@ -60,7 +61,7 @@ class AnalyzerService(
             )
         }
 
-        val analyzerConfig = getAnalyzerConfig.getUserConfig(userId)
+        val analyzerConfig: AnalyzerConfig = getAnalyzerConfig.getUserConfig(userId)
         val analyzer =
             createAnalyzer(
                 StringToPrintScriptVersion().transform(version),

@@ -1,7 +1,6 @@
 package controllers
 
 import component.AssetServiceClient
-import security.AuthenticatedUserProvider
 import dtos.AnalyzeResponseDTO
 import dtos.ValidationResultDTO
 import org.springframework.http.ResponseEntity
@@ -20,7 +19,6 @@ import java.nio.charset.StandardCharsets
 class AnalyzerController(
     private val analyzerService: AnalyzerService,
     private val assetServiceClient: AssetServiceClient,
-    private val authenticatedUserProvider: AuthenticatedUserProvider,
 ) {
 
     @GetMapping
@@ -28,8 +26,8 @@ class AnalyzerController(
         @RequestParam("container") container: String,
         @RequestParam("key") key: String,
         @RequestParam("version") version: String,
+        @RequestParam("userId") userId: String,
     ): ResponseEntity<AnalyzeResponseDTO> {
-        val userId = authenticatedUserProvider.getCurrentUserId()
         val assetContent = assetServiceClient.getAsset(container, key)
         val inputStream = ByteArrayInputStream(assetContent.toByteArray(StandardCharsets.UTF_8))
 
