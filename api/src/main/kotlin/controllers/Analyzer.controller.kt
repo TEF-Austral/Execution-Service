@@ -30,7 +30,6 @@ class AnalyzerController(
     ): ResponseEntity<AnalyzeResponseDTO> {
         val assetContent = assetServiceClient.getAsset(container, key)
         val inputStream = ByteArrayInputStream(assetContent.toByteArray(StandardCharsets.UTF_8))
-
         val result = analyzerService.analyze(inputStream, version, userId)
 
         return when (result) {
