@@ -6,12 +6,14 @@ import org.springframework.stereotype.Service
 import producers.FormattingResultProducer
 import requests.FormattingRequestEvent
 import result.FormattingResultEvent
+import services.FormatterConfigService
 import services.FormatterService
 import java.io.ByteArrayInputStream
 
 @Service
 class FormattingRequestHandler(
     private val formatterService: FormatterService,
+    private val formatterConfigService: FormatterConfigService,
     private val assetServiceClient: AssetServiceClient,
     private val resultProducer: FormattingResultProducer,
 ) : IFormattingRequestHandler {
@@ -25,8 +27,12 @@ class FormattingRequestHandler(
                     request.bucketContainer,
                     request.bucketKey,
                 )
+
+            val rules = formatterConfigService.getConfig(request.userId)
+            val config = formatterConfigService.rulesToConfigDTO(rules)
+
             val inputStream = ByteArrayInputStream(content.toByteArray())
-            val formatted = formatterService.format(inputStream, request.version, request.userId)
+            val formatted = formatterService.format(inputStream, request.version, config)
 
             val result =
                 FormattingResultEvent(
