@@ -3,14 +3,15 @@ package utils
 import emitter.Emitter
 import result.InterpreterResult
 
-class PrintEmitterAdapter(
-    private val printEmitter: Emitter,
+class CapturingPrintEmitter(
+    private val outputs: MutableList<String>,
 ) : Emitter {
+
     override fun emit(value: InterpreterResult) {
-        printEmitter.emit(value)
+        outputs.add(value.interpreter?.getValue().toString())
     }
 
     override fun stringEmit(value: String) {
-        printEmitter.stringEmit(value)
+        outputs.add(value)
     }
 }

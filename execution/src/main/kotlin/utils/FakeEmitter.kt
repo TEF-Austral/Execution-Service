@@ -3,14 +3,11 @@ package utils
 import emitter.Emitter
 import result.InterpreterResult
 
-class PrintEmitterAdapter(
-    private val printEmitter: Emitter,
-) : Emitter {
+class FakeEmitter : Emitter {
+
     override fun emit(value: InterpreterResult) {
-        printEmitter.emit(value)
     }
 
     override fun stringEmit(value: String) {
-        printEmitter.stringEmit(value)
     }
 }

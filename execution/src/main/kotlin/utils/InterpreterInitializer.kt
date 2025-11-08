@@ -1,5 +1,6 @@
 package utils
 
+import emitter.Emitter
 import factory.DefaultInterpreterFactory
 import parser.stream.ParserAstStream
 import transformer.StringToPrintScriptVersion
@@ -10,18 +11,18 @@ object InterpreterInitializer {
     fun execute(
         src: InputStream,
         version: String,
-        emitter: PrintEmitter,
+        printEmitter: Emitter,
+        inputEmitter: Emitter,
         handler: ErrorHandler,
         provider: InputReceiver,
     ) {
         val adaptedVersion = StringToPrintScriptVersion().transform(version)
         val astStream = ParserAstStream(parse(src, version))
-        val adaptedEmitter = PrintEmitterAdapter(emitter)
-        val adaptedInput = InputProviderAdapter(provider, emitter)
+        val adaptedInput = InputProviderAdapter(provider, inputEmitter)
         val interpreter =
             DefaultInterpreterFactory.createWithVersionAndEmitterAndInputProvider(
                 adaptedVersion,
-                adaptedEmitter,
+                printEmitter,
                 adaptedInput,
             )
         val result = interpreter.interpret(astStream)

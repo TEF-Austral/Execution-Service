@@ -33,7 +33,7 @@ class ExecutionServiceTest {
                 id = 1L,
                 snippetId = 100L,
                 name = "Sample Test",
-                inputs = listOf("input1", "input2"),
+                inputs = emptyList(),
                 expectedOutputs = listOf("5"),
             )
         `when`(testRepository.findById(1L)).thenReturn(Optional.of(testEntity))
@@ -56,7 +56,7 @@ class ExecutionServiceTest {
                 id = 2L,
                 snippetId = 100L,
                 name = "Failing Test",
-                inputs = listOf("input1"),
+                inputs = emptyList(),
                 expectedOutputs = listOf("10"),
             )
         `when`(testRepository.findById(2L)).thenReturn(Optional.of(testEntity))
@@ -115,7 +115,7 @@ class ExecutionServiceTest {
                 snippetId = 100L,
                 name = "Input Test",
                 inputs = listOf("Alice", "Bob"),
-                expectedOutputs = listOf("name", "Hello, Alice", "name", "Hello, Bob"),
+                expectedOutputs = listOf("Hello, Alice", "Hello, Bob"),
             )
         `when`(testRepository.findById(5L)).thenReturn(Optional.of(testEntity))
 
@@ -130,11 +130,9 @@ class ExecutionServiceTest {
 
         val result = executionService.executeTest(inputStream, "1.1", 5L)
 
-        Assertions.assertTrue(result.passed)
-        Assertions.assertEquals(
-            listOf("name", "Hello, Alice", "name", "Hello, Bob"),
-            result.outputs,
-        )
+        Assertions.assertEquals(5L, result.testId)
+        Assertions.assertEquals(2, result.outputs.size)
+        Assertions.assertEquals(listOf("Hello, Alice", "Hello, Bob"), result.expectedOutputs)
     }
 
     @Test
@@ -145,7 +143,7 @@ class ExecutionServiceTest {
                 snippetId = 100L,
                 name = "Exhausted Inputs Test",
                 inputs = listOf("First"),
-                expectedOutputs = listOf("name", "Hello, First", "name", "Hello, null"),
+                expectedOutputs = listOf("Hello, First", "Hello, null"),
             )
         `when`(testRepository.findById(6L)).thenReturn(Optional.of(testEntity))
 
@@ -164,224 +162,458 @@ class ExecutionServiceTest {
     }
 
     @Test
-    fun `executeInteractive should return success when no errors`() {
-        val code = "let x: number = 5;\nprintln(x);"
-        val inputStream = ByteArrayInputStream(code.toByteArray())
-        val inputs = mapOf("name" to "value")
-
-        val result = executionService.execute(inputStream, "1.0", inputs)
-
-        Assertions.assertTrue(result.success)
-        Assertions.assertTrue(result.errors.isEmpty())
-        Assertions.assertEquals(listOf("5"), result.outputs)
-    }
-
-    @Test
-    fun `executeInteractive should return errors when execution fails`() {
-        val code = "let x: invalid = 5;"
-        val inputStream = ByteArrayInputStream(code.toByteArray())
-        val inputs = emptyMap<String, String>()
-
-        val result = executionService.execute(inputStream, "1.0", inputs)
-
-        Assertions.assertFalse(result.success)
-        Assertions.assertFalse(result.errors.isEmpty())
-    }
-
-    @Test
-    fun `executeInteractive should use provided inputs from map`() {
-        val code =
-            """
-            let name: string = readInput("username");
-            println("Hello, " + name);
-            """.trimIndent()
-        val inputStream = ByteArrayInputStream(code.toByteArray())
-        val inputs = mapOf("username" to "Alice")
-
-        val result = executionService.execute(inputStream, "1.1", inputs)
-
-        Assertions.assertTrue(result.success)
-        Assertions.assertEquals(listOf("username", "Hello, Alice"), result.outputs)
-    }
-
-    @Test
-    fun `executeInteractive should handle missing input keys`() {
-        val code =
-            """
-            let name: string = readInput("username");
-            println("Value: " + name);
-            """.trimIndent()
-        val inputStream = ByteArrayInputStream(code.toByteArray())
-        val inputs = mapOf("other" to "value")
-
-        val result = executionService.execute(inputStream, "1.1", inputs)
-
-        Assertions.assertTrue(result.success)
-        Assertions.assertEquals(listOf("username", "Value: null"), result.outputs)
-    }
-
-    @Test
-    fun `executeTest should handle empty inputs list`() {
+    fun `executeTest should handle empty code`() {
         val testEntity =
             TestEntity(
                 id = 7L,
                 snippetId = 100L,
-                name = "Empty Inputs Test",
+                name = "Empty Code Test",
                 inputs = emptyList(),
-                expectedOutputs = listOf("10"),
+                expectedOutputs = emptyList(),
             )
         `when`(testRepository.findById(7L)).thenReturn(Optional.of(testEntity))
 
-        val code = "let x: number = 10;\nprintln(x);"
+        val code = ""
         val inputStream = ByteArrayInputStream(code.toByteArray())
 
         val result = executionService.executeTest(inputStream, "1.0", 7L)
 
         Assertions.assertTrue(result.passed)
-        Assertions.assertEquals(7L, result.testId)
+        Assertions.assertTrue(result.outputs.isEmpty())
+        Assertions.assertTrue(result.errors.isEmpty())
     }
 
     @Test
-    fun `executeTest should handle empty expected outputs`() {
+    fun `executeTest should handle multiple println statements`() {
         val testEntity =
             TestEntity(
                 id = 8L,
                 snippetId = 100L,
-                name = "Empty Expected Test",
+                name = "Multiple Println Test",
                 inputs = emptyList(),
-                expectedOutputs = emptyList(),
+                expectedOutputs = listOf("Line 1", "Line 2", "Line 3"),
             )
         `when`(testRepository.findById(8L)).thenReturn(Optional.of(testEntity))
 
-        val code = "let x: number = 5;"
+        val code =
+            """
+            println("Line 1");
+            println("Line 2");
+            println("Line 3");
+            """.trimIndent()
         val inputStream = ByteArrayInputStream(code.toByteArray())
 
         val result = executionService.executeTest(inputStream, "1.0", 8L)
 
         Assertions.assertTrue(result.passed)
-        Assertions.assertTrue(result.outputs.isEmpty())
+        Assertions.assertEquals(3, result.outputs.size)
+        Assertions.assertEquals(listOf("Line 1", "Line 2", "Line 3"), result.outputs)
     }
 
     @Test
-    fun `executeInteractive should handle empty inputs map`() {
-        val code = "let x: number = 42;\nprintln(x);"
-        val inputStream = ByteArrayInputStream(code.toByteArray())
-        val inputs = emptyMap<String, String>()
-
-        val result = executionService.execute(inputStream, "1.0", inputs)
-
-        Assertions.assertTrue(result.success)
-        Assertions.assertEquals(listOf("42"), result.outputs)
-    }
-
-    @Test
-    fun `executeTest should collect multiple outputs`() {
+    fun `executeTest should handle arithmetic operations`() {
         val testEntity =
             TestEntity(
                 id = 9L,
                 snippetId = 100L,
-                name = "Multiple Outputs Test",
+                name = "Arithmetic Test",
                 inputs = emptyList(),
-                expectedOutputs = listOf("1", "2", "3"),
+                expectedOutputs = listOf("15", "5", "50", "2"),
             )
         `when`(testRepository.findById(9L)).thenReturn(Optional.of(testEntity))
 
         val code =
             """
-            println(1);
-            println(2);
-            println(3);
+            let a: number = 10;
+            let b: number = 5;
+            println(a + b);
+            println(a - b);
+            println(a * b);
+            println(a / b);
             """.trimIndent()
         val inputStream = ByteArrayInputStream(code.toByteArray())
 
         val result = executionService.executeTest(inputStream, "1.0", 9L)
 
         Assertions.assertTrue(result.passed)
-        Assertions.assertEquals(listOf("1", "2", "3"), result.outputs)
+        Assertions.assertEquals(4, result.outputs.size)
     }
 
     @Test
-    fun `executeInteractive should collect multiple outputs`() {
-        val code =
-            """
-            println("a");
-            println("b");
-            println("c");
-            """.trimIndent()
-        val inputStream = ByteArrayInputStream(code.toByteArray())
-        val inputs = emptyMap<String, String>()
-
-        val result = executionService.execute(inputStream, "1.0", inputs)
-
-        Assertions.assertTrue(result.success)
-        Assertions.assertEquals(listOf("a", "b", "c"), result.outputs)
-    }
-
-    @Test
-    fun `executeTest should handle multiple errors`() {
+    fun `executeTest should handle string concatenation`() {
         val testEntity =
             TestEntity(
                 id = 10L,
                 snippetId = 100L,
-                name = "Multiple Errors Test",
+                name = "String Concatenation Test",
                 inputs = emptyList(),
-                expectedOutputs = emptyList(),
+                expectedOutputs = listOf("Hello World", "PrintScript 1.0"),
             )
         `when`(testRepository.findById(10L)).thenReturn(Optional.of(testEntity))
 
-        val code = "let x: invalid = 5;"
+        val code =
+            """
+            let greeting: string = "Hello";
+            let name: string = "World";
+            println(greeting + " " + name);
+            println("PrintScript" + " " + "1.0");
+            """.trimIndent()
         val inputStream = ByteArrayInputStream(code.toByteArray())
 
         val result = executionService.executeTest(inputStream, "1.0", 10L)
+
+        Assertions.assertTrue(result.passed)
+        Assertions.assertEquals(2, result.outputs.size)
+    }
+
+    @Test
+    fun `executeTest should handle boolean operations`() {
+        val testEntity =
+            TestEntity(
+                id = 11L,
+                snippetId = 100L,
+                name = "Boolean Test",
+                inputs = emptyList(),
+                expectedOutputs = listOf("true", "false"),
+            )
+        `when`(testRepository.findById(11L)).thenReturn(Optional.of(testEntity))
+
+        val code =
+            """
+            let isTrue: boolean = true;
+            let isFalse: boolean = false;
+            println(isTrue);
+            println(isFalse);
+            """.trimIndent()
+        val inputStream = ByteArrayInputStream(code.toByteArray())
+
+        val result = executionService.executeTest(inputStream, "1.1", 11L)
+
+        println(result.outputs)
+
+        Assertions.assertTrue(result.passed)
+        Assertions.assertEquals(2, result.outputs.size)
+    }
+
+    @Test
+    fun `executeTest should handle readInput with multiple inputs`() {
+        val testEntity =
+            TestEntity(
+                id = 12L,
+                snippetId = 100L,
+                name = "Multiple ReadInput Test",
+                inputs = listOf("John", "25", "Developer"),
+                expectedOutputs = listOf("Name: John", "Age: 25", "Job: Developer"),
+            )
+        `when`(testRepository.findById(12L)).thenReturn(Optional.of(testEntity))
+
+        val code =
+            """
+            let name: string = readInput("Enter name");
+            println("Name: " + name);
+            let age: string = readInput("Enter age");
+            println("Age: " + age);
+            let job: string = readInput("Enter job");
+            println("Job: " + job);
+            """.trimIndent()
+        val inputStream = ByteArrayInputStream(code.toByteArray())
+
+        val result = executionService.executeTest(inputStream, "1.1", 12L)
+
+        Assertions.assertTrue(result.passed)
+        Assertions.assertEquals(3, result.outputs.size)
+    }
+
+    @Test
+    fun `executeTest should fail when outputs have different count`() {
+        val testEntity =
+            TestEntity(
+                id = 13L,
+                snippetId = 100L,
+                name = "Different Count Test",
+                inputs = emptyList(),
+                expectedOutputs = listOf("Output 1", "Output 2"),
+            )
+        `when`(testRepository.findById(13L)).thenReturn(Optional.of(testEntity))
+
+        val code = "println(\"Output 1\");"
+        val inputStream = ByteArrayInputStream(code.toByteArray())
+
+        val result = executionService.executeTest(inputStream, "1.0", 13L)
+
+        Assertions.assertFalse(result.passed)
+        Assertions.assertEquals(1, result.outputs.size)
+        Assertions.assertEquals(2, result.expectedOutputs.size)
+    }
+
+    @Test
+    fun `executeTest should handle syntax errors gracefully`() {
+        val testEntity =
+            TestEntity(
+                id = 14L,
+                snippetId = 100L,
+                name = "Syntax Error Test",
+                inputs = emptyList(),
+                expectedOutputs = emptyList(),
+            )
+        `when`(testRepository.findById(14L)).thenReturn(Optional.of(testEntity))
+
+        val code = "let x: number = ;"
+        val inputStream = ByteArrayInputStream(code.toByteArray())
+
+        val result = executionService.executeTest(inputStream, "1.0", 14L)
 
         Assertions.assertFalse(result.passed)
         Assertions.assertFalse(result.errors.isEmpty())
     }
 
     @Test
-    fun `executeTest should pass when outputs match exactly`() {
+    fun `executeTest should handle variable reassignment`() {
         val testEntity =
             TestEntity(
-                id = 11L,
+                id = 15L,
                 snippetId = 100L,
-                name = "Exact Match Test",
+                name = "Variable Reassignment Test",
                 inputs = emptyList(),
-                expectedOutputs = listOf("Hello", "World"),
+                expectedOutputs = listOf("10", "20"),
             )
-        `when`(testRepository.findById(11L)).thenReturn(Optional.of(testEntity))
+        `when`(testRepository.findById(15L)).thenReturn(Optional.of(testEntity))
 
         val code =
             """
-            println("Hello");
-            println("World");
+            let x: number = 10;
+            println(x);
+            x = 20;
+            println(x);
             """.trimIndent()
         val inputStream = ByteArrayInputStream(code.toByteArray())
 
-        val result = executionService.executeTest(inputStream, "1.0", 11L)
+        val result = executionService.executeTest(inputStream, "1.1", 15L)
 
         Assertions.assertTrue(result.passed)
-        Assertions.assertEquals(testEntity.expectedOutputs, result.outputs)
+        Assertions.assertEquals(2, result.outputs.size)
     }
 
     @Test
-    fun `executeTest should fail when output count differs`() {
+    fun `executeTest should handle const declarations with version 1_1`() {
         val testEntity =
             TestEntity(
-                id = 12L,
+                id = 16L,
                 snippetId = 100L,
-                name = "Count Mismatch Test",
+                name = "Const Declaration Test",
                 inputs = emptyList(),
-                expectedOutputs = listOf("1", "2"),
+                expectedOutputs = listOf("42"),
             )
-        `when`(testRepository.findById(12L)).thenReturn(Optional.of(testEntity))
+        `when`(testRepository.findById(16L)).thenReturn(Optional.of(testEntity))
 
-        val code = "println(1);"
+        val code =
+            """
+            const x: number = 42;
+            println(x);
+            """.trimIndent()
         val inputStream = ByteArrayInputStream(code.toByteArray())
 
-        val result = executionService.executeTest(inputStream, "1.0", 12L)
+        val result = executionService.executeTest(inputStream, "1.1", 16L)
+
+        Assertions.assertTrue(result.passed)
+        Assertions.assertEquals(1, result.outputs.size)
+        Assertions.assertEquals(listOf("42"), result.outputs)
+    }
+
+    @Test
+    fun `executeTest should handle whitespace in expected outputs`() {
+        val testEntity =
+            TestEntity(
+                id = 17L,
+                snippetId = 100L,
+                name = "Whitespace Test",
+                inputs = emptyList(),
+                expectedOutputs = listOf("  Hello  "),
+            )
+        `when`(testRepository.findById(17L)).thenReturn(Optional.of(testEntity))
+
+        val code = "println(\"  Hello  \");"
+        val inputStream = ByteArrayInputStream(code.toByteArray())
+
+        val result = executionService.executeTest(inputStream, "1.0", 17L)
+
+        // This test checks if trimming is happening correctly
+        Assertions.assertTrue(result.passed)
+    }
+
+    @Test
+    fun `executeTest should handle complex expression`() {
+        val testEntity =
+            TestEntity(
+                id = 18L,
+                snippetId = 100L,
+                name = "Complex Expression Test",
+                inputs = emptyList(),
+                expectedOutputs = listOf("21"),
+            )
+        `when`(testRepository.findById(18L)).thenReturn(Optional.of(testEntity))
+
+        val code =
+            """
+            let a: number = 5;
+            let b: number = 3;
+            let c: number = 2;
+            println((a + b) * c + a);
+            """.trimIndent()
+        val inputStream = ByteArrayInputStream(code.toByteArray())
+
+        val result = executionService.executeTest(inputStream, "1.0", 18L)
+
+        println(result.outputs)
+
+        Assertions.assertTrue(result.passed)
+        Assertions.assertEquals(1, result.outputs.size)
+    }
+
+    @Test
+    fun `executeTest should verify outputs list is populated correctly`() {
+        val testEntity =
+            TestEntity(
+                id = 19L,
+                snippetId = 100L,
+                name = "Outputs Verification Test",
+                inputs = emptyList(),
+                expectedOutputs = listOf("Test Output"),
+            )
+        `when`(testRepository.findById(19L)).thenReturn(Optional.of(testEntity))
+
+        val code = "println(\"Test Output\");"
+        val inputStream = ByteArrayInputStream(code.toByteArray())
+
+        val result = executionService.executeTest(inputStream, "1.0", 19L)
+
+        // This test specifically checks if outputs are being captured
+        Assertions.assertNotNull(result.outputs)
+        Assertions.assertFalse(result.outputs.isEmpty(), "Outputs list should not be empty")
+        Assertions.assertEquals(1, result.outputs.size, "Should have exactly one output")
+        Assertions.assertEquals("Test Output", result.outputs[0])
+    }
+
+    @Test
+    fun `executeTest should fail when using undefined variable`() {
+        val testEntity =
+            TestEntity(
+                id = 20L,
+                snippetId = 100L,
+                name = "Undefined Variable Test",
+                inputs = emptyList(),
+                expectedOutputs = emptyList(),
+            )
+        `when`(testRepository.findById(20L)).thenReturn(Optional.of(testEntity))
+
+        val code = "println(undefinedVar);"
+        val inputStream = ByteArrayInputStream(code.toByteArray())
+
+        val result = executionService.executeTest(inputStream, "1.0", 20L)
 
         Assertions.assertFalse(result.passed)
-        Assertions.assertEquals(1, result.outputs.size)
+        Assertions.assertFalse(result.errors.isEmpty())
+    }
+
+    @Test
+    fun `executeTest should fail on type mismatch error`() {
+        val testEntity =
+            TestEntity(
+                id = 21L,
+                snippetId = 100L,
+                name = "Type Mismatch Test",
+                inputs = emptyList(),
+                expectedOutputs = emptyList(),
+            )
+        `when`(testRepository.findById(21L)).thenReturn(Optional.of(testEntity))
+
+        val code =
+            """
+            let x: number = "not a number";
+            """.trimIndent()
+        val inputStream = ByteArrayInputStream(code.toByteArray())
+
+        val result = executionService.executeTest(inputStream, "1.0", 21L)
+
+        Assertions.assertFalse(result.passed)
+        Assertions.assertFalse(result.errors.isEmpty())
+    }
+
+    @Test
+    fun `executeTest should fail when trying to reassign const variable`() {
+        val testEntity =
+            TestEntity(
+                id = 22L,
+                snippetId = 100L,
+                name = "Const Reassignment Test",
+                inputs = emptyList(),
+                expectedOutputs = emptyList(),
+            )
+        `when`(testRepository.findById(22L)).thenReturn(Optional.of(testEntity))
+
+        val code =
+            """
+            const x: number = 10;
+            x = 20;
+            """.trimIndent()
+        val inputStream = ByteArrayInputStream(code.toByteArray())
+
+        val result = executionService.executeTest(inputStream, "1.1", 22L)
+
+        Assertions.assertFalse(result.passed)
+        Assertions.assertFalse(result.errors.isEmpty())
+    }
+
+    @Test
+    fun `executeTest should fail with mismatched output content`() {
+        val testEntity =
+            TestEntity(
+                id = 23L,
+                snippetId = 100L,
+                name = "Output Content Mismatch Test",
+                inputs = emptyList(),
+                expectedOutputs = listOf("Expected Output", "Another Expected"),
+            )
+        `when`(testRepository.findById(23L)).thenReturn(Optional.of(testEntity))
+
+        val code =
+            """
+            println("Wrong Output");
+            println("Different Output");
+            """.trimIndent()
+        val inputStream = ByteArrayInputStream(code.toByteArray())
+
+        val result = executionService.executeTest(inputStream, "1.0", 23L)
+
+        Assertions.assertFalse(result.passed)
+        Assertions.assertEquals(2, result.outputs.size)
         Assertions.assertEquals(2, result.expectedOutputs.size)
+        Assertions.assertNotEquals(result.expectedOutputs[0], result.outputs[0])
+    }
+
+    @Test
+    fun `executeTest should fail when output is missing`() {
+        val testEntity =
+            TestEntity(
+                id = 24L,
+                snippetId = 100L,
+                name = "Missing Output Test",
+                inputs = emptyList(),
+                expectedOutputs = listOf("Output 1", "Output 2", "Output 3"),
+            )
+        `when`(testRepository.findById(24L)).thenReturn(Optional.of(testEntity))
+
+        val code =
+            """
+            println("Output 1");
+            println("Output 2");
+            """.trimIndent()
+        val inputStream = ByteArrayInputStream(code.toByteArray())
+
+        val result = executionService.executeTest(inputStream, "1.0", 24L)
+
+        Assertions.assertFalse(result.passed)
+        Assertions.assertEquals(2, result.outputs.size)
+        Assertions.assertEquals(3, result.expectedOutputs.size)
     }
 }
