@@ -34,12 +34,6 @@ class FormattingRequestHandler(
             val inputStream = ByteArrayInputStream(content.toByteArray())
             val formatted = formatterService.format(inputStream, request.version, config)
 
-            assetServiceClient.createOrUpdateAsset(
-                request.bucketContainer,
-                request.bucketKey,
-                formatted,
-            )
-
             val result =
                 FormattingResultEvent(
                     requestId = request.requestId,
