@@ -30,10 +30,9 @@ class FormatterController(
         val rules = formatterConfigService.getConfig(userId)
         val config = formatterConfigService.rulesToConfigDTO(rules)
         val inputStream = ByteArrayInputStream(assetContent.toByteArray(StandardCharsets.UTF_8))
+        println("User Id: $userId")
         val formattedContent = formatterService.format(inputStream, version, config)
-
         assetServiceClient.createOrUpdateAsset(container, key, formattedContent)
-
         return ResponseEntity.ok(formattedContent)
     }
 
@@ -48,6 +47,7 @@ class FormatterController(
         val config = formatterConfigService.rulesToConfigDTO(rules)
         val assetContent = assetServiceClient.getAsset(container, key)
         val inputStream = ByteArrayInputStream(assetContent.toByteArray(StandardCharsets.UTF_8))
+        println("User Id: $userId")
         val formattedContent = formatterService.format(inputStream, version, config)
         return ResponseEntity.ok(formattedContent)
     }

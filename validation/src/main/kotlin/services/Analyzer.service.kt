@@ -70,6 +70,9 @@ class AnalyzerService(
 
         val diagnostics = analyzer.analyze(result)
 
+        println("User Id: $userId")
+        println("Analyzer Config: $analyzerConfig")
+
         return if (diagnostics.isEmpty()) {
             ValidationResultDTO.Valid
         } else {
