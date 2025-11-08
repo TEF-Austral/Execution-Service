@@ -2,6 +2,7 @@ package handlers
 
 import component.AssetServiceClient
 import consumers.handlers.ITestingRequestHandler
+import dtos.AllTestSnippetExecution
 import org.springframework.stereotype.Service
 import producers.TestingResultProducer
 import requests.TestingRequestEvent
@@ -16,8 +17,6 @@ class TestingRequestHandler(
     private val resultProducer: TestingResultProducer,
 ) : ITestingRequestHandler {
     override fun handle(request: TestingRequestEvent) {
-        println("🧪 [PrintScript] Processing testing request: ${request.requestId}")
-
         try {
             val content =
                 assetServiceClient.getAsset(
@@ -26,6 +25,7 @@ class TestingRequestHandler(
                 )
 
             val inputStream = ByteArrayInputStream(content.toByteArray())
+
             val allTestResults =
                 executionService.executeAllTests(
                     inputStream,
@@ -33,25 +33,28 @@ class TestingRequestHandler(
                     request.version,
                 )
 
-            allTestResults.executions.forEach { testResult ->
-                val result =
-                    TestingResultEvent(
-                        requestId = request.requestId,
-                        snippetId = request.snippetId,
-                        passed = testResult.passed,
-                        outputs = testResult.outputs,
-                        expectedOutputs = testResult.expectedOutputs,
-                        errors = testResult.errors,
-                        testId = testResult.testId,
-                    )
-                resultProducer.emit(result)
-            }
-
-            println(
-                "✅ [PrintScript] Testing completed: ${request.requestId} (${allTestResults.executions.size} tests)",
-            )
+            emitTestingResults(allTestResults, request)
         } catch (e: Exception) {
-            println("❌ [PrintScript] Testing failed: ${e.message}")
+            println("[PrintScript] Testing failed: ${e.message}")
+        }
+    }
+
+    private fun emitTestingResults(
+        allTestResults: AllTestSnippetExecution,
+        request: TestingRequestEvent,
+    ) {
+        allTestResults.executions.forEach { testResult ->
+            val result =
+                TestingResultEvent(
+                    requestId = request.requestId,
+                    snippetId = request.snippetId,
+                    passed = testResult.passed,
+                    outputs = testResult.outputs,
+                    expectedOutputs = testResult.expectedOutputs,
+                    errors = testResult.errors,
+                    testId = testResult.testId,
+                )
+            resultProducer.emit(result)
         }
     }
 }

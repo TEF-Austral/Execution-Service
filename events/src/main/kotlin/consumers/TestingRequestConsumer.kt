@@ -1,9 +1,9 @@
 package consumers
 
 import consumers.handlers.ITestingRequestHandler
-import kotlinx.coroutines.Dispatchers // added to run handler in IO dispatcher
-import kotlinx.coroutines.GlobalScope // added to launch a coroutine
-import kotlinx.coroutines.launch // added to launch a coroutine
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.austral.ingsis.redis.RedisStreamConsumer
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Profile

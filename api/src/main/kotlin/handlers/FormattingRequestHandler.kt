@@ -19,8 +19,6 @@ class FormattingRequestHandler(
 ) : IFormattingRequestHandler {
 
     override fun handle(request: FormattingRequestEvent) {
-        println("🔨 [PrintScript] Processing formatting request: ${request.requestId}")
-
         try {
             val content =
                 assetServiceClient.getAsset(
@@ -34,30 +32,26 @@ class FormattingRequestHandler(
             val inputStream = ByteArrayInputStream(content.toByteArray())
             val formatted = formatterService.format(inputStream, request.version, config)
 
-            val result =
-                FormattingResultEvent(
-                    requestId = request.requestId,
-                    success = true,
-                    formattedContent = formatted,
-                    error = null,
-                    snippetId = request.snippetId,
-                )
+            val result = createResultEvent(formatted, null, request)
 
             resultProducer.emit(result)
-            println("✅ [PrintScript] Formatting completed and saved: ${request.requestId}")
         } catch (e: Exception) {
-            println("❌ [PrintScript] Formatting failed: ${e.message}")
-
-            val result =
-                FormattingResultEvent(
-                    requestId = request.requestId,
-                    success = false,
-                    error = e.message,
-                    formattedContent = null,
-                    snippetId = request.snippetId,
-                )
-
+            println("[PrintScript] Formatting failed: ${e.message}")
+            val result = createResultEvent(null, e.message, request)
             resultProducer.emit(result)
         }
     }
+
+    private fun createResultEvent(
+        formattedContent: String?,
+        error: String?,
+        request: FormattingRequestEvent,
+    ): FormattingResultEvent =
+        FormattingResultEvent(
+            requestId = request.requestId,
+            success = formattedContent != null,
+            formattedContent = formattedContent,
+            error = error,
+            snippetId = request.snippetId,
+        )
 }

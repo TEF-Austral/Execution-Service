@@ -38,9 +38,6 @@ class AnalyzerConfigService(
         val savedEntity = analyzerRepository.save(updatedEntity)
 
         rulesUpdatedProducer.emit(AnalyzerRulesUpdatedEvent(userId = userId))
-        println("📤 [PrintScript] Emitido AnalyzerRulesUpdatedEvent para usuario: $userId")
-        // --- FIN DE LA ADICIÓN ---
-
         return entityToRules(savedEntity)
     }
 

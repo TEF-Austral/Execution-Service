@@ -17,10 +17,6 @@ class RedisConfig {
         @Value("\${spring.data.redis.host}") host: String,
         @Value("\${spring.data.redis.port}") port: Int,
     ): LettuceConnectionFactory {
-        println(
-            "\n\n✅✅✅ [PrintScript] ¡CARGANDO NUEVA CONFIG UNIFICADA DE REDIS CON keepAlive! ✅✅✅\n\n",
-        )
-
         val socketOptions =
             SocketOptions
                 .builder()
@@ -33,18 +29,14 @@ class RedisConfig {
                 .socketOptions(socketOptions)
                 .build()
 
-        // Construye la configuración del cliente Lettuce
         val clientConfig =
             LettuceClientConfiguration
                 .builder()
                 .clientOptions(clientOptions)
                 .build()
 
-        // Configuración del servidor Redis
         val serverConfig = RedisStandaloneConfiguration(host, port)
 
-        // Crea la fábrica de conexiones que será usada por RedisTemplate (bloqueante)
-        // Y por ReactiveRedisTemplate (reactivo)
         return LettuceConnectionFactory(serverConfig, clientConfig)
     }
 }

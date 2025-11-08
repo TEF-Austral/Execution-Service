@@ -18,45 +18,46 @@ class LintingRequestHandler(
     private val resultProducer: LintingResultProducer,
 ) : ILintingRequestHandler {
     override fun handle(request: LintingRequestEvent) {
-        println("🔍 [PrintScript] Processing linting request: ${request.requestId}")
-
         try {
-            val content =
-                assetServiceClient.getAsset(
-                    request.bucketContainer,
-                    request.bucketKey,
-                )
+            val content = assetServiceClient.getAsset(request.bucketContainer, request.bucketKey)
 
             val inputStream = ByteArrayInputStream(content.toByteArray())
             val validation = analyzerService.analyze(inputStream, request.version, request.userId)
 
-            val result =
-                when (validation) {
-                    is ValidationResultDTO.Valid -> {
-                        LintingResultEvent(
-                            requestId = request.requestId,
-                            isValid = true,
-                            violations = emptyList(),
-                            snippetId = request.snippetId,
-                        )
-                    }
-                    is ValidationResultDTO.Invalid -> {
-                        LintingResultEvent(
-                            requestId = request.requestId,
-                            isValid = false,
-                            violations =
-                                validation.violations.map {
-                                    ViolationDTO(it.message, it.line, it.column)
-                                },
-                            snippetId = request.snippetId,
-                        )
-                    }
-                }
+            val result = createResultEvent(validation, request)
 
             resultProducer.emit(result)
-            println("✅ [PrintScript] Linting completed: ${request.requestId}")
         } catch (e: Exception) {
-            println("❌ [PrintScript] Linting failed: ${e.message}")
+            println("[PrintScript] Linting failed: ${e.message}")
+            val result = createResultEvent(ValidationResultDTO.Invalid(emptyList()), request)
+            resultProducer.emit(result)
         }
     }
+
+    private fun createResultEvent(
+        validation: ValidationResultDTO,
+        request: LintingRequestEvent,
+    ): LintingResultEvent =
+        when (validation) {
+            is ValidationResultDTO.Valid -> {
+                LintingResultEvent(
+                    requestId = request.requestId,
+                    isValid = true,
+                    violations = emptyList(),
+                    snippetId = request.snippetId,
+                )
+            }
+
+            is ValidationResultDTO.Invalid -> {
+                LintingResultEvent(
+                    requestId = request.requestId,
+                    isValid = false,
+                    violations =
+                        validation.violations.map {
+                            ViolationDTO(it.message, it.line, it.column)
+                        },
+                    snippetId = request.snippetId,
+                )
+            }
+        }
 }

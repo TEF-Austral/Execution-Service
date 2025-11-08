@@ -1,9 +1,9 @@
 package consumers
 
 import consumers.handlers.ILintingRequestHandler
-import kotlinx.coroutines.Dispatchers // <-- 1. IMPORTAR
-import kotlinx.coroutines.GlobalScope // <-- 2. IMPORTAR
-import kotlinx.coroutines.launch // <-- 3. IMPORTAR
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.austral.ingsis.redis.RedisStreamConsumer
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Profile
@@ -23,10 +23,9 @@ class LintingRequestConsumer(
     private val handler: ILintingRequestHandler,
 ) : RedisStreamConsumer<LintingRequestEvent>(streamKey, consumerGroup, redis) {
 
-    // ESTE ES EL MÉTODO QUE CAMBIA
     override fun onMessage(record: ObjectRecord<String, LintingRequestEvent>) {
         GlobalScope.launch(Dispatchers.IO) {
-            handler.handle(record.value) // <-- El handler (bloqueante) se ejecuta en OTRO hilo
+            handler.handle(record.value)
         }
     }
 

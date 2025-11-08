@@ -61,7 +61,6 @@ class FormatterConfigService(
 
         val saved = formatterConfigRepository.save(config)
         rulesUpdatedProducer.emit(FormattingRulesUpdatedEvent(userId = userId))
-        println("📤 [PrintScript] Emitido FormattingRulesUpdatedEvent para usuario: $userId")
         return saved.toRules()
     }
 
