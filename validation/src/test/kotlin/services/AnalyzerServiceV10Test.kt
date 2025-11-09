@@ -17,7 +17,7 @@ class AnalyzerServiceV10Test {
             this::class.java.getResourceAsStream(path)
                 ?: throw IllegalArgumentException("Resource not found: $path")
         stream.use {
-            return service.analyze(it, "1.0", null)
+            return service.analyze(it, "1.0", "1")
         }
     }
 

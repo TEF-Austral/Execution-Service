@@ -42,6 +42,8 @@ class FormatterService {
                 spaceAroundOperators = configDTO.spaceAroundOperators,
             )
 
+        println("Analyzer Config: $config")
+
         val writer = StringWriter()
         formatter.formatToWriter(tokens, config, writer)
         return writer.toString()

@@ -1,5 +1,6 @@
 package services
 
+import config.AnalyzerConfig
 import diagnostic.Diagnostic
 import dtos.LintViolationDTO
 import dtos.ValidationResultDTO
@@ -42,12 +43,25 @@ class AnalyzerService(
     fun analyze(
         src: InputStream,
         version: String,
-        userId: String?,
+        userId: String,
     ): ValidationResultDTO {
         val parser = ParserFactory.parse(src, version)
         val result = parser.parse()
 
-        val analyzerConfig = getAnalyzerConfig.getUserConfig(userId)
+        if (!result.isSuccess()) {
+            val position = result.getCoordinates()
+            return ValidationResultDTO.Invalid(
+                listOf(
+                    LintViolationDTO(
+                        message = result.message(),
+                        line = position?.getRow() ?: -1,
+                        column = position?.getColumn() ?: -1,
+                    ),
+                ),
+            )
+        }
+
+        val analyzerConfig: AnalyzerConfig = getAnalyzerConfig.getUserConfig(userId)
         val analyzer =
             createAnalyzer(
                 StringToPrintScriptVersion().transform(version),
@@ -55,6 +69,9 @@ class AnalyzerService(
             )
 
         val diagnostics = analyzer.analyze(result)
+
+        println("User Id: $userId")
+        println("Analyzer Config: $analyzerConfig")
 
         return if (diagnostics.isEmpty()) {
             ValidationResultDTO.Valid

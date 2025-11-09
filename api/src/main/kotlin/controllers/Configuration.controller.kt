@@ -25,6 +25,7 @@ class ConfigurationController(
     @GetMapping("/analyze")
     fun getAnalyzerConfig(): ResponseEntity<List<AnalyzerRuleDTO>> {
         val userId = authenticatedUserProvider.getCurrentUserId()
+        println("User Id: $userId")
         val rules = analyzerConfigService.getConfig(userId)
         return ResponseEntity.ok(rules)
     }
@@ -41,6 +42,7 @@ class ConfigurationController(
     @GetMapping("/format")
     fun getFormatterConfig(): ResponseEntity<List<FormatterRuleDTO>> {
         val userId = authenticatedUserProvider.getCurrentUserId()
+        println("User Id: $userId")
         val rules = formatterConfigService.getConfig(userId)
         return ResponseEntity.ok(rules)
     }

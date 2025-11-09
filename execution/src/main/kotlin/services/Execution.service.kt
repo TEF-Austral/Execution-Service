@@ -2,12 +2,12 @@ package services
 
 import utils.ErrorHandler
 import utils.InputReceiver
-import utils.PrintEmitter
 import dtos.AllTestSnippetExecution
-import dtos.ExecutionResponseDTO
 import dtos.TestExecutionResponseDTO
 import org.springframework.stereotype.Service
 import repositories.TestRepository
+import utils.FakeEmitter
+import utils.CapturingPrintEmitter
 import utils.InterpreterInitializer.execute
 import java.io.InputStream
 
@@ -40,21 +40,27 @@ class ExecutionService(
         version: String,
         testId: Long,
     ): TestExecutionResponseDTO {
+        val outputs = mutableListOf<String>()
+        val printEmitter = CapturingPrintEmitter(outputs)
+        val inputEmitter = FakeEmitter()
+
+        return execute(inputStream, version, testId, printEmitter, inputEmitter, outputs)
+    }
+
+    private fun execute(
+        inputStream: InputStream,
+        version: String,
+        testId: Long,
+        printEmitter: emitter.Emitter,
+        inputEmitter: emitter.Emitter,
+        outputs: MutableList<String>,
+    ): TestExecutionResponseDTO {
         val test =
             testRepository
                 .findById(testId)
                 .orElseThrow { NoSuchElementException("Test not found: $testId") }
-
-        val outputs = mutableListOf<String>()
         val errors = mutableListOf<String>()
         var currentInputIndex = 0
-
-        val emitter =
-            object : PrintEmitter {
-                override fun print(message: String?) {
-                    message?.let { outputs.add(it) }
-                }
-            }
 
         val inputProvider =
             object : InputReceiver {
@@ -74,12 +80,17 @@ class ExecutionService(
             }
 
         try {
-            execute(inputStream, version, emitter, errorHandler, inputProvider)
+            execute(inputStream, version, printEmitter, inputEmitter, errorHandler, inputProvider)
         } catch (e: Exception) {
             errors.add(e.message ?: "Unknown error")
         }
 
-        val passed = errors.isEmpty() && outputs == test.expectedOutputs
+        val passed =
+            errors.isEmpty() &&
+                outputs.size == test.expectedOutputs.size &&
+                outputs.zip(test.expectedOutputs).all { (actual, expected) ->
+                    actual.trim() == expected.trim()
+                }
 
         return TestExecutionResponseDTO(
             testId = testId,
@@ -87,46 +98,6 @@ class ExecutionService(
             outputs = outputs,
             expectedOutputs = test.expectedOutputs,
             errors = errors,
-        )
-    }
-
-    fun execute(
-        inputStream: InputStream,
-        version: String,
-        inputs: Map<String, String>,
-    ): ExecutionResponseDTO {
-        val outputs = mutableListOf<String>()
-        val errors = mutableListOf<String>()
-
-        val emitter =
-            object : PrintEmitter {
-                override fun print(message: String?) {
-                    message?.let { outputs.add(it) }
-                }
-            }
-
-        val inputProvider =
-            object : InputReceiver {
-                override fun input(name: String?): String? = inputs[name]
-            }
-
-        val errorHandler =
-            object : ErrorHandler {
-                override fun reportError(message: String?) {
-                    message?.let { errors.add(it) }
-                }
-            }
-
-        try {
-            execute(inputStream, version, emitter, errorHandler, inputProvider)
-        } catch (e: Exception) {
-            errors.add(e.message ?: "Unknown error")
-        }
-
-        return ExecutionResponseDTO(
-            outputs = outputs,
-            errors = errors,
-            success = errors.isEmpty(),
         )
     }
 }

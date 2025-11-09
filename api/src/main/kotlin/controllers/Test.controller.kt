@@ -4,6 +4,7 @@ import component.AssetServiceClient
 import dtos.CreateTestRequestDTO
 import dtos.TestDTO
 import dtos.TestExecutionResponseDTO
+import dtos.UpdateTestRequestDTO
 import entities.TestEntity
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -37,7 +39,6 @@ class TestController(
     ): ResponseEntity<TestExecutionResponseDTO> {
         val assetContent = assetServiceClient.getAsset(container, key)
         val inputStream = ByteArrayInputStream(assetContent.toByteArray(StandardCharsets.UTF_8))
-
         val result = executionService.executeTest(inputStream, version, testId)
 
         return ResponseEntity.ok(result)
@@ -58,6 +59,27 @@ class TestController(
         val saved = testRepository.save(test)
 
         return ResponseEntity.status(HttpStatus.CREATED).body(saved.toDTO())
+    }
+
+    @PutMapping("/{id}")
+    fun updateTest(
+        @PathVariable id: Long,
+        @RequestBody request: UpdateTestRequestDTO,
+    ): ResponseEntity<TestDTO> {
+        val existingTest =
+            testRepository
+                .findById(id)
+                .orElseThrow { NoSuchElementException("Test not found: $id") }
+
+        val updatedTest =
+            existingTest.copy(
+                name = request.name ?: existingTest.name,
+                inputs = request.inputs ?: existingTest.inputs,
+                expectedOutputs = request.expectedOutputs ?: existingTest.expectedOutputs,
+            )
+
+        val saved = testRepository.save(updatedTest)
+        return ResponseEntity.ok(saved.toDTO())
     }
 
     @GetMapping
