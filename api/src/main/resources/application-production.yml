@@ -22,3 +22,9 @@ redis:
       key: snippet-events
   consumer:
     group: printscript-service-group
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} [requestId=%X{requestId:-N/A}] - %msg%n"
+  level:
+    root: INFO

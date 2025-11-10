@@ -18,13 +18,11 @@ spring:
         jwt:
           issuer-uri: ${AUTH0_ISSUER_URI}
 
-  # Esta es tu configuración de conexión existente (correcta)
   data:
     redis:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
 
-  # Esta es la configuración de STREAMS (ahora en el lugar correcto)
   redis:
     stream:
       formatting:
@@ -61,11 +59,20 @@ services:
   authorization:
     url: ${AUTHORIZATION_SERVICE_URL}
 
+# Logging configuration with request ID
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} [requestId=%X{requestId:-N/A}] - %msg%n"
+  level:
+    root: INFO
+    org.springframework: INFO
+    org.hibernate: WARN
+
 management:
   endpoints:
     web:
       exposure:
-        include: health
+        include: health,info,metrics
   endpoint:
     health:
       show-details: always
