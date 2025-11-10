@@ -17,6 +17,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'com.github.tef-austral.snippet-service:events:1.101.6'
+    implementation("com.newrelic.agent.java:newrelic-api:8.11.0")
 }
 
 tasks.named('bootJar') {
