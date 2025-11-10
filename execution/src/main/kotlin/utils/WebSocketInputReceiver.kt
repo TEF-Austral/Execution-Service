@@ -15,8 +15,6 @@ class WebSocketInputReceiver(
 
     override fun input(name: String?): String? {
         try {
-            // 1. Pide la entrada al cliente
-            // CAMBIO: Usar el enum
             val requestMsg =
                 objectMapper.writeValueAsString(
                     WebSocketMessage(
