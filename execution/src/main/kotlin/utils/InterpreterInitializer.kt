@@ -8,6 +8,7 @@ import utils.ParserInitializer.parse
 import java.io.InputStream
 
 object InterpreterInitializer {
+
     fun execute(
         src: InputStream,
         version: String,
