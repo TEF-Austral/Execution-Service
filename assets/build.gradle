@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'com.github.tef-austral.execution-service'
-version = '1.1.14'
+
 
 repositories {
     mavenCentral()
