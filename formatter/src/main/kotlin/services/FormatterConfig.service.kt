@@ -13,8 +13,10 @@ class FormatterConfigService(
     private val formatterConfigRepository: FormatterConfigRepository,
     private val rulesUpdatedProducer: FormattingRulesUpdatedProducer,
 ) {
+    private val log = org.slf4j.LoggerFactory.getLogger(FormatterConfigService::class.java)
 
     fun getConfig(userId: String): List<FormatterRuleDTO> {
+        log.info("Fetching formatter config for user $userId")
         val config =
             formatterConfigRepository
                 .findByUserId(userId)
@@ -22,13 +24,16 @@ class FormatterConfigService(
                     formatterConfigRepository.save(FormatterConfigEntity(userId = userId))
                 }
 
-        return config.toRules()
+        val result = config.toRules()
+        log.warn("Retrieved ${result.size} formatter rules for user $userId")
+        return result
     }
 
     fun updateConfig(
         userId: String,
         rules: List<FormatterRuleDTO>,
     ): List<FormatterRuleDTO> {
+        log.info("Updating formatter config for user $userId")
         val existing = formatterConfigRepository.findByUserId(userId)
 
         val configDTO = rulesToConfigDTO(rules)
@@ -61,7 +66,9 @@ class FormatterConfigService(
 
         val saved = formatterConfigRepository.save(config)
         rulesUpdatedProducer.emit(FormattingRulesUpdatedEvent(userId = userId))
-        return saved.toRules()
+        val result = saved.toRules()
+        log.warn("Formatter config updated for user $userId, ${result.size} rules")
+        return result
     }
 
     private fun FormatterConfigEntity.toRules(): List<FormatterRuleDTO> =

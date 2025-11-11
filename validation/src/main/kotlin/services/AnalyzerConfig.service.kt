@@ -14,14 +14,18 @@ class AnalyzerConfigService(
     private val analyzerRepository: AnalyzerRepository,
     private val rulesUpdatedProducer: AnalyzerRulesUpdatedProducer,
 ) {
+    private val log = org.slf4j.LoggerFactory.getLogger(AnalyzerConfigService::class.java)
 
     fun getConfig(userId: String): List<AnalyzerRuleDTO> {
+        log.info("Fetching analyzer config for user $userId")
         val entity =
             analyzerRepository.findById(userId).orElseGet {
                 analyzerRepository.save(AnalyzerEntity(userId = userId))
             }
 
-        return entityToRules(entity)
+        val result = entityToRules(entity)
+        log.warn("Retrieved ${result.size} analyzer rules for user $userId")
+        return result
     }
 
     @Transactional
@@ -29,6 +33,7 @@ class AnalyzerConfigService(
         userId: String,
         rules: List<AnalyzerRuleDTO>,
     ): List<AnalyzerRuleDTO> {
+        log.info("Updating analyzer config for user $userId")
         val currentEntity =
             analyzerRepository.findById(userId).orElseGet {
                 AnalyzerEntity(userId = userId)
@@ -40,7 +45,9 @@ class AnalyzerConfigService(
         rulesUpdatedProducer.emit(AnalyzerRulesUpdatedEvent(userId = userId))
         println("📤 [PrintScript] Emitido AnalyzerRulesUpdatedEvent para usuario: $userId")
 
-        return entityToRules(savedEntity)
+        val result = entityToRules(savedEntity)
+        log.warn("Analyzer config updated for user $userId, ${result.size} rules")
+        return result
     }
 
     private fun entityToRules(entity: AnalyzerEntity): List<AnalyzerRuleDTO> =

@@ -22,6 +22,8 @@ class DownloadController(
     private val formatterService: FormatterService,
     private val formatterConfigService: FormatterConfigService,
 ) {
+    private val log = org.slf4j.LoggerFactory.getLogger(DownloadController::class.java)
+
     @GetMapping("/formatted")
     fun downloadFormatted(
         @RequestParam("container") container: String,
@@ -29,6 +31,7 @@ class DownloadController(
         @RequestParam("version") version: String,
         @RequestParam("userId") userId: String,
     ): ResponseEntity<Resource> {
+        log.info("GET /download/formatted - Downloading formatted snippet for user $userId")
         val content = assetServiceClient.getAsset(container, key)
         val rules = formatterConfigService.getConfig(userId)
         val config = formatterConfigService.rulesToConfigDTO(rules)
@@ -38,6 +41,7 @@ class DownloadController(
 
         val resource = ByteArrayResource(formattedContent.toByteArray(StandardCharsets.UTF_8))
 
+        log.warn("GET /download/formatted - Formatted snippet ready for download")
         return ResponseEntity
             .ok()
             .header(

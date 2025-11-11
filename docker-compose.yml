@@ -19,9 +19,9 @@ services:
     depends_on:
       - db
       - redis-bus
-      - asset-service-api  # ⭐ Agregar dependencia
+      - asset-service-api
     networks:
-      - printscript-network  # ⭐ Agregar red
+      - printscript-network
 
   db:
     container_name: printscript_db
@@ -33,7 +33,7 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
-      - printscript-network  # ⭐ Agregar red
+      - printscript-network
 
   redis-bus:
     image: redis:6-alpine
@@ -41,13 +41,13 @@ services:
     ports:
       - "6379:6379"
     networks:
-      - printscript-network  # ⭐ Agregar red
+      - printscript-network
 
   asset-service-api:
     container_name: "asset_service_dev"
     image: ghcr.io/austral-ingsis/snippet-asset-service:latest
     ports:
-      - "8082:8080"  # ⭐ Exponer el puerto
+      - "8082:8080"
     environment:
       AZURE_HOST: "http://azurite"
       NEW_RELIC_APP_NAME: "asset-service"
@@ -57,7 +57,7 @@ services:
         condition: service_started
     restart: unless-stopped
     networks:
-      - printscript-network  # ⭐ Agregar red
+      - printscript-network
 
   azurite:
     image: mcr.microsoft.com/azure-storage/azurite
@@ -71,12 +71,12 @@ services:
     volumes:
       - blob:/workspace
     networks:
-      - printscript-network  # ⭐ Agregar red
+      - printscript-network
 
 volumes:
   pgdata:
-  blob:  # ⭐ Agregar volumen que faltaba
+  blob:
 
 networks:
-  printscript-network:  # ⭐ Definir red
+  printscript-network:
     driver: bridge

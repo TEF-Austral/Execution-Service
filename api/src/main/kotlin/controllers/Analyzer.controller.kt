@@ -20,6 +20,7 @@ class AnalyzerController(
     private val analyzerService: AnalyzerService,
     private val assetServiceClient: AssetServiceClient,
 ) {
+    private val log = org.slf4j.LoggerFactory.getLogger(AnalyzerController::class.java)
 
     @GetMapping
     fun analyzeCode(
@@ -28,26 +29,32 @@ class AnalyzerController(
         @RequestParam("version") version: String,
         @RequestParam("userId") userId: String,
     ): ResponseEntity<AnalyzeResponseDTO> {
+        log.info("GET /analyze - Analyzing code for user $userId, version $version")
         val assetContent = assetServiceClient.getAsset(container, key)
         val inputStream = ByteArrayInputStream(assetContent.toByteArray(StandardCharsets.UTF_8))
         val result = analyzerService.analyze(inputStream, version, userId)
 
-        return when (result) {
-            is ValidationResultDTO.Valid ->
-                ResponseEntity.ok(
-                    AnalyzeResponseDTO(
-                        isValid = true,
-                        violations = emptyList(),
-                    ),
-                )
-            is ValidationResultDTO.Invalid ->
-                ResponseEntity.ok(
-                    AnalyzeResponseDTO(
-                        isValid = false,
-                        violations = result.violations,
-                    ),
-                )
-        }
+        val response =
+            when (result) {
+                is ValidationResultDTO.Valid ->
+                    ResponseEntity.ok(
+                        AnalyzeResponseDTO(
+                            isValid = true,
+                            violations = emptyList(),
+                        ),
+                    )
+                is ValidationResultDTO.Invalid ->
+                    ResponseEntity.ok(
+                        AnalyzeResponseDTO(
+                            isValid = false,
+                            violations = result.violations,
+                        ),
+                    )
+            }
+        log.warn(
+            "GET /analyze - Analysis completed, isValid: ${result is ValidationResultDTO.Valid}",
+        )
+        return response
     }
 
     @PostMapping("/validate")
@@ -55,25 +62,31 @@ class AnalyzerController(
         @RequestBody content: String,
         @RequestParam("version") version: String,
     ): ResponseEntity<AnalyzeResponseDTO> {
+        log.info("POST /analyze/validate - Validating content, version $version")
         val inputStream = ByteArrayInputStream(content.toByteArray(StandardCharsets.UTF_8))
         val result = analyzerService.compile(inputStream, version)
 
-        return when (result) {
-            is ValidationResultDTO.Valid ->
-                ResponseEntity.ok(
-                    AnalyzeResponseDTO(
-                        isValid = true,
-                        violations = emptyList(),
-                    ),
-                )
-            is ValidationResultDTO.Invalid ->
-                ResponseEntity.ok(
-                    AnalyzeResponseDTO(
-                        isValid = false,
-                        violations = result.violations,
-                    ),
-                )
-        }
+        val response =
+            when (result) {
+                is ValidationResultDTO.Valid ->
+                    ResponseEntity.ok(
+                        AnalyzeResponseDTO(
+                            isValid = true,
+                            violations = emptyList(),
+                        ),
+                    )
+                is ValidationResultDTO.Invalid ->
+                    ResponseEntity.ok(
+                        AnalyzeResponseDTO(
+                            isValid = false,
+                            violations = result.violations,
+                        ),
+                    )
+            }
+        log.warn(
+            "POST /analyze/validate - Validation completed, isValid: ${result is ValidationResultDTO.Valid}",
+        )
+        return response
     }
 
     @GetMapping("/compile")
@@ -82,26 +95,32 @@ class AnalyzerController(
         @RequestParam("key") key: String,
         @RequestParam("version") version: String,
     ): ResponseEntity<AnalyzeResponseDTO> {
+        log.info("GET /analyze/compile - Compiling code, version $version")
         val assetContent = assetServiceClient.getAsset(container, key)
         val inputStream = ByteArrayInputStream(assetContent.toByteArray(StandardCharsets.UTF_8))
 
         val result = analyzerService.compile(inputStream, version)
 
-        return when (result) {
-            is ValidationResultDTO.Valid ->
-                ResponseEntity.ok(
-                    AnalyzeResponseDTO(
-                        isValid = true,
-                        violations = emptyList(),
-                    ),
-                )
-            is ValidationResultDTO.Invalid ->
-                ResponseEntity.ok(
-                    AnalyzeResponseDTO(
-                        isValid = false,
-                        violations = result.violations,
-                    ),
-                )
-        }
+        val response =
+            when (result) {
+                is ValidationResultDTO.Valid ->
+                    ResponseEntity.ok(
+                        AnalyzeResponseDTO(
+                            isValid = true,
+                            violations = emptyList(),
+                        ),
+                    )
+                is ValidationResultDTO.Invalid ->
+                    ResponseEntity.ok(
+                        AnalyzeResponseDTO(
+                            isValid = false,
+                            violations = result.violations,
+                        ),
+                    )
+            }
+        log.warn(
+            "GET /analyze/compile - Compilation completed, isValid: ${result is ValidationResultDTO.Valid}",
+        )
+        return response
     }
 }

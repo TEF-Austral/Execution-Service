@@ -15,12 +15,14 @@ import java.io.InputStream
 class ExecutionService(
     private val testRepository: TestRepository,
 ) {
+    private val log = org.slf4j.LoggerFactory.getLogger(ExecutionService::class.java)
 
     fun executeAllTests(
         inputStream: InputStream,
         snippetId: Long,
         version: String,
     ): AllTestSnippetExecution {
+        log.info("Executing all tests for snippet $snippetId, version $version")
         val codeContent = inputStream.readBytes()
 
         val testResults = mutableListOf<TestExecutionResponseDTO>()
@@ -30,6 +32,7 @@ class ExecutionService(
             testResults.add(testResult)
         }
 
+        log.warn("Executed ${testResults.size} tests for snippet $snippetId")
         return AllTestSnippetExecution(
             executions = testResults,
         )
@@ -40,11 +43,14 @@ class ExecutionService(
         version: String,
         testId: Long,
     ): TestExecutionResponseDTO {
+        log.info("Executing test $testId, version $version")
         val outputs = mutableListOf<String>()
         val printEmitter = CapturingPrintEmitter(outputs)
         val inputEmitter = FakeEmitter()
 
-        return execute(inputStream, version, testId, printEmitter, inputEmitter, outputs)
+        val result = execute(inputStream, version, testId, printEmitter, inputEmitter, outputs)
+        log.warn("Test $testId executed, passed: ${result.passed}")
+        return result
     }
 
     private fun execute(

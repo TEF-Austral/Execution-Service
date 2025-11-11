@@ -17,12 +17,14 @@ import org.springframework.stereotype.Service
 
 @Service
 class FormatterService {
+    private val log = org.slf4j.LoggerFactory.getLogger(FormatterService::class.java)
 
     fun format(
         src: InputStream,
         version: String,
         configDTO: FormatConfigDTO,
     ): String {
+        log.info("Formatting code with version $version")
         val reader = BufferedReader(InputStreamReader(src, StandardCharsets.UTF_8))
         val lexerFactory = DefaultLexerFactory(StringSplitterFactory, StringToTokenConverterFactory)
         val adaptedVersion = StringToPrintScriptVersion().transform(version)
@@ -46,6 +48,8 @@ class FormatterService {
 
         val writer = StringWriter()
         formatter.formatToWriter(tokens, config, writer)
-        return writer.toString()
+        val result = writer.toString()
+        log.warn("Code formatted successfully")
+        return result
     }
 }

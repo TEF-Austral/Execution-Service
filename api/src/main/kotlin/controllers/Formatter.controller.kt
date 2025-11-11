@@ -18,6 +18,7 @@ class FormatterController(
     private val formatterConfigService: FormatterConfigService,
     private val assetServiceClient: AssetServiceClient,
 ) {
+    private val log = org.slf4j.LoggerFactory.getLogger(FormatterController::class.java)
 
     @PostMapping
     fun formatCode(
@@ -26,6 +27,7 @@ class FormatterController(
         @RequestParam("version") version: String,
         @RequestParam("userId") userId: String,
     ): ResponseEntity<String> {
+        log.info("POST /format - Formatting code for user $userId, version $version")
         val assetContent = assetServiceClient.getAsset(container, key)
         val rules = formatterConfigService.getConfig(userId)
         val config = formatterConfigService.rulesToConfigDTO(rules)
@@ -33,6 +35,7 @@ class FormatterController(
         println("User Id: $userId")
         val formattedContent = formatterService.format(inputStream, version, config)
         assetServiceClient.createOrUpdateAsset(container, key, formattedContent)
+        log.warn("POST /format - Code formatted and saved successfully")
         return ResponseEntity.ok(formattedContent)
     }
 
@@ -43,12 +46,14 @@ class FormatterController(
         @RequestParam("version") version: String,
         @RequestParam("userId") userId: String,
     ): ResponseEntity<String> {
+        log.info("POST /format/preview - Previewing format for user $userId, version $version")
         val rules = formatterConfigService.getConfig(userId)
         val config = formatterConfigService.rulesToConfigDTO(rules)
         val assetContent = assetServiceClient.getAsset(container, key)
         val inputStream = ByteArrayInputStream(assetContent.toByteArray(StandardCharsets.UTF_8))
         println("User Id: $userId")
         val formattedContent = formatterService.format(inputStream, version, config)
+        log.warn("POST /format/preview - Format preview generated successfully")
         return ResponseEntity.ok(formattedContent)
     }
 }
