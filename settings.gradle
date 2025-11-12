@@ -11,8 +11,9 @@ plugins {
     id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
 }
 
-rootProject.name = 'printscript-service'
+rootProject.name = 'language-service'
 
 include('execution', 'validation', 'formatter', 'events', 'api')
 
 include 'assets'
+include 'common'

@@ -13,13 +13,12 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories
         "events", "component", "config",
         "consumers", "producers", "requests",
         "result", "consumers.handlers", "handlers",
-        "mappers", "factories",
     ],
 )
 @EnableJpaRepositories(basePackages = ["repositories"])
 @EntityScan(basePackages = ["entities"])
-class PrintScriptServiceApplication
+class LanguageServiceApplication
 
 fun main(args: Array<String>) {
-    runApplication<PrintScriptServiceApplication>(*args)
+    runApplication<LanguageServiceApplication>(*args)
 }

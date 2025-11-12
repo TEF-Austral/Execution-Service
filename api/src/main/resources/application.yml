@@ -46,7 +46,7 @@ spring:
         formatter:
           updated: formatter-rules-updated
     consumer:
-      group: printscript-service-group
+      group: language-service-group
 
 auth0:
   audience: ${AUTH0_AUDIENCE}

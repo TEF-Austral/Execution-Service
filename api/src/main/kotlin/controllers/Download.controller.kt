@@ -1,5 +1,6 @@
 package controllers
 
+import Language
 import component.AssetServiceClient
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.core.io.Resource
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import services.FormatterConfigService
-import services.FormatterService
+import services.LanguagesFormatterService
 import java.io.ByteArrayInputStream
 import java.nio.charset.StandardCharsets
 
@@ -19,7 +20,7 @@ import java.nio.charset.StandardCharsets
 @RequestMapping("/download")
 class DownloadController(
     private val assetServiceClient: AssetServiceClient,
-    private val formatterService: FormatterService,
+    private val languagesFormatterService: LanguagesFormatterService,
     private val formatterConfigService: FormatterConfigService,
 ) {
     private val log = org.slf4j.LoggerFactory.getLogger(DownloadController::class.java)
@@ -30,15 +31,22 @@ class DownloadController(
         @RequestParam("key") key: String,
         @RequestParam("version") version: String,
         @RequestParam("userId") userId: String,
+        @RequestParam("language") language: Language,
     ): ResponseEntity<Resource> {
-        log.info("GET /download/formatted - Downloading formatted snippet for user $userId")
+        log.info(
+            "GET /download/formatted - Downloading formatted snippet for user $userId, language $language",
+        )
         val content = assetServiceClient.getAsset(container, key)
         val rules = formatterConfigService.getConfig(userId)
         val config = formatterConfigService.rulesToConfigDTO(rules)
-
         val inputStream = ByteArrayInputStream(content.toByteArray(StandardCharsets.UTF_8))
-        val formattedContent = formatterService.format(inputStream, version, config)
-
+        val formattedContent =
+            languagesFormatterService.format(
+                inputStream,
+                version,
+                config,
+                language,
+            )
         val resource = ByteArrayResource(formattedContent.toByteArray(StandardCharsets.UTF_8))
 
         log.warn("GET /download/formatted - Formatted snippet ready for download")

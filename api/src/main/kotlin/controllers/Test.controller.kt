@@ -1,5 +1,6 @@
 package controllers
 
+import Language
 import component.AssetServiceClient
 import dtos.CreateTestRequestDTO
 import dtos.TestDTO
@@ -18,14 +19,14 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import repositories.TestRepository
-import services.ExecutionService
+import services.LanguagesExecutionService
 import java.io.ByteArrayInputStream
 import java.nio.charset.StandardCharsets
 
 @RestController
 @RequestMapping("/tests")
 class TestController(
-    private val executionService: ExecutionService,
+    private val languagesExecutionService: LanguagesExecutionService,
     private val assetServiceClient: AssetServiceClient,
     private val testRepository: TestRepository,
 ) {
@@ -37,11 +38,14 @@ class TestController(
         @RequestParam("key") key: String,
         @RequestParam("version") version: String,
         @RequestParam("testId") testId: Long,
+        @RequestParam("language") language: Language,
     ): ResponseEntity<TestExecutionResponseDTO> {
-        log.info("POST /tests/execute - Executing test $testId, version $version")
+        log.info(
+            "POST /tests/execute - Executing test $testId, version $version, language $language",
+        )
         val assetContent = assetServiceClient.getAsset(container, key)
         val inputStream = ByteArrayInputStream(assetContent.toByteArray(StandardCharsets.UTF_8))
-        val result = executionService.executeTest(inputStream, version, testId)
+        val result = languagesExecutionService.executeTest(inputStream, version, testId, language)
         log.warn("POST /tests/execute - Test $testId executed, passed: ${result.passed}")
         return ResponseEntity.ok(result)
     }
@@ -58,7 +62,6 @@ class TestController(
                 inputs = request.inputs ?: emptyList(),
                 expectedOutputs = request.expectedOutputs ?: emptyList(),
             )
-
         val saved = testRepository.save(test)
         log.warn("POST /tests - Test created with id ${saved.id}")
         return ResponseEntity.status(HttpStatus.CREATED).body(saved.toDTO())
@@ -71,17 +74,15 @@ class TestController(
     ): ResponseEntity<TestDTO> {
         log.info("PUT /tests/$id - Updating test")
         val existingTest =
-            testRepository
-                .findById(id)
-                .orElseThrow { NoSuchElementException("Test not found: $id") }
-
+            testRepository.findById(id).orElseThrow {
+                NoSuchElementException("Test not found: $id")
+            }
         val updatedTest =
             existingTest.copy(
                 name = request.name ?: existingTest.name,
                 inputs = request.inputs ?: existingTest.inputs,
                 expectedOutputs = request.expectedOutputs ?: existingTest.expectedOutputs,
             )
-
         val saved = testRepository.save(updatedTest)
         log.warn("PUT /tests/$id - Test updated successfully")
         return ResponseEntity.ok(saved.toDTO())
@@ -104,8 +105,9 @@ class TestController(
         log.info("GET /tests/$id - Fetching test")
         val test =
             testRepository
-                .findById(id)
-                .orElseThrow { NoSuchElementException("Test not found: $id") }
+                .findById(
+                    id,
+                ).orElseThrow { NoSuchElementException("Test not found: $id") }
         log.warn("GET /tests/$id - Test retrieved successfully")
         return ResponseEntity.ok(test.toDTO())
     }

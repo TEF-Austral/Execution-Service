@@ -16,14 +16,14 @@ import java.util.Optional
 @ExtendWith(MockitoExtension::class)
 class ExecutionServiceTest {
 
-    private lateinit var executionService: ExecutionService
+    private lateinit var executionService: PrintScriptExecutionService
 
     @Mock
     private lateinit var testRepository: TestRepository
 
     @BeforeEach
     fun setup() {
-        executionService = ExecutionService(testRepository)
+        executionService = PrintScriptExecutionService(testRepository)
     }
 
     @Test

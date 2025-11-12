@@ -7,35 +7,28 @@ import org.springframework.stereotype.Service
 import producers.TestingResultProducer
 import requests.TestingRequestEvent
 import results.TestingResultEvent
-import services.ExecutionService
+import services.LanguageExecutionService
 import java.io.ByteArrayInputStream
 
 @Service
 class TestingRequestHandler(
-    private val executionService: ExecutionService,
+    private val languageExecutionService: LanguageExecutionService,
     private val assetServiceClient: AssetServiceClient,
     private val resultProducer: TestingResultProducer,
 ) : ITestingRequestHandler {
     override fun handle(request: TestingRequestEvent) {
         try {
-            val content =
-                assetServiceClient.getAsset(
-                    request.bucketContainer,
-                    request.bucketKey,
-                )
-
+            val content = assetServiceClient.getAsset(request.bucketContainer, request.bucketKey)
             val inputStream = ByteArrayInputStream(content.toByteArray())
-
             val allTestResults =
-                executionService.executeAllTests(
+                languageExecutionService.executeAllTests(
                     inputStream,
                     request.snippetId,
                     request.version,
                 )
-
             emitTestingResults(allTestResults, request)
         } catch (e: Exception) {
-            println("[PrintScript] Testing failed: ${e.message}")
+            println("[Language] Testing failed: ${e.message}")
         }
     }
 

@@ -1,24 +1,24 @@
 services:
   api:
-    container_name: "printscript-service-api"
+    container_name: "language-service-api"
     build:
       context: .
       dockerfile: Dockerfile.prod
     environment:
       SPRING_PROFILES_ACTIVE: production
-      SPRING_DATASOURCE_URL: jdbc:postgresql://printscript-db:5432/${POSTGRES_DB_PRINTSCRIPT}
-      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER_PRINTSCRIPT}
-      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD_PRINTSCRIPT}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://language-db:5432/${POSTGRES_DB_LANGUAGE}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER_LANGUAGE}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD_LANGUAGE}
       AUTH0_ISSUER_URI: ${AUTH0_ISSUER_URI}
       AUTH0_AUDIENCE: ${AUTH0_AUDIENCE}
-      PRINTSCRIPT_M2M_CLIENT_ID: ${PRINTSCRIPT_M2M_CLIENT_ID}
-      PRINTSCRIPT_M2M_CLIENT_SECRET: ${PRINTSCRIPT_M2M_CLIENT_SECRET}
+      LANGUAGE_M2M_CLIENT_ID: ${LANGUAGE_M2M_CLIENT_ID}
+      LANGUAGE_M2M_CLIENT_SECRET: ${LANGUAGE_M2M_CLIENT_SECRET}
       AUTH0_TOKEN_URI: ${AUTH0_TOKEN_URI}
       AUTHORIZATION_SERVICE_URL: ${AUTHORIZATION_SERVICE_URL}
       ASSET_SERVICE_URL: ${ASSET_SERVICE_URL}
       REDIS_HOST: redis-bus
       REDIS_PORT: 6379
-      NEW_RELIC_APP_NAME: "PrintScript-Service-Local"
+      NEW_RELIC_APP_NAME: "Language-Service-Local"
       NEW_RELIC_LICENSE_KEY: ${NEW_RELIC_LICENSE_KEY}
       NEW_RELIC_DISTRIBUTED_TRACING_ENABLED: true
     ports:
@@ -26,18 +26,18 @@ services:
     env_file:
       - .env
     depends_on:
-      - printscript-db
+      - language-db
       - redis-bus
 
-  printscript-db:
+  language-db:
     image: postgres:16
-    container_name: printscript_db_local
+    container_name: language_db_local
     environment:
-      POSTGRES_USER: ${POSTGRES_USER_PRINTSCRIPT}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD_PRINTSCRIPT}
-      POSTGRES_DB: ${POSTGRES_DB_PRINTSCRIPT}
+      POSTGRES_USER: ${POSTGRES_USER_LANGUAGE}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD_LANGUAGE}
+      POSTGRES_DB: ${POSTGRES_DB_LANGUAGE}
     volumes:
-      - printscript_data_local:/var/lib/postgresql/data
+      - language_data_local:/var/lib/postgresql/data
 
   redis-bus:
     image: redis:7-alpine
@@ -49,5 +49,5 @@ services:
     command: redis-server --appendonly yes
 
 volumes:
-  printscript_data_local:
+  language_data_local:
   redis_data_local:

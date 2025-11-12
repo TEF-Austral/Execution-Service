@@ -12,19 +12,20 @@ import utils.InterpreterInitializer.execute
 import java.io.InputStream
 
 @Service
-class ExecutionService(
+class PrintScriptExecutionService(
     private val testRepository: TestRepository,
-) {
-    private val log = org.slf4j.LoggerFactory.getLogger(ExecutionService::class.java)
+) : LanguageExecutionService {
+    private val log = org.slf4j.LoggerFactory.getLogger(PrintScriptExecutionService::class.java)
 
-    fun executeAllTests(
+    override fun supportsLanguage(): String = Language.PRINTSCRIPT.name
+
+    override fun executeAllTests(
         inputStream: InputStream,
         snippetId: Long,
         version: String,
     ): AllTestSnippetExecution {
         log.info("Executing all tests for snippet $snippetId, version $version")
         val codeContent = inputStream.readBytes()
-
         val testResults = mutableListOf<TestExecutionResponseDTO>()
 
         for (test in testRepository.findBySnippetId(snippetId)) {
@@ -33,12 +34,10 @@ class ExecutionService(
         }
 
         log.warn("Executed ${testResults.size} tests for snippet $snippetId")
-        return AllTestSnippetExecution(
-            executions = testResults,
-        )
+        return AllTestSnippetExecution(executions = testResults)
     }
 
-    fun executeTest(
+    override fun executeTest(
         inputStream: InputStream,
         version: String,
         testId: Long,
@@ -62,9 +61,9 @@ class ExecutionService(
         outputs: MutableList<String>,
     ): TestExecutionResponseDTO {
         val test =
-            testRepository
-                .findById(testId)
-                .orElseThrow { NoSuchElementException("Test not found: $testId") }
+            testRepository.findById(testId).orElseThrow {
+                NoSuchElementException("Test not found: $testId")
+            }
         val errors = mutableListOf<String>()
         var currentInputIndex = 0
 

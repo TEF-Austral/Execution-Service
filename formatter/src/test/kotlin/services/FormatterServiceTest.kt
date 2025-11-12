@@ -9,7 +9,7 @@ import java.nio.charset.StandardCharsets
 
 class FormatterServiceTest {
 
-    private val formatterService = FormatterService()
+    private val formatterService = PrintScriptFormatterService()
 
     @Test
     fun `format should return formatted code with default config`() {

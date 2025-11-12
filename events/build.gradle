@@ -9,6 +9,7 @@ repositories {
 dependencies {
     implementation project(':assets')
     implementation 'io.projectreactor:reactor-core'
+    implementation project(':common')
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
     implementation 'com.github.tef-austral.snippet-service:events:1.101.6'
     implementation 'jakarta.annotation:jakarta.annotation-api:2.1.1'

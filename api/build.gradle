@@ -13,6 +13,7 @@ dependencies {
     implementation project(':formatter')
     implementation project(':events')
     implementation project(':assets')
+    implementation project(':common')
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
@@ -38,5 +39,5 @@ kotlin {
 }
 
 springBoot {
-    mainClass = 'api.PrintScriptServiceApplicationKt'
+    mainClass = 'api.LanguageServiceApplicationKt'
 }
