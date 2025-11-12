@@ -12,12 +12,11 @@ import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
-import repositories.FormatterConfigRepository
 import java.util.Optional
 
 class FormatterConfigServiceTest {
 
-    private lateinit var formatterConfigRepository: FormatterConfigRepository
+    private lateinit var formatterConfigRepository: `FormatterConfig.repository`
 
     @BeforeEach
     fun setup() {

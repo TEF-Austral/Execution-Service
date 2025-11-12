@@ -1,23 +1,21 @@
 package services
 
 import dtos.FormatConfigDTO
-import factory.DefaultLexerFactory
-import factory.StringSplitterFactory
-import factory.StringToTokenConverterFactory
-import formatter.config.FormatConfig
+import factories.LexerTokenStreamFactory
 import formatter.factory.DefaultFormatterFactory.createFormatter
-import stream.token.LexerTokenStream
-import transformer.StringToPrintScriptVersion
-import java.io.BufferedReader
-import java.io.InputStream
-import java.io.InputStreamReader
-import java.io.StringWriter
-import java.nio.charset.StandardCharsets
+import mappers.FormatterConfigMapper
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import transformer.StringToPrintScriptVersion
+import java.io.InputStream
+import java.io.StringWriter
 
 @Service
-class FormatterService {
-    private val log = org.slf4j.LoggerFactory.getLogger(FormatterService::class.java)
+class FormatterService(
+    private val tokenStreamFactory: LexerTokenStreamFactory,
+    private val configMapper: FormatterConfigMapper,
+) {
+    private val log = LoggerFactory.getLogger(FormatterService::class.java)
 
     fun format(
         src: InputStream,
@@ -25,31 +23,31 @@ class FormatterService {
         configDTO: FormatConfigDTO,
     ): String {
         log.info("Formatting code with version $version")
-        val reader = BufferedReader(InputStreamReader(src, StandardCharsets.UTF_8))
-        val lexerFactory = DefaultLexerFactory(StringSplitterFactory, StringToTokenConverterFactory)
-        val adaptedVersion = StringToPrintScriptVersion().transform(version)
-        val lexer = lexerFactory.createLexerWithVersion(adaptedVersion, reader)
-        val tokens = LexerTokenStream(lexer)
-        val formatter = createFormatter(adaptedVersion)
 
-        val config =
-            FormatConfig(
-                spaceBeforeColon = configDTO.spaceBeforeColon,
-                spaceAfterColon = configDTO.spaceAfterColon,
-                spaceAroundAssignment = configDTO.spaceAroundAssignment,
-                blankLinesAfterPrintln = configDTO.blankLinesAfterPrintln,
-                indentSize = configDTO.indentSize,
-                ifBraceOnSameLine = configDTO.ifBraceOnSameLine,
-                enforceSingleSpace = configDTO.enforceSingleSpace,
-                spaceAroundOperators = configDTO.spaceAroundOperators,
-            )
+        val tokens = tokenStreamFactory.createTokenStream(src, version)
+        val formatter = createFormatter(getAdaptedVersion(version))
+        val config = configMapper.dtoToFormatConfig(configDTO)
 
         println("Analyzer Config: $config")
 
-        val writer = StringWriter()
-        formatter.formatToWriter(tokens, config, writer)
-        val result = writer.toString()
+        val result = formatToString(formatter, tokens, config)
         log.warn("Code formatted successfully")
         return result
+    }
+
+    private fun getAdaptedVersion(version: String) = StringToPrintScriptVersion().transform(version)
+
+    private fun formatToString(
+        formatter: Any,
+        tokens: Any,
+        config: Any,
+    ): String {
+        val writer = StringWriter()
+        (formatter as formatter.Formatter).formatToWriter(
+            tokens as stream.token.LexerTokenStream,
+            config as formatter.config.FormatConfig,
+            writer,
+        )
+        return writer.toString()
     }
 }

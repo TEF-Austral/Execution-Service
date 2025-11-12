@@ -1,28 +1,33 @@
 package services
 
 import config.AnalyzerConfig
-import diagnostic.Diagnostic
-import dtos.LintViolationDTO
 import dtos.ValidationResultDTO
-import factory.AnalyzerFactory.createAnalyzer
-import helpers.GetAnalyzerConfig
-import helpers.ParserFactory
+import factories.ParserTokenStreamFactory
+import factories.ValidationResultFactory
+import factory.AnalyzerFactory
+import mappers.AnalyzerConfigMapper
+import repositories.AnalyzerRepository
 import transformer.StringToPrintScriptVersion
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.io.InputStream
 
 @Service
 class AnalyzerService(
-    private val getAnalyzerConfig: GetAnalyzerConfig,
+    private val parserFactory: ParserTokenStreamFactory,
+    private val analyzerRepository: AnalyzerRepository,
+    private val analyzerConfigMapper: AnalyzerConfigMapper,
+    private val validationResultFactory: ValidationResultFactory,
 ) {
-    private val log = org.slf4j.LoggerFactory.getLogger(AnalyzerService::class.java)
+    private val log = LoggerFactory.getLogger(AnalyzerService::class.java)
+    private val versionTransformer = StringToPrintScriptVersion()
 
     fun compile(
         src: InputStream,
         version: String,
     ): ValidationResultDTO {
         log.info("Compiling code, version $version")
-        val parser = ParserFactory.parse(src, version)
+        val parser = parserFactory.createParser(src, version)
         val result = parser.parse()
 
         if (!result.isSuccess()) {
@@ -30,20 +35,11 @@ class AnalyzerService(
             log.warn(
                 "Compilation failed at line ${position?.getRow()}, column ${position?.getColumn()}",
             )
-
-            return ValidationResultDTO.Invalid(
-                listOf(
-                    LintViolationDTO(
-                        message = result.message(),
-                        line = position?.getRow() ?: -1,
-                        column = position?.getColumn() ?: -1,
-                    ),
-                ),
-            )
+        } else {
+            log.warn("Compilation successful")
         }
 
-        log.warn("Compilation successful")
-        return ValidationResultDTO.Valid
+        return validationResultFactory.createFromParserResult(result)
     }
 
     fun analyze(
@@ -52,7 +48,7 @@ class AnalyzerService(
         userId: String,
     ): ValidationResultDTO {
         log.info("Analyzing code for user $userId, version $version")
-        val parser = ParserFactory.parse(src, version)
+        val parser = parserFactory.createParser(src, version)
         val result = parser.parse()
 
         if (!result.isSuccess()) {
@@ -60,21 +56,13 @@ class AnalyzerService(
             log.warn(
                 "Analysis failed at line ${position?.getRow()}, column ${position?.getColumn()}",
             )
-            return ValidationResultDTO.Invalid(
-                listOf(
-                    LintViolationDTO(
-                        message = result.message(),
-                        line = position?.getRow() ?: -1,
-                        column = position?.getColumn() ?: -1,
-                    ),
-                ),
-            )
+            return validationResultFactory.createFromParserResult(result)
         }
 
-        val analyzerConfig: AnalyzerConfig = getAnalyzerConfig.getUserConfig(userId)
+        val analyzerConfig = getConfigForUser(userId)
         val analyzer =
-            createAnalyzer(
-                StringToPrintScriptVersion().transform(version),
+            AnalyzerFactory.createAnalyzer(
+                versionTransformer.transform(version),
                 analyzerConfig,
             )
 
@@ -83,21 +71,15 @@ class AnalyzerService(
         println("User Id: $userId")
         println("Analyzer Config: $analyzerConfig")
 
-        val analysisResult =
-            if (diagnostics.isEmpty()) {
-                ValidationResultDTO.Valid
-            } else {
-                ValidationResultDTO.Invalid(diagnostics.map { it.toViolation() })
-            }
-
+        val analysisResult = validationResultFactory.createFromDiagnostics(diagnostics)
         log.warn("Analysis completed for user $userId, violations found: ${diagnostics.size}")
         return analysisResult
     }
 
-    private fun Diagnostic.toViolation(): LintViolationDTO =
-        LintViolationDTO(
-            message = this.message,
-            line = this.position.getRow(),
-            column = this.position.getColumn(),
-        )
+    private fun getConfigForUser(userId: String): AnalyzerConfig {
+        val entity =
+            analyzerRepository.findById(userId).orElse(null)
+                ?: return AnalyzerConfig()
+        return analyzerConfigMapper.entityToConfig(entity)
+    }
 }
