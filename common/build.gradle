@@ -1,0 +1,14 @@
+plugins {
+    id 'buildlogic.kotlin-common-conventions'
+}
+
+repositories {
+    mavenCentral()
+}
+
+test {
+    useJUnitPlatform()
+}
+kotlin {
+    jvmToolchain(21)
+}
