@@ -17,7 +17,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories
     ],
 )
 @EnableJpaRepositories(basePackages = ["repositories"])
-@EntityScan(basePackages = ["entities"])
+@EntityScan(basePackages = ["entities", "entity"])
 class LanguageServiceApplication
 
 fun main(args: Array<String>) {
