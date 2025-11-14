@@ -37,12 +37,4 @@ class AssetServiceClient(
 
         restTemplate.exchange(url, HttpMethod.PUT, request, String::class.java)
     }
-
-    fun deleteAsset(
-        container: String,
-        key: String,
-    ) {
-        val url = "$assetServiceUrl/$container/$key"
-        restTemplate.delete(url)
-    }
 }

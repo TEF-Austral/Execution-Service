@@ -32,16 +32,9 @@ class AuthHandshakeInterceptor(
                 )
                 return false
             }
-
-            // Decodificar y autenticar el token M2M
             val jwt = jwtDecoder.decode(token)
-
-            // Convertir el JWT en un objeto de autenticación de Spring
             val converter = JwtAuthenticationConverter()
             val authentication = converter.convert(jwt)
-
-            // Ponerlo en el SecurityContext
-            // El filtro oauth2ResourceServer lo verá y lo dará por bueno
             SecurityContextHolder.getContext().authentication = authentication
 
             return true
@@ -59,7 +52,6 @@ class AuthHandshakeInterceptor(
         wsHandler: WebSocketHandler,
         exception: Exception?,
     ) {
-        // Limpiar el contexto después del handshake
         SecurityContextHolder.clearContext()
     }
 }
