@@ -13,6 +13,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories
         "events", "component", "config",
         "consumers", "producers", "requests",
         "result", "consumers.handlers", "handlers",
+        "mappers", "factories",
     ],
 )
 @EnableJpaRepositories(basePackages = ["repositories"])
