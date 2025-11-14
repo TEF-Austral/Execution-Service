@@ -6,10 +6,10 @@ import dtos.ValidationResultDTO
 import org.springframework.stereotype.Service
 import producers.LintingResultProducer
 import requests.LintingRequestEvent
-import results.LintingResultEvent
-import results.ViolationDTO
 import services.LanguagesAnalyzerService
 import java.io.ByteArrayInputStream
+import dtos.responses.LintingResultEvent
+import dtos.responses.ViolationDTO
 
 @Service
 class LintingRequestHandler(

@@ -3,10 +3,10 @@ package handlers
 import component.AssetServiceClient
 import consumers.handlers.ITestingRequestHandler
 import dtos.AllTestSnippetExecution
+import dtos.responses.TestingResultEvent
 import org.springframework.stereotype.Service
 import producers.TestingResultProducer
 import requests.TestingRequestEvent
-import results.TestingResultEvent
 import services.LanguageExecutionService
 import java.io.ByteArrayInputStream
 

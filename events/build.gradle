@@ -11,7 +11,8 @@ dependencies {
     implementation 'io.projectreactor:reactor-core'
     implementation project(':common')
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
-    implementation 'com.github.tef-austral.snippet-service:events:1.101.6'
+    implementation 'com.github.tef-austral.snippet-service:common:1.104.9'
+    implementation 'com.github.tef-austral.snippet-service:events:1.104.9'
     implementation 'jakarta.annotation:jakarta.annotation-api:2.1.1'
     implementation 'org.austral.ingsis:redis-streams-mvc:0.1.13'
     testImplementation 'org.jetbrains.kotlin:kotlin-test'

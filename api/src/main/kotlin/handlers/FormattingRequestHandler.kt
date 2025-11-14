@@ -6,10 +6,10 @@ import consumers.handlers.IFormattingRequestHandler
 import org.springframework.stereotype.Service
 import producers.FormattingResultProducer
 import requests.FormattingRequestEvent
-import results.FormattingResultEvent
 import services.FormatterConfigService
 import services.LanguagesFormatterService
 import java.io.ByteArrayInputStream
+import dtos.responses.FormattingResultEvent
 
 @Service
 class FormattingRequestHandler(
