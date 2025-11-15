@@ -23,6 +23,7 @@ class WebSocketInputReceiver(
                     ),
                 )
             session.sendMessage(TextMessage(requestMsg))
+            Thread.sleep(100)
 
             return inputQueue.take()
         } catch (e: InterruptedException) {
