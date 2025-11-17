@@ -81,14 +81,27 @@ allOpen {
 
 tasks.named('test') {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+jacoco {
+    toolVersion = "0.8.11"
+}
+
+tasks.named('jacocoTestReport') {
+    dependsOn test
+    reports {
+        xml.required = true
+        html.required = true
+    }
 }
 
 tasks.jacocoTestCoverageVerification {
-    dependsOn("test")
+    dependsOn jacocoTestReport
     violationRules {
         rule {
             limit {
-                minimum = "0.40".toBigDecimal()
+                minimum = "0.80".toBigDecimal()
             }
         }
     }
@@ -121,5 +134,3 @@ publishing {
         }
     }
 }
-
-
