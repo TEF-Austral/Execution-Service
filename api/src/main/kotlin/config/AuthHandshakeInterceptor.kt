@@ -1,5 +1,6 @@
 package api.config
 
+import org.slf4j.LoggerFactory
 import org.springframework.security.oauth2.jwt.JwtDecoder
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter
 import org.springframework.security.core.context.SecurityContextHolder
@@ -16,6 +17,8 @@ class AuthHandshakeInterceptor(
     private val jwtDecoder: JwtDecoder,
 ) : HandshakeInterceptor {
 
+    private val log = LoggerFactory.getLogger(AuthHandshakeInterceptor::class.java)
+
     override fun beforeHandshake(
         request: ServerHttpRequest,
         response: ServerHttpResponse,
@@ -27,9 +30,7 @@ class AuthHandshakeInterceptor(
             val token = queryParams.getFirst("token")
 
             if (token.isNullOrBlank()) {
-                println(
-                    "AuthHandshakeInterceptor (PrintScript): Rechazando conexión. Falta token M2M.",
-                )
+                log.warn("Rejecting connection. Missing M2M token.")
                 return false
             }
             val jwt = jwtDecoder.decode(token)
@@ -39,9 +40,7 @@ class AuthHandshakeInterceptor(
 
             return true
         } catch (e: Exception) {
-            println(
-                "AuthHandshakeInterceptor (PrintScript): Error al procesar token M2M: ${e.message}",
-            )
+            log.warn("Error processing M2M token: ${e.message}", e)
             return false
         }
     }

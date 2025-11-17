@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import dtos.WebSocketMessage
 import dtos.WebSocketMessageType
 import emitter.Emitter
+import org.slf4j.LoggerFactory
 import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession
 import result.InterpreterResult
@@ -12,6 +13,8 @@ class WebSocketPrintEmitter(
     private val session: WebSocketSession,
     private val objectMapper: ObjectMapper,
 ) : Emitter {
+
+    private val log = LoggerFactory.getLogger(WebSocketPrintEmitter::class.java)
 
     override fun emit(value: InterpreterResult) {
         val output = value.interpreter?.getValue().toString()
@@ -32,7 +35,7 @@ class WebSocketPrintEmitter(
                 session.sendMessage(TextMessage(msg))
             }
         } catch (e: Exception) {
-            println("Error al emitir por WebSocket: ${e.message}")
+            log.error("Error emitting via WebSocket: ${e.message}")
         }
     }
 }

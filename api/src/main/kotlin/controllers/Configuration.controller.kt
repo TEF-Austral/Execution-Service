@@ -48,7 +48,6 @@ class ConfigurationController(
     fun getFormatterConfig(): ResponseEntity<List<FormatterRuleDTO>> {
         val userId = authenticatedUserProvider.getCurrentUserId()
         log.info("GET /config/format - Fetching formatter config for user $userId")
-        println("User Id: $userId")
         val rules = formatterConfigService.getConfig(userId)
         log.warn("GET /config/format - Retrieved ${rules.size} formatter rules")
         return ResponseEntity.ok(rules)

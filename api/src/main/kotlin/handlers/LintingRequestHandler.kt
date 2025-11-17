@@ -3,6 +3,7 @@ package handlers
 import component.AssetServiceClient
 import consumers.handlers.ILintingRequestHandler
 import dtos.ValidationResultDTO
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import producers.LintingResultProducer
 import requests.LintingRequestEvent
@@ -17,22 +18,25 @@ class LintingRequestHandler(
     private val assetServiceClient: AssetServiceClient,
     private val resultProducer: LintingResultProducer,
 ) : ILintingRequestHandler {
+
+    private val log = LoggerFactory.getLogger(LintingRequestHandler::class.java)
+
     override fun handle(request: LintingRequestEvent) {
         try {
             val content = assetServiceClient.getAsset(request.bucketContainer, request.bucketKey)
             val inputStream = ByteArrayInputStream(content.toByteArray())
-            // val language = Language.valueOf(request.language)
+            val language = Language.valueOf(request.languageId)
             val validation =
                 languagesAnalyzerService.analyze(
                     inputStream,
                     request.version,
                     request.userId,
-                    Language.PRINTSCRIPT,
+                    language,
                 )
             val result = createResultEvent(validation, request)
             resultProducer.emit(result)
         } catch (e: Exception) {
-            println("[Language] Linting failed: ${e.message}")
+            log.error("Linting failed: ${e.message}", e)
             val result = createResultEvent(ValidationResultDTO.Invalid(emptyList()), request)
             resultProducer.emit(result)
         }

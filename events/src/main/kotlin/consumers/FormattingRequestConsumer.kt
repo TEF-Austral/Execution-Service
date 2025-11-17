@@ -5,6 +5,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.austral.ingsis.redis.RedisStreamConsumer
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Profile
 import org.springframework.data.redis.connection.stream.ObjectRecord
@@ -23,8 +24,12 @@ class FormattingRequestConsumer(
     private val handler: IFormattingRequestHandler,
 ) : RedisStreamConsumer<FormattingRequestEvent>(streamKey, consumerGroup, redis) {
 
+    private val log = LoggerFactory.getLogger(FormattingRequestConsumer::class.java)
+
     override fun onMessage(record: ObjectRecord<String, FormattingRequestEvent>) {
-        println("📨 [PrintScript] Received formatting REQUEST: ${record.value.requestId}")
+        log.info(
+            "Received formatting request: snippetId=${record.value.snippetId}, requestId=${record.value.requestId}",
+        )
         GlobalScope.launch(Dispatchers.IO) {
             handler.handle(record.value)
         }

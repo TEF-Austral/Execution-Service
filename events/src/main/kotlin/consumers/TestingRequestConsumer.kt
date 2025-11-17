@@ -1,6 +1,6 @@
 package consumers
 
-import consumers.handlers.TestingRequestHandler
+import consumers.handlers.ITestingRequestHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -18,10 +18,10 @@ import java.time.Duration
 @Component
 @Profile("!test")
 class TestingRequestConsumer(
-    @Value("\${spring.redis.stream.testing.request.key}") streamKey: String,
-    @Value("\${spring.redis.consumer.group}") consumerGroup: String,
+    @Value($$"${spring.redis.stream.testing.request.key}") streamKey: String,
+    @Value($$"${spring.redis.consumer.group}") consumerGroup: String,
     redis: RedisTemplate<String, String>,
-    private val handler: TestingRequestHandler,
+    private val handler: ITestingRequestHandler,
 ) : RedisStreamConsumer<TestingRequestEvent>(streamKey, consumerGroup, redis) {
 
     private val log = LoggerFactory.getLogger(TestingRequestConsumer::class.java)
