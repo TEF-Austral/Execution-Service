@@ -11,6 +11,8 @@ class WebSocketErrorHandler(
     private val objectMapper: ObjectMapper,
 ) : ErrorHandler {
 
+    private val log = org.slf4j.LoggerFactory.getLogger(WebSocketErrorHandler::class.java)
+
     override fun reportError(message: String?) {
         try {
             if (session.isOpen && message != null) {
@@ -21,7 +23,7 @@ class WebSocketErrorHandler(
                 session.sendMessage(TextMessage(msg))
             }
         } catch (e: Exception) {
-            println("Error al reportar error por WebSocket: ${e.message}")
+            log.warn("Error reporting error via WebSocket: ${e.message}")
         }
     }
 }

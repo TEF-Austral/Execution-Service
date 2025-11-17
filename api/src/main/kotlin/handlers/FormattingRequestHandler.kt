@@ -3,6 +3,7 @@ package handlers
 import Language
 import component.AssetServiceClient
 import consumers.handlers.IFormattingRequestHandler
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import producers.FormattingResultProducer
 import requests.FormattingRequestEvent
@@ -19,24 +20,26 @@ class FormattingRequestHandler(
     private val resultProducer: FormattingResultProducer,
 ) : IFormattingRequestHandler {
 
+    private val log = LoggerFactory.getLogger(FormattingRequestHandler::class.java)
+
     override fun handle(request: FormattingRequestEvent) {
         try {
             val content = assetServiceClient.getAsset(request.bucketContainer, request.bucketKey)
             val rules = formatterConfigService.getConfig(request.userId)
             val config = formatterConfigService.rulesToConfigDTO(rules)
             val inputStream = ByteArrayInputStream(content.toByteArray())
-            // val language = Language.valueOf(request.language)
+            val language = Language.valueOf(request.languageId)
             val formatted =
                 languagesFormatterService.format(
                     inputStream,
                     request.version,
                     config,
-                    Language.PRINTSCRIPT,
+                    language,
                 )
             val result = createResultEvent(formatted, null, request)
             resultProducer.emit(result)
         } catch (e: Exception) {
-            println("[Language] Formatting failed: ${e.message}")
+            log.error("Formatting failed: ${e.message}", e)
             val result = createResultEvent(null, e.message, request)
             resultProducer.emit(result)
         }

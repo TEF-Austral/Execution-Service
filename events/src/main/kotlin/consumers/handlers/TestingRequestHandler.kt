@@ -22,7 +22,7 @@ class TestingRequestHandler(
     override fun handle(request: TestingRequestEvent) {
         try {
             log.info(
-                "Procesando solicitud de testing: requestId=${request.requestId}, snippetId=${request.snippetId}",
+                "Processing testing request: requestId=${request.requestId}, snippetId=${request.snippetId}",
             )
 
             val content =
@@ -34,12 +34,12 @@ class TestingRequestHandler(
             val tests = testRepository.findBySnippetId(request.snippetId)
 
             if (tests.isEmpty()) {
-                log.info("No se encontraron tests para el snippet ${request.snippetId}")
+                log.info("No tests found for snippet ${request.snippetId}")
                 return
             }
 
             log.info(
-                "Encontrados ${tests.size} tests para snippet ${request.snippetId}. Ejecutando...",
+                "Found ${tests.size} tests for snippet ${request.snippetId}. Executing...",
             )
 
             tests.forEach { test ->
@@ -64,11 +64,11 @@ class TestingRequestHandler(
                         )
                     testingResultProducer.emit(resultEvent)
                     log.info(
-                        "Test ejecutado: testId=${test.id}, passed=${result.passed}, snippetId=${request.snippetId}",
+                        "Test executed: testId=${test.id}, passed=${result.passed}, snippetId=${request.snippetId}",
                     )
                 } catch (e: Exception) {
                     log.error(
-                        "Error ejecutando test ${test.id} para snippet ${request.snippetId}: ${e.message}",
+                        "Error executing test ${test.id} for snippet ${request.snippetId}: ${e.message}",
                         e,
                     )
                     val errorResult =
@@ -85,10 +85,10 @@ class TestingRequestHandler(
                 }
             }
             log.info(
-                "Testing completado para snippet ${request.snippetId}: ${tests.size} tests ejecutados.",
+                "Testing completed for snippet ${request.snippetId}: ${tests.size} tests executed.",
             )
         } catch (e: Exception) {
-            log.error("Error fatal procesando testing request: ${e.message}", e)
+            log.error("Fatal error processing testing request: ${e.message}", e)
         }
     }
 }
