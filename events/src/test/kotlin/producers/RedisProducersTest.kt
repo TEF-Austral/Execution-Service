@@ -1,31 +1,47 @@
 package producers
 
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.TestPropertySource
+import io.mockk.mockk
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.springframework.data.redis.core.RedisTemplate
 
-@SpringBootTest(
-    classes = [
-        LintingRequestProducer::class,
-        FormattingRequestProducer::class,
-        TestingRequestProducer::class,
-    ],
-)
-@TestPropertySource(
-    properties = [
-        "spring.redis.stream.linting.request.key=test-lint-key",
-        "spring.redis.stream.formatting.request.key=test-format-key",
-        "spring.redis.stream.testing.request.key=test-test-key",
-    ],
-)
 class RedisProducersTest {
 
-    @Autowired
-    private lateinit var lintingRequestProducer: LintingRequestProducer
+    private lateinit var redisTemplate: RedisTemplate<String, String>
 
-    @Autowired
-    private lateinit var formattingRequestProducer: FormattingRequestProducer
+    @BeforeEach
+    fun setup() {
+        redisTemplate = mockk(relaxed = true)
+    }
 
-    @Autowired
-    private lateinit var testingRequestProducer: TestingRequestProducer
+    @Test
+    fun `AnalyzerRulesUpdatedProducer should be instantiated`() {
+        val producer = AnalyzerRulesUpdatedProducer("test-stream", redisTemplate)
+        assertNotNull(producer)
+    }
+
+    @Test
+    fun `FormattingResultProducer should be instantiated`() {
+        val producer = FormattingResultProducer("test-stream", redisTemplate)
+        assertNotNull(producer)
+    }
+
+    @Test
+    fun `FormattingRulesUpdatedProducer should be instantiated`() {
+        val producer = FormattingRulesUpdatedProducer("test-stream", redisTemplate)
+        assertNotNull(producer)
+    }
+
+    @Test
+    fun `LintingResultProducer should be instantiated`() {
+        val producer = LintingResultProducer("test-stream", redisTemplate)
+        assertNotNull(producer)
+    }
+
+    @Test
+    fun `TestingResultProducer should be instantiated`() {
+        val producer = TestingResultProducer("test-stream", redisTemplate)
+        assertNotNull(producer)
+    }
 }

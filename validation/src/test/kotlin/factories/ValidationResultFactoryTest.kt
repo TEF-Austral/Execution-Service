@@ -1,5 +1,6 @@
 package factories
 
+import coordinates.Position
 import diagnostic.Diagnostic
 import dtos.ValidationResultDTO
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -9,7 +10,6 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 import parser.result.FinalResult
-import position.Position
 
 class ValidationResultFactoryTest {
 
