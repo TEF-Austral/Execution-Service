@@ -36,6 +36,18 @@ test {
     workingDir = project.projectDir
 }
 
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
+
+jacocoTestCoverageVerification {
+    dependsOn jacocoTestReport
+}
+
 kotlin {
     jvmToolchain(21)
 }
