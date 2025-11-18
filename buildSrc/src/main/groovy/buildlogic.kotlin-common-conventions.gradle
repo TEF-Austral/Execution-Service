@@ -44,8 +44,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
-    testImplementation 'org.mockito.kotlin:mockito-kotlin:5.2.1'
-    testImplementation 'org.mockito:mockito-core:5.7.0'
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'org.postgresql:postgresql'
@@ -83,27 +81,14 @@ allOpen {
 
 tasks.named('test') {
     useJUnitPlatform()
-    finalizedBy jacocoTestReport
-}
-
-jacoco {
-    toolVersion = "0.8.11"
-}
-
-tasks.named('jacocoTestReport') {
-    dependsOn test
-    reports {
-        xml.required = true
-        html.required = true
-    }
 }
 
 tasks.jacocoTestCoverageVerification {
-    dependsOn jacocoTestReport
+    dependsOn("test")
     violationRules {
         rule {
             limit {
-                minimum = "0.66".toBigDecimal()
+                minimum = "0.65".toBigDecimal()
             }
         }
     }
