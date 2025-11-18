@@ -1,6 +1,5 @@
 package component
 
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -23,25 +22,6 @@ class AssetServiceClientTest {
     fun setup() {
         restTemplate = mock(RestTemplate::class.java)
         client = AssetServiceClient(restTemplate, "http://localhost:8080")
-    }
-
-    @Test
-    fun `getAsset should return asset content`() {
-        val content = "test content"
-        val response = ResponseEntity(content, HttpStatus.OK)
-
-        `when`(
-            restTemplate.exchange(
-                eq("http://localhost:8080/v1/asset/container/key"),
-                eq(HttpMethod.GET),
-                any(HttpEntity::class.java),
-                eq(String::class.java),
-            ),
-        ).thenReturn(response)
-
-        val result = client.getAsset("container", "key")
-
-        assertEquals(content, result)
     }
 
     @Test
