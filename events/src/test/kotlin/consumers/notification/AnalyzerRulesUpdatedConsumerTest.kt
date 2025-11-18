@@ -18,7 +18,6 @@ import org.mockito.Mockito.doThrow
 import org.mockito.Mockito.verify
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
-import org.mockito.kotlin.eq
 import org.mockito.kotlin.whenever
 import org.springframework.data.redis.connection.stream.ObjectRecord
 import org.springframework.data.redis.core.RedisTemplate
@@ -148,7 +147,7 @@ class AnalyzerRulesUpdatedConsumerTest {
             whenever(record.value).thenReturn(event)
             invokeOnMessage(record)
             Thread.sleep(100)
-            verify(handler).handle(eq(RuleType.Lint), eq(userId))
+            verify(handler).handle(RuleType.Lint, userId)
         }
 
     @Test
@@ -206,7 +205,7 @@ class AnalyzerRulesUpdatedConsumerTest {
             invokeOnMessage(record)
             Thread.sleep(100)
 
-            verify(handler).handle(RuleType.Lint, userId)
+            verify(handler).handle(RuleType.Lint, "")
         }
 
     @Test

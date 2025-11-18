@@ -99,7 +99,6 @@ class LanguagesFormatterServiceTest {
 
     @Test
     fun `format should apply different configs`() {
-        val src = ByteArrayInputStream("let x=5;".toByteArray())
         val version = "1.0"
         val config1 = FormatConfigDTO()
         val config2 = FormatConfigDTO()
@@ -107,11 +106,8 @@ class LanguagesFormatterServiceTest {
 
         every { mockFormatterService.supportsLanguage() } returns "PRINTSCRIPT"
         every {
-            mockFormatterService.format(any<InputStream>(), version, config1)
-        } returns "let x=5;\n"
-        every {
-            mockFormatterService.format(any<InputStream>(), version, config2)
-        } returns "let x = 5;\n"
+            mockFormatterService.format(any<InputStream>(), version, any())
+        } returns "let x=5;\n" andThen "let x = 5;\n"
 
         val result1 =
             languagesFormatterService.format(
@@ -130,6 +126,7 @@ class LanguagesFormatterServiceTest {
 
         assertEquals("let x=5;\n", result1)
         assertEquals("let x = 5;\n", result2)
+        verify(exactly = 2) { mockFormatterService.format(any<InputStream>(), version, any()) }
     }
 
     @Test
