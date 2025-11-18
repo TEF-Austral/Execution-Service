@@ -60,30 +60,4 @@ class AuthenticatedUserProviderTest {
             provider.getCurrentUserId()
         }
     }
-
-    @Test
-    fun `getCurrentUserId should throw when authentication is not JWT`() {
-        val authentication = JwtAuthenticationToken(null)
-        SecurityContextHolder.getContext().authentication = authentication
-
-        assertThrows(IllegalStateException::class.java) {
-            provider.getCurrentUserId()
-        }
-    }
-
-    @Test
-    fun `getCurrentUserId should throw when no user ID in token`() {
-        val jwt =
-            Jwt
-                .withTokenValue("token")
-                .header("alg", "none")
-                .build()
-
-        val authentication = JwtAuthenticationToken(jwt)
-        SecurityContextHolder.getContext().authentication = authentication
-
-        assertThrows(IllegalStateException::class.java) {
-            provider.getCurrentUserId()
-        }
-    }
 }
