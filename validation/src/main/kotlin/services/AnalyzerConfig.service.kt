@@ -1,27 +1,29 @@
 package services
 
-import checkers.IdentifierStyle
 import dtos.AnalyzerRuleDTO
 import entities.AnalyzerEntity
 import events.AnalyzerRulesUpdatedEvent
+import mappers.AnalyzerConfigMapper
+import producers.AnalyzerRulesUpdatedProducer
 import repositories.AnalyzerRepository
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import producers.AnalyzerRulesUpdatedProducer
 
 @Service
 class AnalyzerConfigService(
     private val analyzerRepository: AnalyzerRepository,
+    private val analyzerConfigMapper: AnalyzerConfigMapper,
     private val rulesUpdatedProducer: AnalyzerRulesUpdatedProducer,
 ) {
+    private val log = LoggerFactory.getLogger(AnalyzerConfigService::class.java)
 
     fun getConfig(userId: String): List<AnalyzerRuleDTO> {
-        val entity =
-            analyzerRepository.findById(userId).orElseGet {
-                analyzerRepository.save(AnalyzerEntity(userId = userId))
-            }
-
-        return entityToRules(entity)
+        log.info("Fetching analyzer config for user $userId")
+        val entity = findOrCreateEntity(userId)
+        val result = analyzerConfigMapper.entityToRules(entity)
+        log.warn("Retrieved ${result.size} analyzer rules for user $userId")
+        return result
     }
 
     @Transactional
@@ -29,82 +31,31 @@ class AnalyzerConfigService(
         userId: String,
         rules: List<AnalyzerRuleDTO>,
     ): List<AnalyzerRuleDTO> {
-        val currentEntity =
-            analyzerRepository.findById(userId).orElseGet {
-                AnalyzerEntity(userId = userId)
+        log.info("Updating analyzer config for user $userId")
+        val existing = analyzerRepository.findById(userId)
+
+        val entity =
+            if (existing.isPresent) {
+                analyzerConfigMapper.updateEntity(existing.get(), rules)
+            } else {
+                analyzerConfigMapper.rulesToEntity(userId, rules)
             }
 
-        val updatedEntity = applyRulesToEntity(currentEntity, rules)
-        val savedEntity = analyzerRepository.save(updatedEntity)
+        val savedEntity = analyzerRepository.save(entity)
+        emitRulesUpdatedEvent(userId)
 
-        rulesUpdatedProducer.emit(AnalyzerRulesUpdatedEvent(userId = userId))
-        println("📤 [PrintScript] Emitido AnalyzerRulesUpdatedEvent para usuario: $userId")
-
-        return entityToRules(savedEntity)
+        val result = analyzerConfigMapper.entityToRules(savedEntity)
+        log.warn("Analyzer config updated for user $userId, ${result.size} rules")
+        return result
     }
 
-    private fun entityToRules(entity: AnalyzerEntity): List<AnalyzerRuleDTO> =
-        listOf(
-            AnalyzerRuleDTO(
-                id = "identifierStyle",
-                name = "Identifier Style",
-                isActive = true,
-                value = entity.identifierStyle.name,
-            ),
-            AnalyzerRuleDTO(
-                id = "restrictPrintlnArgs",
-                name = "Restrict Println Arguments",
-                isActive = entity.restrictPrintlnArgs,
-                value = null,
-            ),
-            AnalyzerRuleDTO(
-                id = "restrictReadInputArgs",
-                name = "Restrict Read Input Arguments",
-                isActive = entity.restrictReadInputArgs,
-                value = null,
-            ),
-            AnalyzerRuleDTO(
-                id = "noReadInput",
-                name = "No Read Input",
-                isActive = entity.noReadInput,
-                value = null,
-            ),
-        )
-
-    private fun applyRulesToEntity(
-        entity: AnalyzerEntity,
-        rules: List<AnalyzerRuleDTO>,
-    ): AnalyzerEntity {
-        var identifierStyle = entity.identifierStyle
-        var restrictPrintlnArgs = entity.restrictPrintlnArgs
-        var restrictReadInputArgs = entity.restrictReadInputArgs
-        var noReadInput = entity.noReadInput
-
-        rules.forEach { rule ->
-            when (rule.id) {
-                "identifierStyle" -> {
-                    identifierStyle =
-                        if (rule.value != null) {
-                            try {
-                                IdentifierStyle.valueOf(rule.value)
-                            } catch (e: IllegalArgumentException) {
-                                IdentifierStyle.NO_STYLE
-                            }
-                        } else {
-                            IdentifierStyle.NO_STYLE
-                        }
-                }
-                "restrictPrintlnArgs" -> restrictPrintlnArgs = rule.isActive
-                "restrictReadInputArgs" -> restrictReadInputArgs = rule.isActive
-                "noReadInput" -> noReadInput = rule.isActive
-            }
+    private fun findOrCreateEntity(userId: String): AnalyzerEntity =
+        analyzerRepository.findById(userId).orElseGet {
+            analyzerRepository.save(AnalyzerEntity(userId = userId))
         }
 
-        return entity.copy(
-            identifierStyle = identifierStyle,
-            restrictPrintlnArgs = restrictPrintlnArgs,
-            restrictReadInputArgs = restrictReadInputArgs,
-            noReadInput = noReadInput,
-        )
+    private fun emitRulesUpdatedEvent(userId: String) {
+        rulesUpdatedProducer.emit(AnalyzerRulesUpdatedEvent(userId = userId))
+        println("📤 [PrintScript] Emitido AnalyzerRulesUpdatedEvent para usuario: $userId")
     }
 }

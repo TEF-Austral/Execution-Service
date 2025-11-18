@@ -8,9 +8,5 @@ import org.springframework.web.client.RestTemplate
 class RestTemplateConfig {
 
     @Bean
-    fun restTemplate(): RestTemplate {
-        val restTemplate = RestTemplate()
-        restTemplate.interceptors.add(RequestIdPropagationInterceptor())
-        return restTemplate
-    }
+    fun restTemplate(): RestTemplate = RestTemplate()
 }

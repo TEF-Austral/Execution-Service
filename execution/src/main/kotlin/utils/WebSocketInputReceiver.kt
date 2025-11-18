@@ -3,6 +3,7 @@ package utils
 import com.fasterxml.jackson.databind.ObjectMapper
 import dtos.WebSocketMessage
 import dtos.WebSocketMessageType
+import org.slf4j.LoggerFactory
 import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession
 import java.util.concurrent.BlockingQueue
@@ -12,6 +13,8 @@ class WebSocketInputReceiver(
     private val inputQueue: BlockingQueue<String>,
     private val objectMapper: ObjectMapper,
 ) : InputReceiver {
+
+    private val log = LoggerFactory.getLogger(WebSocketInputReceiver::class.java)
 
     override fun input(name: String?): String? {
         try {
@@ -23,14 +26,15 @@ class WebSocketInputReceiver(
                     ),
                 )
             session.sendMessage(TextMessage(requestMsg))
+            Thread.sleep(100)
 
             return inputQueue.take()
         } catch (e: InterruptedException) {
             Thread.currentThread().interrupt()
-            println("Hilo de InputReceiver interrumpido: ${e.message}")
+            log.warn("InputReceiver thread interrupted: ${e.message}")
             return null
         } catch (e: Exception) {
-            println("Error al pedir entrada por WebSocket: ${e.message}")
+            log.error("Error requesting input via WebSocket: ${e.message}")
             return null
         }
     }

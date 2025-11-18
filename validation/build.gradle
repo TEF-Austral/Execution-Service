@@ -3,6 +3,8 @@ plugins {
     id 'application'
 }
 
+group = 'com.github.tef-austral.language-service'
+
 repositories {
     mavenCentral()
 }
@@ -10,6 +12,7 @@ repositories {
 dependencies {
     implementation project(":events")
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
+    implementation project(':common')
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.mockito.kotlin:mockito-kotlin:5.2.1'
     implementation 'com.github.tef-austral:ast:1.2.1'
@@ -31,6 +34,18 @@ run {
 test {
     useJUnitPlatform()
     workingDir = project.projectDir
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
+
+jacocoTestCoverageVerification {
+    dependsOn jacocoTestReport
 }
 
 kotlin {

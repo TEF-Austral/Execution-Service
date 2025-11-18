@@ -10,7 +10,7 @@ import entities.AnalyzerEntity
 
 class AnalyzerServiceV10Test {
 
-    private val service = AnalyzerService(fakeGetAnalyzerConfig())
+    private val service = PrintScriptAnalyzerService(fakeGetAnalyzerConfig())
 
     private fun validateFromResource(path: String): ValidationResultDTO {
         val stream =

@@ -10,7 +10,7 @@ import entities.AnalyzerEntity
 
 class AnalyzerServiceV11Test {
 
-    private val service = AnalyzerService(fakeGetAnalyzerConfig())
+    private val service = PrintScriptAnalyzerService(fakeGetAnalyzerConfig())
 
     private fun validateFromResource(path: String): ValidationResultDTO {
         val stream =
@@ -60,18 +60,18 @@ class AnalyzerServiceV11Test {
             )
         }
     }
-}
 
-private fun fakeGetAnalyzerConfig(): GetAnalyzerConfig {
-    val proxy =
-        java.lang.reflect.Proxy.newProxyInstance(
-            AnalyzerRepository::class.java.classLoader,
-            arrayOf(AnalyzerRepository::class.java),
-        ) { _, method, _ ->
-            when (method.name) {
-                "findById" -> Optional.empty<AnalyzerEntity>()
-                else -> throw UnsupportedOperationException("Not used in tests: ${method.name}")
-            }
-        } as AnalyzerRepository
-    return GetAnalyzerConfig(proxy)
+    private fun fakeGetAnalyzerConfig(): GetAnalyzerConfig {
+        val proxy =
+            java.lang.reflect.Proxy.newProxyInstance(
+                AnalyzerRepository::class.java.classLoader,
+                arrayOf(AnalyzerRepository::class.java),
+            ) { _, method, _ ->
+                when (method.name) {
+                    "findById" -> Optional.empty<AnalyzerEntity>()
+                    else -> throw UnsupportedOperationException("Not used in tests: ${method.name}")
+                }
+            } as AnalyzerRepository
+        return GetAnalyzerConfig(proxy)
+    }
 }

@@ -88,7 +88,7 @@ tasks.jacocoTestCoverageVerification {
     violationRules {
         rule {
             limit {
-                minimum = "0.20".toBigDecimal()
+                minimum = "0.80".toBigDecimal()
             }
         }
     }
@@ -106,8 +106,8 @@ tasks.named("build") {
 publishing {
     repositories {
         maven {
-            name = "PrintScriptPackages"
-            url = uri("https://maven.pkg.github.com/TEF-Austral/Execution-Service")
+            name = "LanguagePackages"
+            url = uri("https://maven.pkg.github.com/TEF-Austral/Language-Service")
             credentials {
                 username = System.getenv("GITHUB_ACTOR")
                 password = System.getenv("GITHUB_TOKEN")
@@ -121,5 +121,3 @@ publishing {
         }
     }
 }
-
-

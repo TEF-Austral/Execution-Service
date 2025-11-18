@@ -5,6 +5,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import component.AssetServiceClient
 import dtos.WebSocketMessage
 import dtos.WebSocketMessageType
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.socket.CloseStatus
 import org.springframework.web.socket.TextMessage
@@ -24,13 +25,14 @@ class InteractiveExecutionHandler(
     private val assetServiceClient: AssetServiceClient,
 ) : TextWebSocketHandler() {
 
+    private val log = LoggerFactory.getLogger(InteractiveExecutionHandler::class.java)
     private val objectMapper = jacksonObjectMapper()
     private val sessions = mutableMapOf<String, BlockingQueue<String>>()
 
     override fun afterConnectionEstablished(session: WebSocketSession) {
         val inputQueue = LinkedBlockingQueue<String>(1)
         sessions[session.id] = inputQueue
-        println("Sesión WebSocket ${session.id} establecida. Esperando inicialización...")
+        log.info("WebSocket session ${session.id} established. Waiting for initialization...")
     }
 
     override fun handleTextMessage(
@@ -44,19 +46,21 @@ class InteractiveExecutionHandler(
                 if (msg.bucketContainer == null || msg.bucketKey == null || msg.version == null) {
                     session.close(
                         CloseStatus.BAD_DATA.withReason(
-                            "Faltan datos de inicialización (bucket, key o version)",
+                            "Missing initialization data (bucket, key or version)",
                         ),
                     )
                     return
                 }
 
-                println("Recibido init_execution para ${session.id}. Iniciando thread...")
+                log.info(
+                    "Received init_execution for session ${session.id}. Starting execution thread...",
+                )
 
                 val inputQueue = sessions[session.id]
                 if (inputQueue == null) {
                     session.close(
                         CloseStatus.SERVER_ERROR.withReason(
-                            "No se encontró la cola de entrada para la sesión",
+                            "Input queue for session not found",
                         ),
                     )
                     return
@@ -80,7 +84,7 @@ class InteractiveExecutionHandler(
             }
 
             else -> {
-                println("Recibido mensaje no manejado: ${msg.type}")
+                log.warn("Received unhandled message type: ${msg.type}")
             }
         }
     }
@@ -137,6 +141,6 @@ class InteractiveExecutionHandler(
         status: CloseStatus,
     ) {
         sessions.remove(session.id)
-        println("Sesión WebSocket ${session.id} cerrada: ${status.reason}")
+        log.info("WebSocket session ${session.id} closed: ${status.reason}")
     }
 }

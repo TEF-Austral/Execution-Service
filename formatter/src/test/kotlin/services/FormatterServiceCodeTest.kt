@@ -9,7 +9,7 @@ import java.nio.file.Paths
 
 class FormatterServiceCodeTest {
 
-    private val formatterService = FormatterService()
+    private val formatterService = PrintScriptFormatterService()
 
     private fun formatAllIn(
         versionDir: String,
@@ -21,7 +21,8 @@ class FormatterServiceCodeTest {
                 ?: throw IllegalStateException(
                     "Resource directory not found: printscript/$versionDir",
                 )
-        val dirPath = Paths.get(dirUrl.toURI())
+        val dirPath =
+            Paths.get(dirUrl.toURI())
 
         var count = 0
         Files.list(dirPath).use { stream ->

@@ -2,21 +2,28 @@ plugins {
     id 'buildlogic.kotlin-common-conventions'
 }
 
+group = 'com.github.tef-austral.language-service'
+
 repositories {
     mavenCentral()
 }
 
 dependencies {
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
+    testImplementation 'io.mockk:mockk:1.13.10'
+    testImplementation 'org.mockito.kotlin:mockito-kotlin:5.2.1'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation project(':validation')
     implementation project(':execution')
     implementation project(':formatter')
     implementation project(':events')
     implementation project(':assets')
+    implementation project(':common')
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
-    implementation 'com.github.tef-austral.snippet-service:events:1.101.6'
+    implementation 'com.github.tef-austral.snippet-service:common:1.104.9'
+    implementation 'com.github.tef-austral.snippet-service:events:1.104.9'
     implementation("com.newrelic.agent.java:newrelic-api:8.11.0")
     implementation("org.springframework.boot:spring-boot-starter-websocket")
 }
@@ -33,10 +40,44 @@ test {
     useJUnitPlatform()
 }
 
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        html.required = true
+    }
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                '**/handlers/FormattingRequestHandler.class',
+                '**/handlers/LintingRequestHandler.class',
+                '**/api/handlers/InteractiveExecutionHandler.class',
+                '**/api/LanguageServiceApplication.class',
+                '**/api/LanguageServiceApplicationKt.class'
+            ])
+        }))
+    }
+}
+
+jacocoTestCoverageVerification {
+    dependsOn jacocoTestReport
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                '**/handlers/FormattingRequestHandler.class',
+                '**/handlers/LintingRequestHandler.class',
+                '**/api/handlers/InteractiveExecutionHandler.class',
+                '**/api/LanguageServiceApplication.class',
+                '**/api/LanguageServiceApplicationKt.class'
+            ])
+        }))
+    }
+}
+
 kotlin {
     jvmToolchain(21)
 }
 
 springBoot {
-    mainClass = 'api.PrintScriptServiceApplicationKt'
+    mainClass = 'api.LanguageServiceApplicationKt'
 }

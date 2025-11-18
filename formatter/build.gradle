@@ -2,8 +2,8 @@ plugins {
     id 'buildlogic.kotlin-common-conventions'
 }
 
+group = 'com.github.tef-austral.language-service'
 
-//Hola
 repositories {
     mavenCentral()
 }
@@ -11,6 +11,7 @@ repositories {
 dependencies {
     implementation project(":events")
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
+    implementation project(':common')
     testImplementation 'junit:junit:4.13.2'
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.1.0")
     testImplementation("org.mockito:mockito-core:5.7.0")

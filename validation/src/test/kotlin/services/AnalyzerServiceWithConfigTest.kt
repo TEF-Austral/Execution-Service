@@ -18,13 +18,13 @@ class AnalyzerServiceWithConfigTest {
 
     private lateinit var analyzerRepository: AnalyzerRepository
     private lateinit var getAnalyzerConfig: GetAnalyzerConfig
-    private lateinit var analyzerService: AnalyzerService
+    private lateinit var analyzerService: PrintScriptAnalyzerService
 
     @BeforeEach
     fun setup() {
         analyzerRepository = mock()
         getAnalyzerConfig = GetAnalyzerConfig(analyzerRepository)
-        analyzerService = AnalyzerService(getAnalyzerConfig)
+        analyzerService = PrintScriptAnalyzerService(getAnalyzerConfig)
     }
 
     @Test

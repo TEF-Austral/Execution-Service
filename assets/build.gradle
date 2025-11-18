@@ -3,8 +3,8 @@ plugins {
     id 'org.jetbrains.kotlin.jvm'
 }
 
-group = 'com.github.tef-austral.execution-service'
-version = '1.1.14'
+group = 'com.github.tef-austral.language-service'
+
 
 repositories {
     mavenCentral()

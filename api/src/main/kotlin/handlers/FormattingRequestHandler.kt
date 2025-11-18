@@ -1,42 +1,45 @@
 package handlers
 
+import Language
 import component.AssetServiceClient
 import consumers.handlers.IFormattingRequestHandler
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import producers.FormattingResultProducer
 import requests.FormattingRequestEvent
-import results.FormattingResultEvent
 import services.FormatterConfigService
-import services.FormatterService
+import services.LanguagesFormatterService
 import java.io.ByteArrayInputStream
+import dtos.responses.FormattingResultEvent
 
 @Service
 class FormattingRequestHandler(
-    private val formatterService: FormatterService,
+    private val languagesFormatterService: LanguagesFormatterService,
     private val formatterConfigService: FormatterConfigService,
     private val assetServiceClient: AssetServiceClient,
     private val resultProducer: FormattingResultProducer,
 ) : IFormattingRequestHandler {
 
+    private val log = LoggerFactory.getLogger(FormattingRequestHandler::class.java)
+
     override fun handle(request: FormattingRequestEvent) {
         try {
-            val content =
-                assetServiceClient.getAsset(
-                    request.bucketContainer,
-                    request.bucketKey,
-                )
-
+            val content = assetServiceClient.getAsset(request.bucketContainer, request.bucketKey)
             val rules = formatterConfigService.getConfig(request.userId)
             val config = formatterConfigService.rulesToConfigDTO(rules)
-
             val inputStream = ByteArrayInputStream(content.toByteArray())
-            val formatted = formatterService.format(inputStream, request.version, config)
-
+            val language = Language.valueOf(request.languageId)
+            val formatted =
+                languagesFormatterService.format(
+                    inputStream,
+                    request.version,
+                    config,
+                    language,
+                )
             val result = createResultEvent(formatted, null, request)
-
             resultProducer.emit(result)
         } catch (e: Exception) {
-            println("[PrintScript] Formatting failed: ${e.message}")
+            log.error("Formatting failed: ${e.message}", e)
             val result = createResultEvent(null, e.message, request)
             resultProducer.emit(result)
         }

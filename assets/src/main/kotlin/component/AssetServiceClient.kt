@@ -12,9 +12,9 @@ import org.springframework.web.client.RestTemplate
 class AssetServiceClient(
     private val restTemplate: RestTemplate,
     @param:Value("\${asset.service.url}") private val assetServiceUrl: String,
-) {
+) : AssetService {
 
-    fun getAsset(
+    override fun getAsset(
         container: String,
         key: String,
     ): String {
@@ -23,7 +23,7 @@ class AssetServiceClient(
             ?: throw NoSuchElementException("Asset not found: $container/$key")
     }
 
-    fun createOrUpdateAsset(
+    override fun createOrUpdateAsset(
         container: String,
         key: String,
         content: String,
@@ -36,13 +36,5 @@ class AssetServiceClient(
         val request = HttpEntity(content, headers)
 
         restTemplate.exchange(url, HttpMethod.PUT, request, String::class.java)
-    }
-
-    fun deleteAsset(
-        container: String,
-        key: String,
-    ) {
-        val url = "$assetServiceUrl/$container/$key"
-        restTemplate.delete(url)
     }
 }
