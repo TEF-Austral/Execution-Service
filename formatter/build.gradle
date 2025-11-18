@@ -2,6 +2,8 @@ plugins {
     id 'buildlogic.kotlin-common-conventions'
 }
 
+group = 'com.github.tef-austral.language-service'
+
 repositories {
     mavenCentral()
 }

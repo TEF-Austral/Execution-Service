@@ -2,6 +2,8 @@ plugins {
     id 'buildlogic.kotlin-common-conventions'
 }
 
+group = 'com.github.tef-austral.language-service'
+
 repositories {
     mavenCentral()
 }
@@ -23,14 +25,6 @@ dependencies {
     testImplementation 'io.mockk:mockk:1.13.10'
     testImplementation 'org.mockito.kotlin:mockito-kotlin:5.2.1'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-}
-
-tasks.named('bootJar') {
-    enabled = false
-}
-
-tasks.named('jar') {
-    enabled = true
 }
 
 test {

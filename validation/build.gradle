@@ -3,6 +3,8 @@ plugins {
     id 'application'
 }
 
+group = 'com.github.tef-austral.language-service'
+
 repositories {
     mavenCentral()
 }
