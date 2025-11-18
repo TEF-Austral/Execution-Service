@@ -4,21 +4,20 @@ import org.junit.jupiter.api.Test
 class LanguageTest {
 
     @Test
-    fun `Language enum should have PRINTSCRIPT value`() {
-        val language = Language.PRINTSCRIPT
-        assertEquals("PRINTSCRIPT", language.name)
+    fun testLanguageEnumValues() {
+        val languages = Language.values()
+        assertEquals(1, languages.size)
+        assertEquals(Language.PRINTSCRIPT, languages[0])
     }
 
     @Test
-    fun `Language values should contain PRINTSCRIPT`() {
-        val entries = Language.entries
-        assertEquals(1, entries.size)
-        assertEquals(Language.PRINTSCRIPT, entries[0])
-    }
-
-    @Test
-    fun `Language valueOf should return PRINTSCRIPT`() {
+    fun testLanguageEnumValueOf() {
         val language = Language.valueOf("PRINTSCRIPT")
         assertEquals(Language.PRINTSCRIPT, language)
+    }
+
+    @Test
+    fun testLanguageEnumName() {
+        assertEquals("PRINTSCRIPT", Language.PRINTSCRIPT.name)
     }
 }

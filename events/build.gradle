@@ -16,8 +16,13 @@ dependencies {
     implementation 'com.github.tef-austral.snippet-service:events:1.104.9'
     implementation 'jakarta.annotation:jakarta.annotation-api:2.1.1'
     implementation 'org.austral.ingsis:redis-streams-mvc:0.1.13'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-reactor'
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0'
+    testImplementation 'io.mockk:mockk:1.13.10'
+    testImplementation 'org.mockito.kotlin:mockito-kotlin:5.2.1'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 tasks.named('bootJar') {
