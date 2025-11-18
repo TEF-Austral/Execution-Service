@@ -3,6 +3,8 @@ plugins {
     id 'application'
 }
 
+group = 'com.github.tef-austral.language-service'
+
 repositories {
     mavenCentral()
 }
@@ -32,6 +34,18 @@ run {
 test {
     useJUnitPlatform()
     workingDir = project.projectDir
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
+
+jacocoTestCoverageVerification {
+    dependsOn jacocoTestReport
 }
 
 kotlin {

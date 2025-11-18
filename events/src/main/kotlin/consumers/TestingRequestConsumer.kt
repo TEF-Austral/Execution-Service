@@ -7,7 +7,6 @@ import kotlinx.coroutines.launch
 import org.austral.ingsis.redis.RedisStreamConsumer
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.context.annotation.Profile
 import org.springframework.data.redis.connection.stream.ObjectRecord
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.redis.stream.StreamReceiver
@@ -16,7 +15,6 @@ import requests.TestingRequestEvent
 import java.time.Duration
 
 @Component
-@Profile("!test")
 class TestingRequestConsumer(
     @Value($$"${spring.redis.stream.testing.request.key}") streamKey: String,
     @Value($$"${spring.redis.consumer.group}") consumerGroup: String,

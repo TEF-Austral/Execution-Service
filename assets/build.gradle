@@ -3,7 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.jvm'
 }
 
-group = 'com.github.tef-austral.execution-service'
+group = 'com.github.tef-austral.language-service'
 
 
 repositories {
