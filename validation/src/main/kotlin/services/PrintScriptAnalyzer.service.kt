@@ -10,14 +10,17 @@ import helpers.ParserFactory
 import transformer.StringToPrintScriptVersion
 import org.springframework.stereotype.Service
 import java.io.InputStream
+import parser.result.CompleteProgram
+import rules.AstValidator
 
 @Service
 class PrintScriptAnalyzerService(
     private val getAnalyzerConfig: GetAnalyzerConfig,
+    private val validator: AstValidator,
 ) : LanguageAnalyzerService {
     private val log = org.slf4j.LoggerFactory.getLogger(PrintScriptAnalyzerService::class.java)
 
-    override fun supportsLanguage(): String = Language.PRINTSCRIPT.name
+    override fun supportsLanguage(): String = "PRINTSCRIPT"
 
     override fun compile(
         src: InputStream,
@@ -41,6 +44,18 @@ class PrintScriptAnalyzerService(
                     ),
                 ),
             )
+        }
+
+        if (result is CompleteProgram) {
+            val securityErrors = validator.validate(result.getProgram())
+            if (securityErrors.isNotEmpty()) {
+                log.warn("Compilation failed due to security violations")
+                return ValidationResultDTO.Invalid(
+                    securityErrors.map { msg ->
+                        LintViolationDTO(message = msg, line = 0, column = 0)
+                    },
+                )
+            }
         }
 
         log.warn("Compilation successful")
@@ -70,6 +85,18 @@ class PrintScriptAnalyzerService(
                     ),
                 ),
             )
+        }
+
+        if (result is CompleteProgram) {
+            val securityErrors = validator.validate(result.getProgram())
+            if (securityErrors.isNotEmpty()) {
+                log.warn("Analysis found security violations for user $userId")
+                return ValidationResultDTO.Invalid(
+                    securityErrors.map { msg ->
+                        LintViolationDTO(message = msg, line = 0, column = 0)
+                    },
+                )
+            }
         }
 
         val analyzerConfig: AnalyzerConfig = getAnalyzerConfig.getUserConfig(userId)
