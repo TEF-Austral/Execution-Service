@@ -20,7 +20,7 @@ class PrintScriptAnalyzerService(
 ) : LanguageAnalyzerService {
     private val log = org.slf4j.LoggerFactory.getLogger(PrintScriptAnalyzerService::class.java)
 
-    override fun supportsLanguage(): String = "PRINTSCRIPT"
+    override fun supportsLanguage(): String = Language.PRINTSCRIPT.name
 
     override fun compile(
         src: InputStream,
