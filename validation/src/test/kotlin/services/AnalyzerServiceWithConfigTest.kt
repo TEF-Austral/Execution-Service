@@ -10,6 +10,9 @@ import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import repositories.AnalyzerRepository
+import rules.AstValidator
+import rules.rules.NoReadEnvRule
+import rules.validation.CompositeValidator
 import java.io.ByteArrayInputStream
 import java.nio.charset.StandardCharsets
 import java.util.Optional
@@ -19,12 +22,14 @@ class AnalyzerServiceWithConfigTest {
     private lateinit var analyzerRepository: AnalyzerRepository
     private lateinit var getAnalyzerConfig: GetAnalyzerConfig
     private lateinit var analyzerService: PrintScriptAnalyzerService
+    private val rule = NoReadEnvRule()
+    private val validator: AstValidator = CompositeValidator(rules = listOf(rule))
 
     @BeforeEach
     fun setup() {
         analyzerRepository = mock()
         getAnalyzerConfig = GetAnalyzerConfig(analyzerRepository)
-        analyzerService = PrintScriptAnalyzerService(getAnalyzerConfig)
+        analyzerService = PrintScriptAnalyzerService(getAnalyzerConfig, validator = validator)
     }
 
     @Test

@@ -7,10 +7,17 @@ import kotlin.test.assertTrue
 import kotlin.test.Test
 import java.util.Optional
 import entities.AnalyzerEntity
+import rules.AstValidator
+import rules.rules.NoReadEnvRule
+import rules.validation.CompositeValidator
 
 class AnalyzerServiceV11Test {
 
-    private val service = PrintScriptAnalyzerService(fakeGetAnalyzerConfig())
+    private val rule = NoReadEnvRule()
+
+    private val validator: AstValidator = CompositeValidator(rules = listOf(rule))
+
+    private val service = PrintScriptAnalyzerService(fakeGetAnalyzerConfig(), validator)
 
     private fun validateFromResource(path: String): ValidationResultDTO {
         val stream =
