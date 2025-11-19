@@ -3,16 +3,19 @@ services:
     container_name: "language-service-api"
     build:
       context: .
-      dockerfile: Dockerfile.prod
+      dockerfile: Dockerfile.dev
+      args:
+        GITHUB_ACTOR: ${GITHUB_ACTOR}
+        REDIS_TOKEN: ${REDIS_TOKEN}
     environment:
-      SPRING_PROFILES_ACTIVE: production
-      SPRING_DATASOURCE_URL: jdbc:postgresql://language-db:5432/${POSTGRES_DB_LANGUAGE}
-      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER_LANGUAGE}
-      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD_LANGUAGE}
+      SPRING_PROFILES_ACTIVE: development
+      SPRING_DATASOURCE_URL: jdbc:postgresql://language-db:5432/${POSTGRES_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
       AUTH0_ISSUER_URI: ${AUTH0_ISSUER_URI}
       AUTH0_AUDIENCE: ${AUTH0_AUDIENCE}
-      LANGUAGE_M2M_CLIENT_ID: ${LANGUAGE_M2M_CLIENT_ID}
-      LANGUAGE_M2M_CLIENT_SECRET: ${LANGUAGE_M2M_CLIENT_SECRET}
+      LANGUAGE_M2M_CLIENT_ID: ${PRINTSCRIPT_M2M_CLIENT_ID}
+      LANGUAGE_M2M_CLIENT_SECRET: ${PRINTSCRIPT_M2M_CLIENT_SECRET}
       AUTH0_TOKEN_URI: ${AUTH0_TOKEN_URI}
       AUTHORIZATION_SERVICE_URL: ${AUTHORIZATION_SERVICE_URL}
       ASSET_SERVICE_URL: ${ASSET_SERVICE_URL}
@@ -33,9 +36,9 @@ services:
     image: postgres:16
     container_name: language_db_local
     environment:
-      POSTGRES_USER: ${POSTGRES_USER_LANGUAGE}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD_LANGUAGE}
-      POSTGRES_DB: ${POSTGRES_DB_LANGUAGE}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - language_data_local:/var/lib/postgresql/data
 
