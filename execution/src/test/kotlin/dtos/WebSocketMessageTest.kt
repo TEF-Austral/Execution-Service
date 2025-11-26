@@ -9,7 +9,7 @@ class WebSocketMessageTest {
     @Test
     fun `should create WebSocketMessage with all fields`() {
         val message =
-            WebSocketMessage(
+            WebSocketMessageDTO(
                 type = WebSocketMessageType.Output,
                 value = "test output",
                 prompt = "Enter value:",
@@ -29,7 +29,7 @@ class WebSocketMessageTest {
     @Test
     fun `should create WebSocketMessage with minimal fields`() {
         val message =
-            WebSocketMessage(
+            WebSocketMessageDTO(
                 type = WebSocketMessageType.Error,
             )
 
@@ -44,7 +44,7 @@ class WebSocketMessageTest {
     @Test
     fun `should create Output type message`() {
         val message =
-            WebSocketMessage(
+            WebSocketMessageDTO(
                 type = WebSocketMessageType.Output,
                 value = "Hello World",
             )
@@ -56,7 +56,7 @@ class WebSocketMessageTest {
     @Test
     fun `should create InputRequest type message`() {
         val message =
-            WebSocketMessage(
+            WebSocketMessageDTO(
                 type = WebSocketMessageType.InputRequest,
                 prompt = "Enter your name:",
             )
@@ -68,7 +68,7 @@ class WebSocketMessageTest {
     @Test
     fun `should create Error type message`() {
         val message =
-            WebSocketMessage(
+            WebSocketMessageDTO(
                 type = WebSocketMessageType.Error,
                 value = "Syntax error",
             )
@@ -80,7 +80,7 @@ class WebSocketMessageTest {
     @Test
     fun `should create ExecutionFinished type message`() {
         val message =
-            WebSocketMessage(
+            WebSocketMessageDTO(
                 type = WebSocketMessageType.ExecutionFinished,
             )
 
@@ -90,7 +90,7 @@ class WebSocketMessageTest {
     @Test
     fun `should create InputResponse type message`() {
         val message =
-            WebSocketMessage(
+            WebSocketMessageDTO(
                 type = WebSocketMessageType.InputResponse,
                 value = "user input",
             )
@@ -102,7 +102,7 @@ class WebSocketMessageTest {
     @Test
     fun `should create InitExecution type message`() {
         val message =
-            WebSocketMessage(
+            WebSocketMessageDTO(
                 type = WebSocketMessageType.InitExecution,
                 bucketContainer = "snippets",
                 bucketKey = "snippet-123",
@@ -118,7 +118,7 @@ class WebSocketMessageTest {
     @Test
     fun `should support copy functionality`() {
         val original =
-            WebSocketMessage(
+            WebSocketMessageDTO(
                 type = WebSocketMessageType.Output,
                 value = "original",
             )

@@ -17,4 +17,3 @@ include('execution', 'validation', 'formatter', 'events', 'api')
 
 include 'assets'
 include 'common'
-include 'rules'

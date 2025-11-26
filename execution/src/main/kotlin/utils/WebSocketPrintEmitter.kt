@@ -1,7 +1,7 @@
 package utils
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import dtos.WebSocketMessage
+import dtos.WebSocketMessageDTO
 import dtos.WebSocketMessageType
 import emitter.Emitter
 import org.slf4j.LoggerFactory
@@ -30,7 +30,7 @@ class WebSocketPrintEmitter(
             if (session.isOpen) {
                 val msg =
                     objectMapper.writeValueAsString(
-                        WebSocketMessage(WebSocketMessageType.Output, value = output),
+                        WebSocketMessageDTO(WebSocketMessageType.Output, value = output),
                     )
                 session.sendMessage(TextMessage(msg))
             }

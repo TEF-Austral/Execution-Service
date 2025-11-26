@@ -1,7 +1,7 @@
 package utils
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import dtos.WebSocketMessage
+import dtos.WebSocketMessageDTO
 import dtos.WebSocketMessageType
 import org.slf4j.LoggerFactory
 import org.springframework.web.socket.TextMessage
@@ -20,7 +20,7 @@ class WebSocketInputReceiver(
         try {
             val requestMsg =
                 objectMapper.writeValueAsString(
-                    WebSocketMessage(
+                    WebSocketMessageDTO(
                         WebSocketMessageType.InputRequest,
                         prompt = name ?: "Entrada:",
                     ),

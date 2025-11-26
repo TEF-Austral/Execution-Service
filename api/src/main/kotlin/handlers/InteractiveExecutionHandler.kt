@@ -3,7 +3,7 @@ package api.handlers
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import component.AssetServiceClient
-import dtos.WebSocketMessage
+import dtos.WebSocketMessageDTO
 import dtos.WebSocketMessageType
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -39,7 +39,7 @@ class InteractiveExecutionHandler(
         session: WebSocketSession,
         message: TextMessage,
     ) {
-        val msg = objectMapper.readValue<WebSocketMessage>(message.payload)
+        val msg = objectMapper.readValue<WebSocketMessageDTO>(message.payload)
 
         when (msg.type) {
             WebSocketMessageType.InitExecution -> {
@@ -119,13 +119,13 @@ class InteractiveExecutionHandler(
 
                 val finishedMsg =
                     objectMapper.writeValueAsString(
-                        WebSocketMessage(WebSocketMessageType.ExecutionFinished),
+                        WebSocketMessageDTO(WebSocketMessageType.ExecutionFinished),
                     )
                 session.sendMessage(TextMessage(finishedMsg))
             } catch (e: Exception) {
                 val errorMsg =
                     objectMapper.writeValueAsString(
-                        WebSocketMessage(WebSocketMessageType.Error, value = e.message),
+                        WebSocketMessageDTO(WebSocketMessageType.Error, value = e.message),
                     )
                 session.sendMessage(TextMessage(errorMsg))
             } finally {

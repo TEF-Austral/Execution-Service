@@ -1,6 +1,6 @@
 package dtos
 
-data class WebSocketMessage(
+data class WebSocketMessageDTO(
     val type: WebSocketMessageType,
     val value: String? = null,
     val prompt: String? = null,

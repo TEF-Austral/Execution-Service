@@ -121,13 +121,13 @@ class TestController(
         log.warn("DELETE /tests/$id - Test deleted successfully")
         return ResponseEntity.noContent().build()
     }
-}
 
-fun TestEntity.toDTO() =
-    TestDTO(
-        id = id,
-        snippetId = snippetId,
-        name = name,
-        inputs = inputs,
-        expectedOutputs = expectedOutputs,
-    )
+    private fun TestEntity.toDTO() =
+        TestDTO(
+            id = id,
+            snippetId = snippetId,
+            name = name,
+            inputs = inputs,
+            expectedOutputs = expectedOutputs,
+        )
+}

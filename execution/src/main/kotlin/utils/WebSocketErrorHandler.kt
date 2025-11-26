@@ -1,7 +1,7 @@
 package utils
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import dtos.WebSocketMessage
+import dtos.WebSocketMessageDTO
 import dtos.WebSocketMessageType
 import org.springframework.web.socket.TextMessage
 import org.springframework.web.socket.WebSocketSession
@@ -18,7 +18,7 @@ class WebSocketErrorHandler(
             if (session.isOpen && message != null) {
                 val msg =
                     objectMapper.writeValueAsString(
-                        WebSocketMessage(WebSocketMessageType.Error, value = message),
+                        WebSocketMessageDTO(WebSocketMessageType.Error, value = message),
                     )
                 session.sendMessage(TextMessage(msg))
             }
